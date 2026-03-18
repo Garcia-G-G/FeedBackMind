@@ -1,0 +1,67 @@
+class Account < ApplicationRecord
+  # === Multi-tenancy ===
+  has_many :users, dependent: :destroy
+  has_many :sources, dependent: :destroy
+  has_many :feedbacks, dependent: :destroy
+  has_many :weekly_syntheses, dependent: :destroy
+  has_many :chat_messages, dependent: :destroy
+
+  # === Enums ===
+  enum :plan, { starter: 0, growth: 1, scale: 2 }, prefix: true
+
+  # === Validations ===
+  validates :name, presence: true
+  validates :subdomain, presence: true, uniqueness: true,
+            format: { with: /\A[a-z0-9][a-z0-9\-]*[a-z0-9]\z/,
+                       message: "must be lowercase alphanumeric with hyphens only" },
+            length: { minimum: 3, maximum: 63 }
+
+  validates :plan, presence: true
+  validates :feedback_count_this_month, numericality: { greater_than_or_equal_to: 0 }
+
+  # === Scopes ===
+  scope :active, -> { joins(:sources).where(sources: { active: true }).distinct }
+  scope :with_plan, ->(plan) { where(plan: plan) }
+  scope :billable, -> { where.not(stripe_subscription_id: nil) }
+
+  # === Plan Limits ===
+  PLAN_LIMITS = {
+    "starter" => { users: 1, sources: 3, feedbacks_per_month: 500, chat_enabled: false, prd_enabled: false },
+    "growth"  => { users: 5, sources: 10, feedbacks_per_month: 2_000, chat_enabled: true, prd_enabled: false },
+    "scale"   => { users: Float::INFINITY, sources: Float::INFINITY, feedbacks_per_month: Float::INFINITY, chat_enabled: true, prd_enabled: true }
+  }.freeze
+
+  def plan_limits
+    PLAN_LIMITS[plan]
+  end
+
+  def feedback_limit_reached?
+    return false if plan_scale?
+
+    feedback_count_this_month >= plan_limits[:feedbacks_per_month]
+  end
+
+  def chat_enabled?
+    plan_limits[:chat_enabled]
+  end
+
+  def prd_enabled?
+    plan_limits[:prd_enabled]
+  end
+
+  def max_users
+    plan_limits[:users]
+  end
+
+  def max_sources
+    plan_limits[:sources]
+  end
+
+  def increment_feedback_count!
+    increment!(:feedback_count_this_month)
+  end
+
+  def reset_feedback_count!
+    update!(feedback_count_this_month: 0)
+  end
+end

@@ -1,0 +1,10 @@
+---
+:concurrency: 5
+:timeout: 25
+:max_retries: 3
+
+:queues:
+  - [critical, 6]
+  - [default, 4]
+  - [low, 2]
+  - [mailers, 3]
