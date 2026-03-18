@@ -12,7 +12,7 @@ gem "redis", ">= 5.0"
 # Frontend (Hotwire)
 gem "turbo-rails", "~> 2.0"
 gem "stimulus-rails", "~> 1.3"
-gem "tailwindcss-rails", "~> 2.7"
+gem "tailwindcss-rails", "~> 4.4"
 gem "sprockets-rails"
 
 # Background Jobs
