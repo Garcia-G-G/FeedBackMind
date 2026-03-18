@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_18_000008) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_18_170015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "vector"
@@ -24,6 +24,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_000008) do
     t.integer "feedback_count_this_month", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "api_token"
+    t.index ["api_token"], name: "index_accounts_on_api_token", unique: true
     t.index ["plan"], name: "index_accounts_on_plan"
     t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true, where: "(stripe_customer_id IS NOT NULL)"
     t.index ["subdomain"], name: "index_accounts_on_subdomain", unique: true

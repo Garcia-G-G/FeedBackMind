@@ -9,6 +9,9 @@ class Account < ApplicationRecord
   # === Enums ===
   enum :plan, { starter: 0, growth: 1, scale: 2 }, prefix: true
 
+  # === Callbacks ===
+  before_create :generate_api_token
+
   # === Validations ===
   validates :name, presence: true
   validates :subdomain, presence: true, uniqueness: true,
@@ -63,5 +66,22 @@ class Account < ApplicationRecord
 
   def reset_feedback_count!
     update!(feedback_count_this_month: 0)
+  end
+
+  def regenerate_api_token!
+    update!(api_token: self.class.generate_unique_token)
+  end
+
+  def self.generate_unique_token
+    loop do
+      token = "fm_#{SecureRandom.hex(24)}"
+      break token unless exists?(api_token: token)
+    end
+  end
+
+  private
+
+  def generate_api_token
+    self.api_token ||= self.class.generate_unique_token
   end
 end
