@@ -1,0 +1,48 @@
+<% content_for(:page_title) { "Syntheses" } %>
+
+<div class="space-y-4">
+  <% if @syntheses.any? %>
+    <div class="grid grid-cols-1 gap-3">
+      <% @syntheses.each do |synthesis| %>
+        <div class="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-sm transition-shadow">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-baseline gap-2 mb-2">
+                <h3 class="text-base font-semibold text-gray-900">
+                  <%= synthesis.week_label %>
+                </h3>
+                <% if synthesis.sent_at.present? %>
+                  <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
+                    Sent
+                  </span>
+                <% end %>
+              </div>
+              <p class="text-sm text-gray-600">
+                <span class="font-medium text-gray-700"><%= synthesis.themes.count %></span>
+                themes •
+                <span class="font-medium text-gray-700"><%= synthesis.feedback_count %></span>
+                feedbacks
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <%= link_to synthesis_path(synthesis), class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors font-medium text-sm" do %>
+                View →
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl border border-gray-100 p-12 text-center">
+      <div class="mb-4">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">No syntheses yet</h3>
+      <p class="text-sm text-gray-600 mb-6">Generate your first weekly synthesis to start analyzing patterns in feedback.</p>
+      <%= link_to "Generate Synthesis", new_synthesis_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-colors font-medium" %>
+    </div>
+  <% end %>
+</div>

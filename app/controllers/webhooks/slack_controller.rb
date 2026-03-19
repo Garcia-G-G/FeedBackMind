@@ -1,56 +1,43 @@
-module Webhooks
-  class SlackController < BaseController
-    before_action :verify_signature
+class Webhooks::SlackController < Webhooks::BaseController
+  def create
+    payload = JSON.parse(@raw_body)
 
-    # POST /webhooks/slack
-    def create
-      payload = JSON.parse(@raw_body)
-
-      # Handle Slack URL verification challenge
-      if payload["type"] == "url_verification"
-        render json: { challenge: payload["challenge"] }
-        return
-      end
-
-      return head_ok unless payload["type"] == "event_callback"
-
-      event = payload["event"]
-      return head_ok unless event && event["type"] == "message" && event["subtype"].nil?
-
-      team_id = payload["team_id"]
-      source = Source.find_by!(source_type: :slack, active: true, config: { "team_id" => team_id }.as_json)
-      account = source.account
-
-      normalized = Webhooks::SlackNormalizer.new(payload).normalize
-      enqueue_feedback(account.id, source.id, normalized) if normalized
-
-      head_ok
+    # Handle Slack URL verification challenge
+    if payload["type"] == "url_verification"
+      return render json: { challenge: payload["challenge"] }
     end
 
-    private
+    account = find_account_from_params!
 
-    def verify_signature
-      secret = ENV.fetch("SLACK_SIGNING_SECRET", nil)
-      return if secret.blank?
-
-      timestamp = request.headers["X-Slack-Request-Timestamp"]
-      slack_signature = request.headers["X-Slack-Signature"]
-
-      return render_unauthorized unless timestamp && slack_signature
-
-      # Reject requests older than 5 minutes
-      if (Time.now.to_i - timestamp.to_i).abs > 300
-        render json: { error: "Request too old", code: "unauthorized" }, status: :unauthorized
-        return
-      end
-
-      sig_basestring = "v0:#{timestamp}:#{@raw_body}"
-      computed = "v0=#{OpenSSL::HMAC.hexdigest('SHA256', secret, sig_basestring)}"
-      verify_signature_or_reject!(computed, slack_signature)
+    unless verify_slack_signature(account)
+      return render_unauthorized
     end
 
-    def render_unauthorized
-      render json: { error: "Missing signature headers", code: "unauthorized" }, status: :unauthorized
+    normalized = Webhooks::SlackNormalizer.new(payload).normalize
+
+    if normalized
+      FeedbackIngestJob.perform_async(account.id, find_source_id(account, :slack), normalized)
     end
+
+    render_accepted
+  rescue JSON::ParserError
+    render json: { error: "Invalid JSON" }, status: :bad_request
+  end
+
+  private
+
+  def verify_slack_signature(account)
+    secret = account.sources.find_by(source_type: :slack)&.config&.dig("signing_secret")
+    return true unless secret
+
+    timestamp = request.headers["X-Slack-Request-Timestamp"]
+    return false unless timestamp
+    return false if (Time.now.to_i - timestamp.to_i).abs > 300 # 5 min tolerance
+
+    sig_basestring = "v0:#{timestamp}:#{@raw_body}"
+    expected = "v0=" + OpenSSL::HMAC.hexdigest("SHA256", secret, sig_basestring)
+    signature = request.headers["X-Slack-Signature"]
+
+    ActiveSupport::SecurityUtils.secure_compare(expected, signature.to_s)
   end
 end

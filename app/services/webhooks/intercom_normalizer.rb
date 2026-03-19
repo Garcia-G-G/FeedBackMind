@@ -4,37 +4,56 @@ module Webhooks
       @payload = payload
     end
 
+    # Normalizes Intercom conversation/note webhook payloads
+    # Returns hash compatible with FeedbackIngestJob or nil
     def normalize
-      conversation = @payload.dig("data", "item")
-      return nil unless conversation
+      return nil unless relevant_event?
 
-      body = conversation.dig("conversation_message", "body") ||
-             conversation.dig("conversation_parts", "conversation_parts", 0, "body")
+      data = @payload.dig("data", "item") || {}
+      conversation_parts = data.dig("conversation_parts", "conversation_parts") || []
 
-      return nil if body.blank?
+      # Get the user's message (first part or body)
+      content = extract_content(data, conversation_parts)
+      return nil if content.blank?
+
+      user = data.dig("user") || data.dig("contacts", "contacts", 0) || {}
 
       {
-        external_id: conversation["id"]&.to_s,
-        content: strip_html(body),
-        author_email: conversation.dig("conversation_message", "author", "email"),
-        author_name: conversation.dig("conversation_message", "author", "name"),
-        metadata: {
-          topic: @payload["topic"],
-          tags: conversation["tags"]&.dig("tags")&.map { |t| t["name"] }
-        }.compact,
-        received_at: parse_time(conversation["created_at"])
+        "external_id" => data["id"]&.to_s,
+        "content" => content,
+        "author_email" => user["email"],
+        "author_name" => user["name"],
+        "metadata" => {
+          "intercom_conversation_id" => data["id"],
+          "tags" => extract_tags(data),
+          "url" => data["url"]
+        },
+        "received_at" => Time.at(data["created_at"].to_i).iso8601
       }
     end
 
     private
 
-    def strip_html(html)
-      ActionView::Base.full_sanitizer.sanitize(html).squish
+    def relevant_event?
+      topic = @payload["topic"]
+      %w[
+        conversation.user.created
+        conversation.user.replied
+        conversation/user/created
+        conversation/user/replied
+      ].include?(topic)
     end
 
-    def parse_time(timestamp)
-      return nil unless timestamp
-      Time.at(timestamp).iso8601
+    def extract_content(data, parts)
+      body = data.dig("source", "body")
+      return ActionController::Base.helpers.strip_tags(body) if body.present?
+
+      user_part = parts.find { |p| p["part_type"] == "comment" && p.dig("author", "type") == "user" }
+      user_part ? ActionController::Base.helpers.strip_tags(user_part["body"]) : nil
+    end
+
+    def extract_tags(data)
+      (data.dig("tags", "tags") || []).map { |t| t["name"] }
     end
   end
 end

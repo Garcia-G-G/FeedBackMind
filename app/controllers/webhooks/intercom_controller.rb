@@ -1,42 +1,33 @@
-module Webhooks
-  class IntercomController < BaseController
-    before_action :verify_signature
+class Webhooks::IntercomController < Webhooks::BaseController
+  def create
+    account = find_account_from_params!
 
-    # POST /webhooks/intercom
-    def create
-      payload = JSON.parse(@raw_body)
-      topic = payload["topic"]
-
-      # Only process conversation-related events
-      unless topic&.start_with?("conversation")
-        head_ok
-        return
-      end
-
-      account = Account.find_by!(subdomain: params[:account_subdomain])
-      source = find_source(account, "intercom")
-
-      normalized = Webhooks::IntercomNormalizer.new(payload).normalize
-      enqueue_feedback(account.id, source.id, normalized) if normalized
-
-      head_ok
+    unless verify_intercom_signature(account)
+      return render_unauthorized
     end
 
-    private
+    payload = JSON.parse(@raw_body)
+    normalized = Webhooks::IntercomNormalizer.new(payload).normalize
 
-    def verify_signature
-      secret = ENV.fetch("INTERCOM_WEBHOOK_SECRET", nil)
-      return if secret.blank? # Skip verification if no secret configured
-
-      signature = request.headers["X-Hub-Signature"]
-      return render_unauthorized unless signature
-
-      computed = "sha1=#{OpenSSL::HMAC.hexdigest('SHA256', secret, @raw_body)}"
-      verify_signature_or_reject!(computed, signature)
+    if normalized
+      FeedbackIngestJob.perform_async(account.id, find_source_id(account, :intercom), normalized)
     end
 
-    def render_unauthorized
-      render json: { error: "Missing signature", code: "unauthorized" }, status: :unauthorized
-    end
+    render_accepted
+  rescue JSON::ParserError
+    render json: { error: "Invalid JSON" }, status: :bad_request
+  end
+
+  private
+
+  def verify_intercom_signature(account)
+    secret = account.sources.find_by(source_type: :intercom)&.config&.dig("webhook_secret")
+    return true unless secret # Skip verification if no secret configured
+
+    expected = OpenSSL::HMAC.hexdigest("SHA256", secret, @raw_body)
+    signature = request.headers["X-Hub-Signature"]
+
+    return false unless signature
+    ActiveSupport::SecurityUtils.secure_compare("sha256=#{expected}", signature)
   end
 end

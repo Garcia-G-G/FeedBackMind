@@ -1,17 +1,16 @@
-module Webhooks
-  class GmailController < BaseController
-    # POST /webhooks/gmail
-    # Receives forwarded emails via Cloudflare Email Routing or Google Pub/Sub
-    def create
-      payload = JSON.parse(@raw_body)
+class Webhooks::GmailController < Webhooks::BaseController
+  def create
+    account = find_account_from_params!
+    payload = JSON.parse(@raw_body)
 
-      account = Account.find_by!(subdomain: params[:account_subdomain])
-      source = find_source(account, "gmail")
+    normalized = Webhooks::GmailNormalizer.new(payload).normalize
 
-      normalized = Webhooks::GmailNormalizer.new(payload).normalize
-      enqueue_feedback(account.id, source.id, normalized) if normalized
-
-      head_ok
+    if normalized
+      FeedbackIngestJob.perform_async(account.id, find_source_id(account, :gmail), normalized)
     end
+
+    render_accepted
+  rescue JSON::ParserError
+    render json: { error: "Invalid JSON" }, status: :bad_request
   end
 end

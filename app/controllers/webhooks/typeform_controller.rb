@@ -1,35 +1,32 @@
-module Webhooks
-  class TypeformController < BaseController
-    before_action :verify_signature
+class Webhooks::TypeformController < Webhooks::BaseController
+  def create
+    account = find_account_from_params!
 
-    # POST /webhooks/typeform
-    def create
-      payload = JSON.parse(@raw_body)
-
-      account = Account.find_by!(subdomain: params[:account_subdomain])
-      source = find_source(account, "typeform")
-
-      normalized = Webhooks::TypeformNormalizer.new(payload).normalize
-      enqueue_feedback(account.id, source.id, normalized) if normalized
-
-      head_ok
+    unless verify_typeform_signature(account)
+      return render_unauthorized
     end
 
-    private
+    payload = JSON.parse(@raw_body)
+    normalized = Webhooks::TypeformNormalizer.new(payload).normalize
 
-    def verify_signature
-      secret = ENV.fetch("TYPEFORM_WEBHOOK_SECRET", nil)
-      return if secret.blank?
-
-      signature = request.headers["Typeform-Signature"]
-      return render_unauthorized unless signature
-
-      computed = "sha256=#{Base64.encode64(OpenSSL::HMAC.digest('SHA256', secret, @raw_body)).strip}"
-      verify_signature_or_reject!(computed, signature)
+    if normalized
+      FeedbackIngestJob.perform_async(account.id, find_source_id(account, :typeform), normalized)
     end
 
-    def render_unauthorized
-      render json: { error: "Missing signature", code: "unauthorized" }, status: :unauthorized
-    end
+    render_accepted
+  rescue JSON::ParserError
+    render json: { error: "Invalid JSON" }, status: :bad_request
+  end
+
+  private
+
+  def verify_typeform_signature(account)
+    secret = account.sources.find_by(source_type: :typeform)&.config&.dig("webhook_secret")
+    return true unless secret
+
+    expected = OpenSSL::HMAC.digest("SHA256", secret, @raw_body)
+    signature = Base64.decode64(request.headers["Typeform-Signature"].to_s.sub("sha256=", ""))
+
+    ActiveSupport::SecurityUtils.secure_compare(expected, signature)
   end
 end

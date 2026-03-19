@@ -2,6 +2,10 @@ module Webhooks
   class BaseController < ActionController::API
     before_action :read_raw_body
 
+    rescue_from ActiveRecord::RecordNotFound do
+      render json: { error: "Not found", code: "not_found" }, status: :not_found
+    end
+
     private
 
     def read_raw_body
@@ -9,24 +13,20 @@ module Webhooks
       request.body.rewind
     end
 
-    def find_source(account, source_type)
-      account.sources.active.find_by!(source_type: source_type)
+    def find_account_from_params!
+      Account.find(params.require(:account_id))
     end
 
-    def enqueue_feedback(account_id, source_id, raw_data)
-      FeedbackIngestJob.perform_async(account_id, source_id, raw_data)
+    def find_source_id(account, type)
+      account.sources.find_by!(source_type: type, active: true).id
     end
 
-    def verify_signature_or_reject!(computed, received)
-      unless ActiveSupport::SecurityUtils.secure_compare(computed, received.to_s)
-        render json: { error: "Invalid signature", code: "unauthorized" }, status: :unauthorized
-        return false
-      end
-      true
+    def render_accepted
+      head :accepted
     end
 
-    def head_ok
-      head :ok
+    def render_unauthorized
+      render json: { error: "Invalid signature", code: "unauthorized" }, status: :unauthorized
     end
   end
 end

@@ -1,39 +1,17 @@
-module Webhooks
-  class JiraController < BaseController
-    before_action :verify_signature
+class Webhooks::JiraController < Webhooks::BaseController
+  def create
+    account = find_account_from_params!
+    payload = JSON.parse(@raw_body)
 
-    # POST /webhooks/jira
-    def create
-      payload = JSON.parse(@raw_body)
+    # Jira webhooks don't have a standard signature — we rely on account_id + source being active
+    normalized = Webhooks::JiraNormalizer.new(payload).normalize
 
-      # Only process issue comment events
-      webhook_event = payload["webhookEvent"]
-      unless webhook_event&.include?("comment")
-        head_ok
-        return
-      end
-
-      account = Account.find_by!(subdomain: params[:account_subdomain])
-      source = find_source(account, "jira")
-
-      normalized = Webhooks::JiraNormalizer.new(payload).normalize
-      enqueue_feedback(account.id, source.id, normalized) if normalized
-
-      head_ok
+    if normalized
+      FeedbackIngestJob.perform_async(account.id, find_source_id(account, :jira), normalized)
     end
 
-    private
-
-    def verify_signature
-      secret = ENV.fetch("JIRA_WEBHOOK_SECRET", nil)
-      return if secret.blank?
-
-      # Jira can use HMAC-SHA256 or IP allowlist
-      signature = request.headers["X-Hub-Signature"]
-      return if signature.blank? # Fall through if using IP allowlist
-
-      computed = "sha256=#{OpenSSL::HMAC.hexdigest('SHA256', secret, @raw_body)}"
-      verify_signature_or_reject!(computed, signature)
-    end
+    render_accepted
+  rescue JSON::ParserError
+    render json: { error: "Invalid JSON" }, status: :bad_request
   end
 end

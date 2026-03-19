@@ -1,0 +1,38 @@
+The session2_files directory contains 37 Ruby files for the FeedbackMind Rails project Session 2 (API layer + webhooks). Your job is to install these files into the correct locations in the feedbackmind project, run the migration, update the Account model, update rails_helper, and verify everything works.
+
+Follow these steps exactly:
+
+STEP 1: Copy all session2_files into the project, preserving directory structure.
+Run: cp -r session2_files/app/* app/
+Run: cp -r session2_files/config/* config/
+Run: cp -r session2_files/db/* db/
+Run: cp -r session2_files/spec/* spec/
+
+STEP 2: Create missing directories if they do not exist.
+Run: mkdir -p app/controllers/api/v1/billing
+Run: mkdir -p app/controllers/webhooks
+Run: mkdir -p app/services/webhooks
+Run: mkdir -p app/services/billing
+Run: mkdir -p spec/requests/api/v1
+Run: mkdir -p spec/requests/webhooks
+
+STEP 3: Run the new migration to add api_token column to accounts.
+Run: rails db:migrate
+
+STEP 4: Update the Account model. Open app/models/account.rb and add this callback and method inside the class body, before the existing private section if there is one. Add a before_create callback called generate_api_token, and a private method generate_api_token that sets self.api_token to SecureRandom.hex(32) if api_token is nil.
+
+STEP 5: Update spec/rails_helper.rb. Make sure these two lines are present inside the RSpec.configure block:
+- Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+- require 'sidekiq/testing' and Sidekiq::Testing.fake! somewhere before the configure block
+
+STEP 6: Update the Account factory. In spec/factories/accounts.rb, add an api_token attribute that generates SecureRandom.hex(32) by default.
+
+STEP 7: Verify everything works. Run these commands and show me the output:
+- find app/controllers -name '*.rb' | sort
+- find app/services -name '*.rb' | sort
+- rails db:migrate:status
+- rails routes | wc -l
+- rails routes | grep webhook
+- rails routes | grep 'api/v1'
+- bundle exec rspec --dry-run 2>&1 | tail -10
+- rails runner "puts 'All OK'"

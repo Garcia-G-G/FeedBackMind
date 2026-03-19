@@ -1,0 +1,93 @@
+<% content_for(:page_title) { "Add Source" } %>
+
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to sources_path, class: "text-indigo-600 hover:text-indigo-700 font-medium text-sm" do %>
+      ← Back to Sources
+    <% end %>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-100 p-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Connect New Source</h1>
+
+    <%= form_with model: @source, local: true, class: "space-y-6" do |f| %>
+      <% if @source.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div class="flex gap-3">
+            <div class="text-red-600 mt-0.5">
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-red-900 mb-2">Please fix the following errors:</h3>
+              <ul class="text-sm text-red-800 space-y-1">
+                <% @source.errors.full_messages.each do |message| %>
+                  <li>• <%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Name field -->
+      <div>
+        <%= f.label :name, "Source Name", class: "block text-sm font-semibold text-gray-900 mb-2" %>
+        <%= f.text_field :name, placeholder: "e.g., Customer Support Email", class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" %>
+        <p class="text-xs text-gray-600 mt-1">A friendly name to identify this source</p>
+      </div>
+
+      <!-- Source type field -->
+      <div>
+        <%= f.label :source_type, "Source Type", class: "block text-sm font-semibold text-gray-900 mb-2" %>
+        <%= f.select :source_type, [
+          ["Select a source type...", ""],
+          ["Intercom", "intercom"],
+          ["Gmail", "gmail"],
+          ["App Store Reviews", "app_store"],
+          ["Typeform", "typeform"],
+          ["Jira", "jira"],
+          ["Slack", "slack"],
+          ["Google Play Store", "play_store"],
+          ["CSV Upload", "csv"]
+        ], {}, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" %>
+        <p class="text-xs text-gray-600 mt-1">Choose where your feedback comes from</p>
+      </div>
+
+      <!-- Credentials field -->
+      <div>
+        <%= f.label :credentials, "Credentials (JSON)", class: "block text-sm font-semibold text-gray-900 mb-2" %>
+        <%= f.text_area :credentials, rows: 6, placeholder: '{"api_key": "your_key", "email": "your_email@example.com"}', class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none font-mono text-sm" %>
+        <p class="text-xs text-gray-600 mt-1">
+          Enter your API credentials in JSON format. Make sure to use environment variables or secure storage in production.
+        </p>
+      </div>
+
+      <!-- Form actions -->
+      <div class="flex gap-3 pt-4 border-t border-gray-200">
+        <%= f.submit "Connect Source", class: "flex-1 px-6 py-3 rounded-lg bg-indigo-500 text-white font-semibold hover:bg-indigo-600 transition-colors cursor-pointer" %>
+        <%= link_to "Cancel", sources_path, class: "px-6 py-3 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Help section -->
+  <div class="mt-8 space-y-4">
+    <h2 class="text-lg font-bold text-gray-900">Need help?</h2>
+
+    <div class="bg-blue-50 border border-blue-100 rounded-lg p-4">
+      <p class="text-sm font-semibold text-blue-900 mb-2">Setting up credentials</p>
+      <p class="text-sm text-blue-800">
+        Each source type requires different credentials. Check the documentation for your specific service to find your API key, token, or authentication details.
+      </p>
+    </div>
+
+    <div class="bg-amber-50 border border-amber-100 rounded-lg p-4">
+      <p class="text-sm font-semibold text-amber-900 mb-2">Security note</p>
+      <p class="text-sm text-amber-800">
+        Never share your API keys or credentials in code. Always use environment variables or secure secret management in production.
+      </p>
+    </div>
+  </div>
+</div>

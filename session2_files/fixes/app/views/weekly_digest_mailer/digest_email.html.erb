@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 640px; margin: 0 auto; padding: 20px; }
+    .header { background: #4F46E5; color: white; padding: 24px; border-radius: 8px 8px 0 0; }
+    .header h1 { margin: 0; font-size: 22px; }
+    .header p { margin: 4px 0 0; opacity: 0.85; font-size: 14px; }
+    .body { background: #ffffff; border: 1px solid #e5e7eb; border-top: none; padding: 24px; border-radius: 0 0 8px 8px; }
+    .summary { background: #f9fafb; padding: 16px; border-radius: 6px; margin-bottom: 24px; border-left: 4px solid #4F46E5; }
+    .theme { margin-bottom: 20px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 6px; }
+    .theme-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .theme h3 { margin: 0; font-size: 16px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+    .badge-critical { background: #FEE2E2; color: #991B1B; }
+    .badge-high { background: #FEF3C7; color: #92400E; }
+    .badge-medium { background: #DBEAFE; color: #1E40AF; }
+    .badge-low { background: #F3F4F6; color: #374151; }
+    .quote { background: #f9fafb; padding: 8px 12px; margin: 6px 0; border-left: 3px solid #d1d5db; font-style: italic; font-size: 14px; color: #4b5563; }
+    .action { background: #EEF2FF; padding: 8px 12px; border-radius: 4px; font-size: 14px; margin-top: 8px; }
+    .risk { background: #FEF2F2; padding: 16px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #EF4444; }
+    .quick-wins { background: #F0FDF4; padding: 16px; border-radius: 6px; border-left: 4px solid #22C55E; }
+    .quick-wins li { margin-bottom: 4px; }
+    .footer { text-align: center; padding: 16px; color: #9ca3af; font-size: 12px; }
+    .count { color: #6b7280; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><%= @account.name %> — Weekly Feedback Digest</h1>
+    <p><%= @synthesis.week_label %> &middot; <%= @synthesis.feedback_count %> feedbacks analyzed</p>
+  </div>
+
+  <div class="body">
+    <% if @synthesis.executive_summary.present? %>
+      <div class="summary">
+        <strong>Executive Summary</strong>
+        <p><%= @synthesis.executive_summary %></p>
+      </div>
+    <% end %>
+
+    <h2>Top Themes</h2>
+    <% @themes.each do |theme| %>
+      <div class="theme">
+        <div class="theme-header">
+          <h3><%= theme.title %></h3>
+          <span class="badge badge-<%= theme.urgency %>"><%= theme.urgency&.upcase %></span>
+        </div>
+        <p><%= theme.description %></p>
+        <span class="count"><%= theme.feedback_count %> feedbacks</span>
+
+        <% if theme.sample_quotes.present? %>
+          <% theme.sample_quotes.each do |quote| %>
+            <div class="quote">&ldquo;<%= quote %>&rdquo;</div>
+          <% end %>
+        <% end %>
+
+        <% if theme.suggested_action.present? %>
+          <div class="action"><strong>Suggested action:</strong> <%= theme.suggested_action %></div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @risk %>
+      <div class="risk">
+        <strong>Biggest Risk: <%= @risk.theme %></strong>
+        <p><%= @risk.potential_impact %></p>
+      </div>
+    <% end %>
+
+    <% if @synthesis.quick_wins.present? %>
+      <div class="quick-wins">
+        <strong>Quick Wins</strong>
+        <ul>
+          <% @synthesis.quick_wins.each do |win| %>
+            <li><%= win %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="footer">
+    <p>Powered by FeedbackMind &middot; <a href="https://feedbackmind.com">feedbackmind.com</a></p>
+  </div>
+</body>
+</html>
