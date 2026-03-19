@@ -6,3 +6,21 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import CommandPaletteController from "./command_palette_controller"
+application.register("command-palette", CommandPaletteController)
+
+import ChatPanelController from "./chat_panel_controller"
+application.register("chat-panel", ChatPanelController)
+
+import RoleSwitcherController from "./role_switcher_controller"
+application.register("role-switcher", RoleSwitcherController)
+
+import PeriodSelectorController from "./period_selector_controller"
+application.register("period-selector", PeriodSelectorController)
+
+import DismissibleController from "./dismissible_controller"
+application.register("dismissible", DismissibleController)
+
+import SidebarController from "./sidebar_controller"
+application.register("sidebar", SidebarController)
