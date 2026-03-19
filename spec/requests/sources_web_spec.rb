@@ -28,19 +28,18 @@ RSpec.describe "Sources (Web)", type: :request do
 
   describe "POST /sources" do
     it "creates a source" do
-      expect {
-        post sources_path, params: { source: { source_type: "slack" } }
-      }.to change(Source, :count).by(1)
+      post sources_path, params: { source: { source_type: "slack" } }
+      expect(response).to redirect_to(Source.last)
+      expect(account.sources.where(source_type: :slack).count).to eq(1)
     end
   end
 
   describe "DELETE /sources/:id" do
     it "destroys a source" do
       source = create(:source, account: account)
-      expect {
-        delete source_path(source)
-      }.to change(Source, :count).by(-1)
+      delete source_path(source)
       expect(response).to redirect_to(sources_url)
+      expect(Source.find_by(id: source.id)).to be_nil
     end
   end
 end

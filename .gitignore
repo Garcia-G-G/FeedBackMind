@@ -52,3 +52,4 @@ prompts/
 coverage/
 feedbackmind_hetzner*
 *.pub
+.kamal/secrets
