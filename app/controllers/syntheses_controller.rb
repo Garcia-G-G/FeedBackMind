@@ -13,8 +13,8 @@ class SynthesesController < ApplicationController
   end
 
   def create
-    WeeklySynthesisJob.perform_later(current_account.id)
-    redirect_to syntheses_path, notice: 'Weekly synthesis is being generated. Please check back shortly.'
+    WeeklySynthesisJob.perform_async
+    redirect_to syntheses_path, notice: "Weekly synthesis is being generated. Please check back shortly."
   end
 
   private

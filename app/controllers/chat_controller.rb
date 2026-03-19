@@ -1,32 +1,31 @@
 class ChatController < ApplicationController
   def create
     message_text = params[:message]
-    return render json: { error: 'Message is required' }, status: :bad_request if message_text.blank?
+    return head :bad_request if message_text.blank?
 
     user_message = ChatMessage.create!(
       account: current_account,
+      user: current_user,
       role: :user,
       content: message_text
     )
 
-    response_text = Synthesis::RagChat.call(
+    result = Synthesis::RagChat.new.ask(
       account: current_account,
-      message: message_text
+      question: message_text
     )
 
     assistant_message = ChatMessage.create!(
       account: current_account,
+      user: current_user,
       role: :assistant,
-      content: response_text
+      content: result[:answer],
+      source_feedback_ids: result[:source_feedback_ids]
     )
 
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.append('messages', partial: 'chat_message', locals: { message: user_message }),
-          turbo_stream.append('messages', partial: 'chat_message', locals: { message: assistant_message })
-        ]
-      end
-    end
+    render json: {
+      user_message: { id: user_message.id, content: user_message.content, role: "user" },
+      assistant_message: { id: assistant_message.id, content: assistant_message.content, role: "assistant" }
+    }
   end
 end

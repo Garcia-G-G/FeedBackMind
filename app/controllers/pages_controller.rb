@@ -1,9 +1,7 @@
 class PagesController < ApplicationController
+  skip_before_action :authenticate_user!
+
   def home
-    if user_signed_in?
-      redirect_to api_v1_account_path(format: :json)
-    else
-      render plain: "FeedbackMind API — Visit /api/v1/ with a valid Bearer token."
-    end
+    redirect_to dashboard_path if user_signed_in?
   end
 end

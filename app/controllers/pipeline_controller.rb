@@ -5,9 +5,10 @@ class PipelineController < ApplicationController
       .order(created_at: :desc)
       .limit(20)
 
-    @insights = current_account.feedbacks
+    @processed_feedbacks = current_account.feedbacks
       .processed
-      .group_by(&:topic)
+      .order(created_at: :desc)
+      .limit(20)
 
     @shipped = []
   end

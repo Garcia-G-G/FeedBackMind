@@ -29,16 +29,16 @@
   <!-- Navigation -->
   <div class="px-2.5 py-3">
     <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-1.5 pb-2">Overview</p>
-    <%= sidebar_link "Dashboard", dashboard_path, "grid", controller_name == "dashboard" %>
-    <%= sidebar_link "Feedbacks", feedbacks_path, "message", controller_name == "feedbacks", badge: current_account&.feedbacks&.count %>
-    <%= sidebar_link "Syntheses", syntheses_path, "layers", controller_name == "syntheses" %>
-    <%= sidebar_link "Pipeline", pipeline_path, "activity", controller_name == "pipeline", badge_warn: current_account&.feedbacks&.unprocessed&.count %>
+    <%= sidebar_link "Dashboard", dashboard_path, "dashboard", controller_name == "dashboard" %>
+    <%= sidebar_link "Feedbacks", feedbacks_path, "feedback", controller_name == "feedbacks", badge: current_account&.feedbacks&.count %>
+    <%= sidebar_link "Syntheses", syntheses_path, "syntheses", controller_name == "syntheses" %>
+    <%= sidebar_link "Pipeline", pipeline_path, "pipeline", controller_name == "pipeline", badge_warn: current_account&.feedbacks&.unprocessed&.count %>
   </div>
 
   <div class="px-2.5 py-3">
     <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 px-1.5 pb-2">Manage</p>
-    <%= sidebar_link "Sources", sources_path, "inbox", controller_name == "sources" %>
-    <%= sidebar_link "Loop Tracker", loop_tracker_path, "trending-up", controller_name == "loop_tracker" %>
+    <%= sidebar_link "Sources", sources_path, "sources", controller_name == "sources" %>
+    <%= sidebar_link "Loop Tracker", loop_tracker_path, "loop_tracker", controller_name == "loop_tracker" %>
     <%= sidebar_link "Settings", settings_path, "settings", controller_name == "settings" %>
   </div>
 
