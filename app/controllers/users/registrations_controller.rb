@@ -20,7 +20,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(resource)
-    dashboard_path
+    onboarding_path
   end
 
   private

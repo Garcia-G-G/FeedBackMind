@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_18_170015) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_19_222024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "vector"
@@ -99,6 +99,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_18_170015) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "onboarding_completed_at"
+    t.integer "onboarding_step"
     t.index ["account_id", "role"], name: "index_users_on_account_id_and_role"
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true

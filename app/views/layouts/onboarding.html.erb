@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <title>Setup — FeedbackMind</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+</head>
+<body class="h-full bg-gray-50 font-sans text-gray-900 antialiased">
+  <div class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <!-- Logo -->
+    <div class="flex items-center gap-2.5 mb-8">
+      <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center text-white text-sm font-extrabold">FM</div>
+      <span class="font-bold text-lg tracking-tight">FeedbackMind</span>
+    </div>
+
+    <!-- Progress Bar -->
+    <% step = @step || 1 %>
+    <div class="flex items-center gap-0 mb-8">
+      <% [1, 2, 3].each do |s| %>
+        <div class="flex items-center">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+            <%= if s < step then 'bg-emerald-500 text-white'
+                elsif s == step then 'bg-indigo-500 text-white'
+                else 'bg-gray-200 text-gray-400'
+                end %>">
+            <% if s < step %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <% else %>
+              <%= s %>
+            <% end %>
+          </div>
+          <% unless s == 3 %>
+            <div class="w-16 h-0.5 <%= s < step ? 'bg-emerald-500' : 'bg-gray-200' %>"></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Content Card -->
+    <div class="w-full max-w-2xl">
+      <% if notice.present? %>
+        <div class="mb-4 rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-800"><%= notice %></div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </div>
+  </div>
+</body>
+</html>

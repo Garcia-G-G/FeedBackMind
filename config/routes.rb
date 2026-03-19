@@ -69,6 +69,9 @@ Rails.application.routes.draw do
 
     post "chat", to: "chat#create", as: :chat
 
+    # Onboarding wizard
+    resource :onboarding, only: [:show, :update], controller: "onboarding"
+
     # Source OAuth connections
     post "sources/connect/:provider", to: "source_connections#create", as: :connect_source
     get "sources/callback/intercom", to: "source_connections#intercom_callback"
