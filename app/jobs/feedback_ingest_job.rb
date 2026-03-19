@@ -50,6 +50,15 @@ class FeedbackIngestJob
     )
 
     Rails.logger.info("[FeedbackIngestJob] Created feedback ##{feedback.id} for account #{account_id}")
+
+    # Broadcast to dashboard via Turbo Streams
+    Turbo::StreamsChannel.broadcast_prepend_to(
+      account,
+      target: "recent_feedbacks",
+      partial: "feedbacks/feedback_item",
+      locals: { feedback: feedback }
+    )
+
     # FeedbackEmbedJob is enqueued automatically via Feedback after_create_commit callback
   end
 end

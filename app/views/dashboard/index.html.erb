@@ -1,5 +1,6 @@
 <% content_for(:page_title) { "Dashboard" } %>
 
+<%= turbo_frame_tag "dashboard_content", src: dashboard_path(period: @period), data: { turbo_action: "advance" } do %>
 <%
   # Compute sentiment percentages for donut + legend
   total_sentiment = (@sentiment_data[:positive] + @sentiment_data[:neutral] + @sentiment_data[:negative]).to_f
@@ -224,21 +225,9 @@
   <div class="bg-white border border-gray-100 rounded-xl p-5">
     <h2 class="text-sm font-bold text-gray-900 mb-4">Recent Feedbacks</h2>
     <% if @recent_feedbacks.any? %>
-      <div class="space-y-3">
+      <div id="recent_feedbacks" class="space-y-3">
         <% @recent_feedbacks.first(5).each do |feedback| %>
-          <div class="flex gap-2.5 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
-            <% sentiment_dot = { "positive" => "bg-emerald-500", "neutral" => "bg-gray-300", "negative" => "bg-red-400" } %>
-            <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= sentiment_dot[feedback.sentiment] || 'bg-gray-300' %>"></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-[13px] text-gray-700 line-clamp-2"><%= feedback.content %></p>
-              <div class="flex items-center gap-2 mt-2">
-                <% (feedback.topics || []).first(2).each do |topic| %>
-                  <span class="text-[10px] bg-gray-50 border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded"><%= topic %></span>
-                <% end %>
-              </div>
-              <p class="text-[11px] text-gray-400 mt-2"><%= feedback.source&.source_type&.titleize || "Unknown" %> &bull; <%= format_time_ago(feedback.received_at) %></p>
-            </div>
-          </div>
+          <%= render "feedbacks/feedback_item", feedback: feedback %>
         <% end %>
       </div>
       <%= link_to "View all feedbacks", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium mt-4 inline-block" %>
@@ -246,4 +235,7 @@
       <p class="text-sm text-gray-400 text-center py-4">No feedbacks yet. Connect a source to get started.</p>
     <% end %>
   </div>
+
+  <%= turbo_stream_from current_account %>
 </div>
+<% end %>

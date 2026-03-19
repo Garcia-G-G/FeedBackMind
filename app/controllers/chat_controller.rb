@@ -1,13 +1,16 @@
 class ChatController < ApplicationController
   def create
     unless current_account.chat_enabled?
-      return render json: { error: "Chat requires Growth or Scale plan." }, status: :forbidden
+      return respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.append("chat_messages", html: '<div class="text-center text-sm text-red-500 py-2">Chat requires Growth or Scale plan.</div>'.html_safe) }
+        format.json { render json: { error: "Chat requires Growth or Scale plan." }, status: :forbidden }
+      end
     end
 
     message_text = params[:message]
     return head :bad_request if message_text.blank?
 
-    user_message = ChatMessage.create!(
+    @user_message = ChatMessage.create!(
       account: current_account,
       user: current_user,
       role: :user,
@@ -19,7 +22,7 @@ class ChatController < ApplicationController
       question: message_text
     )
 
-    assistant_message = ChatMessage.create!(
+    @assistant_message = ChatMessage.create!(
       account: current_account,
       user: current_user,
       role: :assistant,
@@ -27,9 +30,14 @@ class ChatController < ApplicationController
       source_feedback_ids: result[:source_feedback_ids]
     )
 
-    render json: {
-      user_message: { id: user_message.id, content: user_message.content, role: "user" },
-      assistant_message: { id: assistant_message.id, content: assistant_message.content, role: "assistant" }
-    }
+    respond_to do |format|
+      format.turbo_stream
+      format.json do
+        render json: {
+          user_message: { id: @user_message.id, content: @user_message.content, role: "user" },
+          assistant_message: { id: @assistant_message.id, content: @assistant_message.content, role: "assistant" }
+        }
+      end
+    end
   end
 end

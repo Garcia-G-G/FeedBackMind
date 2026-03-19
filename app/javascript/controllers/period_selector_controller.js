@@ -15,8 +15,17 @@ export default class extends Controller {
     clickedButton.classList.add("bg-white", "text-gray-900", "shadow-sm")
 
     const period = clickedButton.getAttribute("data-period")
-    const url = new URL(window.location)
-    url.searchParams.set("period", period)
-    Turbo.visit(url.toString())
+
+    // Update Turbo Frame if available, otherwise full visit
+    const frame = document.querySelector("turbo-frame#dashboard_content")
+    if (frame) {
+      const url = new URL(window.location)
+      url.searchParams.set("period", period)
+      frame.src = url.toString()
+    } else {
+      const url = new URL(window.location)
+      url.searchParams.set("period", period)
+      Turbo.visit(url.toString())
+    }
   }
 }

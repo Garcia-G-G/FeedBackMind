@@ -10,7 +10,7 @@
 
   <!-- Filter Bar -->
   <div class="bg-white border border-gray-100 rounded-xl p-4 mb-6">
-    <%= form_with url: feedbacks_path, method: :get, local: true, class: "flex flex-wrap gap-3 items-center" do |f| %>
+    <%= form_with url: feedbacks_path, method: :get, data: { turbo_frame: "feedbacks_list" }, class: "flex flex-wrap gap-3 items-center" do |f| %>
       <select name="sentiment" class="border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
         <option value="">All Sentiments</option>
         <% %w[positive neutral negative].each do |s| %>
@@ -41,6 +41,7 @@
   </div>
 
   <!-- Feedbacks List -->
+  <%= turbo_frame_tag "feedbacks_list" do %>
   <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
     <div class="divide-y divide-gray-100">
       <% if @feedbacks.any? %>
@@ -87,12 +88,13 @@
       <p class="text-sm text-gray-500">Page <strong><%= @page %></strong> of <strong><%= total_pages %></strong></p>
       <div class="flex gap-3">
         <% if @page > 1 %>
-          <%= link_to "← Previous", feedbacks_path(request.query_parameters.merge(page: @page - 1)), class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+          <%= link_to "← Previous", feedbacks_path(request.query_parameters.merge(page: @page - 1)), data: { turbo_frame: "feedbacks_list" }, class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
         <% end %>
         <% if @page < total_pages %>
-          <%= link_to "Next →", feedbacks_path(request.query_parameters.merge(page: @page + 1)), class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+          <%= link_to "Next →", feedbacks_path(request.query_parameters.merge(page: @page + 1)), data: { turbo_frame: "feedbacks_list" }, class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
         <% end %>
       </div>
     </div>
+  <% end %>
   <% end %>
 </div>
