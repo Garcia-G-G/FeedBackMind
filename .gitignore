@@ -50,3 +50,5 @@ node_modules/
 coverage/
 prompts/
 coverage/
+feedbackmind_hetzner*
+*.pub
