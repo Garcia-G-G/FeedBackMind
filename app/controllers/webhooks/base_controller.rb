@@ -6,6 +6,10 @@ module Webhooks
       render json: { error: "Not found", code: "not_found" }, status: :not_found
     end
 
+    rescue_from ActionDispatch::Http::Parameters::ParseError do
+      render json: { error: "Invalid JSON" }, status: :bad_request
+    end
+
     private
 
     def read_raw_body
@@ -22,7 +26,7 @@ module Webhooks
     end
 
     def render_accepted
-      head :accepted
+      head :ok
     end
 
     def render_unauthorized

@@ -46,10 +46,10 @@ module Webhooks
 
     def extract_content(data, parts)
       body = data.dig("source", "body")
-      return ActionController::Base.helpers.strip_tags(body) if body.present?
+      return String.new(ActionController::Base.helpers.strip_tags(body)) if body.present?
 
       user_part = parts.find { |p| p["part_type"] == "comment" && p.dig("author", "type") == "user" }
-      user_part ? ActionController::Base.helpers.strip_tags(user_part["body"]) : nil
+      user_part ? String.new(ActionController::Base.helpers.strip_tags(user_part["body"])) : nil
     end
 
     def extract_tags(data)

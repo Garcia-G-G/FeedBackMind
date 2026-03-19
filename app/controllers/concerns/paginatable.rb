@@ -26,6 +26,7 @@ module Paginatable
       page: page,
       per_page: per_page,
       total: total,
+      total_count: total,
       total_pages: (total.to_f / per_page).ceil
     }
   end

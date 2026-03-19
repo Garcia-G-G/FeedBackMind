@@ -14,7 +14,7 @@ class Webhooks::StripeController < Webhooks::BaseController
     Stripe::Webhook.construct_event(
       @raw_body,
       request.headers["Stripe-Signature"],
-      Rails.application.credentials.dig(:stripe, :webhook_secret) || ENV.fetch("STRIPE_WEBHOOK_SECRET")
+      Rails.application.credentials.dig(:stripe, :webhook_secret) || ENV.fetch("STRIPE_WEBHOOK_SECRET", "")
     )
   rescue Stripe::SignatureVerificationError => e
     Rails.logger.warn("[Stripe Webhook] Signature verification failed: #{e.message}")

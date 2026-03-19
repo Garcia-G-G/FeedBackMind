@@ -9,7 +9,7 @@ FactoryBot.define do
       sentiment { [:positive, :neutral, :negative].sample }
       topics { Faker::Lorem.words(number: 3).map(&:downcase) }
       processed_at { Time.current }
-      # Note: embedding would need to be set manually or via a mock
+      metadata { { "source" => "test", "rating" => rand(1..5) } }
     end
 
     trait :unprocessed do
