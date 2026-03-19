@@ -1,93 +1,80 @@
 <% content_for(:page_title) { "Add Source" } %>
 
-<div class="max-w-2xl mx-auto">
+<div class="max-w-3xl mx-auto">
   <div class="mb-6">
-    <%= link_to sources_path, class: "text-indigo-600 hover:text-indigo-700 font-medium text-sm" do %>
-      ← Back to Sources
-    <% end %>
+    <%= link_to "← Back to Sources", sources_path, class: "text-indigo-600 hover:text-indigo-700 font-medium text-sm" %>
   </div>
 
-  <div class="bg-white rounded-xl border border-gray-100 p-8">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">Connect New Source</h1>
+  <h1 class="text-2xl font-bold text-gray-900 mb-2">Connect a Source</h1>
+  <p class="text-sm text-gray-500 mb-8">Choose where your customer feedback comes from.</p>
 
-    <%= form_with model: @source, local: true, class: "space-y-6" do |f| %>
-      <% if @source.errors.any? %>
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div class="flex gap-3">
-            <div class="text-red-600 mt-0.5">
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="font-semibold text-red-900 mb-2">Please fix the following errors:</h3>
-              <ul class="text-sm text-red-800 space-y-1">
-                <% @source.errors.full_messages.each do |message| %>
-                  <li>• <%= message %></li>
-                <% end %>
-              </ul>
-            </div>
-          </div>
+  <!-- OAuth Sources -->
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    <%
+      oauth_sources = [
+        { provider: "slack", emoji: "💼", name: "Slack", desc: "Collect feedback from Slack channels" },
+        { provider: "gmail", emoji: "📧", name: "Gmail", desc: "Import feedback from email conversations" },
+        { provider: "intercom", emoji: "💬", name: "Intercom", desc: "Sync conversations and feedback" },
+        { provider: "jira", emoji: "🔧", name: "Jira", desc: "Import issues and comments as feedback" },
+        { provider: "typeform", emoji: "📋", name: "Typeform", desc: "Collect survey responses automatically" },
+      ]
+    %>
+    <% oauth_sources.each do |src| %>
+      <div class="bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
+        <div class="text-3xl"><%= src[:emoji] %></div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-gray-900"><%= src[:name] %></h3>
+          <p class="text-xs text-gray-500 mt-1 mb-3"><%= src[:desc] %></p>
+          <% existing = current_account.sources.find_by(source_type: src[:provider]) %>
+          <% if existing&.active? %>
+            <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Connected
+            </span>
+          <% else %>
+            <%= button_to "Connect", connect_source_path(provider: src[:provider]), method: :post, class: "px-4 py-1.5 rounded-lg bg-indigo-500 text-white text-xs font-medium hover:bg-indigo-600 transition-colors" %>
+          <% end %>
         </div>
-      <% end %>
-
-      <!-- Name field -->
-      <div>
-        <%= f.label :name, "Source Name", class: "block text-sm font-semibold text-gray-900 mb-2" %>
-        <%= f.text_field :name, placeholder: "e.g., Customer Support Email", class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" %>
-        <p class="text-xs text-gray-600 mt-1">A friendly name to identify this source</p>
-      </div>
-
-      <!-- Source type field -->
-      <div>
-        <%= f.label :source_type, "Source Type", class: "block text-sm font-semibold text-gray-900 mb-2" %>
-        <%= f.select :source_type, [
-          ["Select a source type...", ""],
-          ["Intercom", "intercom"],
-          ["Gmail", "gmail"],
-          ["App Store Reviews", "app_store"],
-          ["Typeform", "typeform"],
-          ["Jira", "jira"],
-          ["Slack", "slack"],
-          ["Google Play Store", "play_store"],
-          ["CSV Upload", "csv"]
-        ], {}, class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none" %>
-        <p class="text-xs text-gray-600 mt-1">Choose where your feedback comes from</p>
-      </div>
-
-      <!-- Credentials field -->
-      <div>
-        <%= f.label :credentials, "Credentials (JSON)", class: "block text-sm font-semibold text-gray-900 mb-2" %>
-        <%= f.text_area :credentials, rows: 6, placeholder: '{"api_key": "your_key", "email": "your_email@example.com"}', class: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none font-mono text-sm" %>
-        <p class="text-xs text-gray-600 mt-1">
-          Enter your API credentials in JSON format. Make sure to use environment variables or secure storage in production.
-        </p>
-      </div>
-
-      <!-- Form actions -->
-      <div class="flex gap-3 pt-4 border-t border-gray-200">
-        <%= f.submit "Connect Source", class: "flex-1 px-6 py-3 rounded-lg bg-indigo-500 text-white font-semibold hover:bg-indigo-600 transition-colors cursor-pointer" %>
-        <%= link_to "Cancel", sources_path, class: "px-6 py-3 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors" %>
       </div>
     <% end %>
+
+    <!-- App Store (manual) -->
+    <div class="bg-white rounded-xl border border-gray-100 p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
+      <div class="text-3xl">⭐</div>
+      <div class="flex-1">
+        <h3 class="font-semibold text-gray-900">App Store</h3>
+        <p class="text-xs text-gray-500 mt-1 mb-3">Scrape iOS App Store reviews automatically</p>
+        <%= form_with url: sources_path, method: :post, local: true, class: "flex gap-2" do |f| %>
+          <%= hidden_field_tag "source[source_type]", "appstore" %>
+          <input type="text" name="source[config][app_id]" placeholder="App ID" class="flex-1 px-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+          <button type="submit" class="px-3 py-1.5 rounded-lg bg-indigo-500 text-white text-xs font-medium hover:bg-indigo-600 transition-colors">Add</button>
+        <% end %>
+      </div>
+    </div>
   </div>
 
-  <!-- Help section -->
-  <div class="mt-8 space-y-4">
-    <h2 class="text-lg font-bold text-gray-900">Need help?</h2>
-
-    <div class="bg-blue-50 border border-blue-100 rounded-lg p-4">
-      <p class="text-sm font-semibold text-blue-900 mb-2">Setting up credentials</p>
-      <p class="text-sm text-blue-800">
-        Each source type requires different credentials. Check the documentation for your specific service to find your API key, token, or authentication details.
-      </p>
+  <!-- CSV Import -->
+  <div class="bg-white rounded-xl border border-gray-100 p-6">
+    <div class="flex items-start gap-4 mb-5">
+      <div class="text-3xl">📄</div>
+      <div>
+        <h3 class="font-semibold text-gray-900">CSV Import</h3>
+        <p class="text-xs text-gray-500 mt-1">Upload a CSV file with your feedback data</p>
+      </div>
     </div>
 
-    <div class="bg-amber-50 border border-amber-100 rounded-lg p-4">
-      <p class="text-sm font-semibold text-amber-900 mb-2">Security note</p>
-      <p class="text-sm text-amber-800">
-        Never share your API keys or credentials in code. Always use environment variables or secure secret management in production.
-      </p>
-    </div>
+    <%= form_with url: import_csv_source_path, method: :post, multipart: true, local: true, class: "space-y-4" do %>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Select CSV file</label>
+        <input type="file" name="file" accept=".csv,text/csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+      </div>
+
+      <div class="bg-gray-50 rounded-lg p-4">
+        <p class="text-xs font-semibold text-gray-700 mb-2">Required columns:</p>
+        <code class="text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded">content</code>
+        <p class="text-xs text-gray-500 mt-2">Optional: <code class="text-xs">author_name</code>, <code class="text-xs">author_email</code>, <code class="text-xs">external_id</code>, <code class="text-xs">received_at</code></p>
+      </div>
+
+      <button type="submit" class="px-6 py-2.5 rounded-lg bg-indigo-500 text-white font-medium text-sm hover:bg-indigo-600 transition-colors">Upload & Import</button>
+    <% end %>
   </div>
 </div>

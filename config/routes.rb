@@ -68,7 +68,20 @@ Rails.application.routes.draw do
     resource :settings, only: [:show, :update], controller: "settings"
 
     post "chat", to: "chat#create", as: :chat
+
+    # Source OAuth connections
+    post "sources/connect/:provider", to: "source_connections#create", as: :connect_source
+    get "sources/callback/intercom", to: "source_connections#intercom_callback"
+    get "sources/callback/jira", to: "source_connections#jira_callback"
+    get "sources/callback/typeform", to: "source_connections#typeform_callback"
+
+    # CSV import
+    post "sources/import_csv", to: "source_connections#import_csv", as: :import_csv_source
   end
+
+  # OmniAuth callbacks (outside authenticated — middleware handles auth)
+  get "/auth/:provider/callback", to: "source_connections#omniauth_callback"
+  get "/auth/failure", to: "source_connections#omniauth_failure"
 
   # === Marketing landing (non-logged-in users) ===
   root "pages#home"

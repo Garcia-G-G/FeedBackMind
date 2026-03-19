@@ -27,6 +27,11 @@ gem "neighbor", "~> 0.4"
 # Authentication & Multi-tenancy
 gem "devise", "~> 5.0"
 gem "acts_as_tenant", "~> 1.0"
+gem "omniauth", "~> 2.1"
+gem "omniauth-rails_csrf_protection", "~> 1.0"
+gem "omniauth-slack-openid", "~> 1.2"
+gem "omniauth-google-oauth2", "~> 1.1"
+gem "oauth2", "~> 2.0"
 
 # Billing
 gem "stripe", "~> 12.0"
