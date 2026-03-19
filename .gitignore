@@ -48,3 +48,4 @@ tmp/
 log/
 node_modules/
 coverage/
+prompts/
