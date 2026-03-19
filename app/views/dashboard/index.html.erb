@@ -1,427 +1,249 @@
 <% content_for(:page_title) { "Dashboard" } %>
 
-<div class="min-h-screen bg-gray-50">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Page Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard</h1>
-      <p class="mt-2 text-sm text-gray-500">Monitor feedback insights and sentiment across your sources</p>
+<%
+  # Compute sentiment percentages for donut + legend
+  total_sentiment = (@sentiment_data[:positive] + @sentiment_data[:neutral] + @sentiment_data[:negative]).to_f
+  if total_sentiment > 0
+    pos_pct = ((@sentiment_data[:positive] / total_sentiment) * 100).round
+    neu_pct = ((@sentiment_data[:neutral] / total_sentiment) * 100).round
+    neg_pct = 100 - pos_pct - neu_pct
+    circumference = 2 * Math::PI * 40
+    pos_dash = (pos_pct / 100.0 * circumference).round(1)
+    neu_dash = (neu_pct / 100.0 * circumference).round(1)
+    neg_dash = (neg_pct / 100.0 * circumference).round(1)
+  else
+    pos_pct = neu_pct = neg_pct = 0
+    circumference = 251.3
+    pos_dash = neu_dash = neg_dash = 0
+  end
+%>
+
+<div class="mx-auto max-w-7xl">
+  <!-- 4 Metric Cards -->
+  <div class="grid grid-cols-4 gap-3.5 mb-6">
+    <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-gray-400 font-medium mb-3">Total Feedbacks</p>
+      <div class="text-3xl font-extrabold tracking-tight text-gray-900"><%= number_with_delimiter(@feedbacks_count) %></div>
     </div>
+    <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-gray-400 font-medium mb-3">Sentiment Score</p>
+      <div class="text-3xl font-extrabold tracking-tight <%= @sentiment_score >= 60 ? 'text-emerald-600' : @sentiment_score >= 40 ? 'text-amber-600' : 'text-red-600' %>"><%= @sentiment_score %>%</div>
+    </div>
+    <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-gray-400 font-medium mb-3">Active Sources</p>
+      <div class="text-3xl font-extrabold tracking-tight text-gray-900"><%= @active_sources_count %>/<%= @total_sources_count %></div>
+    </div>
+    <div class="bg-white border border-gray-100 rounded-xl p-5 border-l-[3px] border-l-indigo-500 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-gray-400 font-medium mb-3">Unprocessed</p>
+      <div class="text-3xl font-extrabold tracking-tight text-gray-900"><%= @unprocessed_count %></div>
+      <% if @unprocessed_count > 0 %>
+        <p class="text-[10px] text-amber-600 font-medium mt-1"><%= @unprocessed_count %> awaiting AI processing</p>
+      <% end %>
+    </div>
+  </div>
 
-    <!-- 4 Metric Cards Grid -->
-    <div class="grid grid-cols-4 gap-3.5 mb-6">
-      <!-- Total Feedbacks Card -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
-        <p class="text-xs text-gray-400 font-medium mb-3">Total Feedbacks</p>
-        <div class="flex items-end justify-between">
-          <div class="text-3xl font-extrabold tracking-tight text-gray-900">
-            <%= @feedbacks_count || 1284 %>
-          </div>
-          <div class="bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-2 py-1 rounded-full">
-            +12%
-          </div>
-        </div>
-      </div>
-
-      <!-- Sentiment Score Card -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
-        <p class="text-xs text-gray-400 font-medium mb-3">Sentiment Score</p>
-        <div class="flex items-end justify-between">
-          <div class="text-3xl font-extrabold tracking-tight text-emerald-600">
-            <%= @sentiment_score || 72 %>%
-          </div>
-          <div class="bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-2 py-1 rounded-full">
-            +5%
-          </div>
-        </div>
-      </div>
-
-      <!-- Active Sources Card -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
-        <p class="text-xs text-gray-400 font-medium mb-3">Active Sources</p>
-        <div class="flex items-end justify-between">
-          <div class="text-3xl font-extrabold tracking-tight text-gray-900">
-            <%= @active_sources_count || 6 %>/<%= @total_sources_count || 8 %>
-          </div>
-          <div class="bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-2 py-1 rounded-full">
-            +1
-          </div>
-        </div>
-      </div>
-
-      <!-- AI Impact Score Card -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5 border-l-[3px] border-l-indigo-500 hover:shadow-sm transition-shadow">
-        <p class="text-xs text-gray-400 font-medium mb-3">AI Impact Score</p>
-        <div class="mb-4">
-          <div class="text-3xl font-extrabold tracking-tight text-gray-900">8.4</div>
-        </div>
-        <div>
-          <p class="text-[11px] text-gray-500 font-medium mb-2">Churn Risk</p>
-          <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-red-500 h-full rounded-full" style="width: 78%"></div>
-          </div>
-          <p class="text-[10px] text-red-600 font-medium mt-1">78% - High Risk</p>
-        </div>
+  <!-- Sentiment Timeline -->
+  <div class="bg-white border border-gray-100 rounded-xl p-5 mb-6">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-sm font-bold text-gray-900">Sentiment Timeline</h2>
+      <div class="flex gap-3">
+        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div><span class="text-[12px] text-gray-500">Positive</span></div>
+        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-gray-300 rounded-full"></div><span class="text-[12px] text-gray-500">Neutral</span></div>
+        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-red-400 rounded-full"></div><span class="text-[12px] text-gray-500">Negative</span></div>
       </div>
     </div>
 
-    <!-- Sentiment Timeline -->
-    <div class="bg-white border border-gray-100 rounded-xl p-5 mb-6">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-sm font-bold text-gray-900">Sentiment Timeline</h2>
-        <div class="flex gap-3">
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
-            <span class="text-[12px] text-gray-500">Positive</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 bg-gray-300 rounded-full"></div>
-            <span class="text-[12px] text-gray-500">Neutral</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 bg-red-400 rounded-full"></div>
-            <span class="text-[12px] text-gray-500">Negative</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 7-Day Sentiment Bars -->
-      <div class="flex items-flex-end justify-between gap-2 h-40">
-        <% ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].each_with_index do |day, idx| %>
-          <% percentages = [
-            { pos: 65, neu: 20, neg: 15 },
-            { pos: 72, neu: 18, neg: 10 },
-            { pos: 58, neu: 22, neg: 20 },
-            { pos: 78, neu: 15, neg: 7 },
-            { pos: 81, neu: 12, neg: 7 },
-            { pos: 68, neu: 20, neg: 12 },
-            { pos: 75, neu: 16, neg: 9 }
-          ][idx] %>
-
+    <% if @sentiment_timeline.any? { |d| d[:positive] + d[:neutral] + d[:negative] > 0 } %>
+      <div class="flex items-end justify-between gap-2 h-40">
+        <% @sentiment_timeline.last(7).each do |day| %>
+          <% day_total = day[:positive] + day[:neutral] + day[:negative] %>
           <div class="flex-1 flex flex-col gap-1">
-            <div class="w-full flex flex-col items-stretch gap-px h-32">
-              <div class="bg-emerald-500 rounded-t-sm flex-grow" style="flex-basis: <%= percentages[:pos] %>%"></div>
-              <div class="bg-gray-300 flex-grow" style="flex-basis: <%= percentages[:neu] %>%"></div>
-              <div class="bg-red-400 rounded-b-sm flex-grow" style="flex-basis: <%= percentages[:neg] %>%"></div>
-            </div>
-            <span class="text-[11px] text-gray-500 text-center font-medium"><%= day %></span>
+            <% if day_total > 0 %>
+              <div class="w-full flex flex-col items-stretch gap-px h-32">
+                <div class="bg-emerald-500 rounded-t-sm flex-grow" style="flex-basis: <%= (day[:positive].to_f / day_total * 100).round %>%"></div>
+                <div class="bg-gray-300 flex-grow" style="flex-basis: <%= (day[:neutral].to_f / day_total * 100).round %>%"></div>
+                <div class="bg-red-400 rounded-b-sm flex-grow" style="flex-basis: <%= (day[:negative].to_f / day_total * 100).round %>%"></div>
+              </div>
+            <% else %>
+              <div class="h-32 flex items-end justify-center"><div class="w-full bg-gray-100 rounded h-1"></div></div>
+            <% end %>
+            <span class="text-[11px] text-gray-500 text-center font-medium"><%= day[:label] %></span>
           </div>
         <% end %>
       </div>
-    </div>
+    <% else %>
+      <div class="h-40 flex items-center justify-center text-sm text-gray-400">No sentiment data for this period</div>
+    <% end %>
+  </div>
 
-    <!-- Two-Column Layout: Weekly Themes + Sentiment Breakdown + Sources -->
-    <div class="grid grid-cols-[1fr_380px] gap-5 mb-6">
-      <!-- Weekly Themes Card -->
-      <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
-        <div class="border-b border-gray-100 px-5 py-4 flex items-center justify-between bg-gray-50">
-          <h2 class="text-sm font-bold text-gray-900">Weekly Themes</h2>
-          <div class="flex items-center gap-2">
-            <span class="bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">AI</span>
-            <%= link_to "View synthesis", "#", class: "text-indigo-600 hover:text-indigo-700 text-xs font-medium" %>
-          </div>
+  <!-- Two-Column: Themes + Sentiment/Sources -->
+  <div class="grid grid-cols-[1fr_380px] gap-5 mb-6">
+    <!-- Weekly Themes -->
+    <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
+      <div class="border-b border-gray-100 px-5 py-4 flex items-center justify-between bg-gray-50">
+        <h2 class="text-sm font-bold text-gray-900">Weekly Themes</h2>
+        <div class="flex items-center gap-2">
+          <span class="bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">AI</span>
+          <% if @weekly_synthesis %>
+            <%= link_to "View synthesis", synthesis_path(@weekly_synthesis), class: "text-indigo-600 hover:text-indigo-700 text-xs font-medium" %>
+          <% end %>
         </div>
+      </div>
 
+      <% if @themes.any? %>
         <div class="divide-y divide-gray-100">
-          <% themes = @weekly_themes&.themes || [
-            OpenStruct.new(
-              title: "Authentication Issues",
-              urgency: "critical",
-              description: "Users experiencing login failures with SSO integration",
-              feedback_count: 24,
-              sources: ["slack", "email"],
-              quote: "\"We're losing users daily due to login problems\""
-            ),
-            OpenStruct.new(
-              title: "Dashboard Performance",
-              urgency: "high",
-              description: "Slow load times on dashboard with large datasets",
-              feedback_count: 18,
-              sources: ["twitter", "zendesk"],
-              quote: "\"The dashboard takes 5+ seconds to load\""
-            ),
-            OpenStruct.new(
-              title: "Export Feature Request",
-              urgency: "medium",
-              description: "Users requesting CSV/PDF export functionality",
-              feedback_count: 12,
-              sources: ["feature_request"],
-              quote: "\"Would love to export reports to share with team\""
-            )
-          ] %>
-
-          <% themes.each do |theme| %>
+          <% @themes.each do |theme| %>
             <div class="p-4">
               <div class="flex items-start justify-between mb-2">
-                <h3 class="text-sm font-semibold text-gray-900"><%= theme.title %></h3>
-                <% urgency_colors = {
-                  "critical" => "bg-red-50 text-red-700",
-                  "high" => "bg-amber-50 text-amber-700",
-                  "medium" => "bg-blue-50 text-blue-700",
-                  "positive" => "bg-emerald-50 text-emerald-700"
-                } %>
-                <span class="text-[10px] uppercase font-semibold rounded-full px-2 py-0.5 <%= urgency_colors[theme.urgency] || 'bg-gray-50 text-gray-700' %>">
-                  <%= theme.urgency %>
-                </span>
+                <h3 class="text-sm font-semibold text-gray-900"><%= theme.respond_to?(:title) ? theme.title : theme["title"] %></h3>
+                <% urgency = theme.respond_to?(:urgency) ? theme.urgency : theme["urgency"] %>
+                <span class="text-[10px] uppercase font-semibold rounded-full px-2 py-0.5 <%= urgency_color(urgency) %>"><%= urgency %></span>
               </div>
-              <p class="text-[13px] text-gray-500 mb-3"><%= theme.description %></p>
-
-              <!-- MRR at Risk Bar -->
-              <div class="bg-gray-50 rounded-md p-2.5 mb-3">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-[11px] font-medium text-gray-600">Impact</span>
-                  <span class="text-[11px] font-bold text-red-600">$12.4K</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-1 overflow-hidden">
-                  <div class="bg-red-500 h-full rounded-full" style="width: 68%"></div>
-                </div>
+              <p class="text-[13px] text-gray-500 mb-3"><%= theme.respond_to?(:description) ? theme.description : theme["description"] %></p>
+              <% quotes = theme.respond_to?(:sample_quotes) ? theme.sample_quotes : theme["sample_quotes"] %>
+              <% if quotes.present? %>
+                <blockquote class="text-[12px] italic text-gray-600 border-l-[3px] border-gray-200 bg-gray-50 rounded-md pl-3 py-2 mb-3">"<%= quotes.first %>"</blockquote>
+              <% end %>
+              <div class="text-[11px] text-gray-500">
+                <strong><%= theme.respond_to?(:feedback_count) ? theme.feedback_count : theme["feedback_count"] %></strong> feedbacks
               </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="p-8 text-center text-sm text-gray-400">No synthesis yet. <%= link_to "Generate one", new_synthesis_path, class: "text-indigo-600 hover:text-indigo-700 font-medium" %></div>
+      <% end %>
+    </div>
 
-              <!-- Quote -->
-              <blockquote class="text-[12px] italic text-gray-600 border-l-[3px] border-gray-200 bg-gray-50 rounded-md pl-3 py-2 mb-3">
-                <%= theme.quote %>
-              </blockquote>
-
-              <!-- Footer -->
-              <div class="flex items-center justify-between text-[11px] text-gray-500">
-                <span><strong><%= theme.feedback_count %></strong> feedbacks</span>
-                <span><%= theme.sources.join(", ") %></span>
+    <!-- Right Column -->
+    <div class="flex flex-col gap-5">
+      <!-- Sentiment Breakdown -->
+      <div class="bg-white border border-gray-100 rounded-xl p-5">
+        <h3 class="text-sm font-bold text-gray-900 mb-4">Sentiment Breakdown</h3>
+        <div class="flex justify-center mb-6">
+          <svg viewBox="0 0 100 100" class="w-32 h-32">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="<%= pos_dash %> <%= circumference %>" stroke-dashoffset="0" transform="rotate(-90 50 50)"></circle>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#d1d5db" stroke-width="8" stroke-dasharray="<%= neu_dash %> <%= circumference %>" stroke-dashoffset="<%= -pos_dash %>" transform="rotate(-90 50 50)"></circle>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#f87171" stroke-width="8" stroke-dasharray="<%= neg_dash %> <%= circumference %>" stroke-dashoffset="<%= -(pos_dash + neu_dash) %>" transform="rotate(-90 50 50)"></circle>
+            <text x="50" y="50" text-anchor="middle" dy="0.3em" class="text-xs font-bold fill-gray-900"><%= @sentiment_score %>%</text>
+          </svg>
+        </div>
+        <div class="space-y-2">
+          <% [["Positive", "bg-emerald-500", pos_pct], ["Neutral", "bg-gray-300", neu_pct], ["Negative", "bg-red-400", neg_pct]].each do |label, color, pct| %>
+            <div class="flex items-center justify-between text-[12px]">
+              <div class="flex items-center gap-2"><div class="w-2 h-2 <%= color %> rounded-full"></div><span class="text-gray-600"><%= label %></span></div>
+              <div class="flex items-center gap-1">
+                <div class="w-20 h-1 bg-gray-100 rounded-full overflow-hidden"><div class="<%= color %> h-full" style="width: <%= pct %>%"></div></div>
+                <span class="font-semibold text-gray-900 w-8"><%= pct %>%</span>
               </div>
             </div>
           <% end %>
         </div>
       </div>
 
-      <!-- Right Column: Sentiment Breakdown + Sources -->
-      <div class="flex flex-col gap-5">
-        <!-- Sentiment Breakdown -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <h3 class="text-sm font-bold text-gray-900 mb-4">Sentiment Breakdown</h3>
-
-          <!-- Donut Chart (SVG) -->
-          <div class="flex justify-center mb-6">
-            <svg viewBox="0 0 100 100" class="w-32 h-32">
-              <!-- Positive Arc (Emerald) -->
-              <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="157 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"></circle>
-              <!-- Neutral Arc (Gray) -->
-              <circle cx="50" cy="50" r="40" fill="none" stroke="#d1d5db" stroke-width="8" stroke-dasharray="63 251" stroke-dashoffset="-157" transform="rotate(-90 50 50)"></circle>
-              <!-- Negative Arc (Red) -->
-              <circle cx="50" cy="50" r="40" fill="none" stroke="#f87171" stroke-width="8" stroke-dasharray="31 251" stroke-dashoffset="-220" transform="rotate(-90 50 50)"></circle>
-              <!-- Center text -->
-              <text x="50" y="50" text-anchor="middle" dy="0.3em" class="text-xs font-bold fill-gray-900">
-                <%= @sentiment_score || 72 %>%
-              </text>
-            </svg>
-          </div>
-
-          <!-- Legend -->
-          <% sentiment_data = @sentiment_data || { positive: 45, neutral: 20, negative: 10 } %>
-          <div class="space-y-2">
-            <div class="flex items-center justify-between text-[12px]">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                <span class="text-gray-600">Positive</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <div class="w-20 h-1 bg-gray-100 rounded-full overflow-hidden">
-                  <div class="bg-emerald-500 h-full" style="width: 63%"></div>
-                </div>
-                <span class="font-semibold text-gray-900 w-8">63%</span>
-              </div>
-            </div>
-            <div class="flex items-center justify-between text-[12px]">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-                <span class="text-gray-600">Neutral</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <div class="w-20 h-1 bg-gray-100 rounded-full overflow-hidden">
-                  <div class="bg-gray-300 h-full" style="width: 25%"></div>
-                </div>
-                <span class="font-semibold text-gray-900 w-8">25%</span>
-              </div>
-            </div>
-            <div class="flex items-center justify-between text-[12px]">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 bg-red-400 rounded-full"></div>
-                <span class="text-gray-600">Negative</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <div class="w-20 h-1 bg-gray-100 rounded-full overflow-hidden">
-                  <div class="bg-red-400 h-full" style="width: 12%"></div>
-                </div>
-                <span class="font-semibold text-gray-900 w-8">12%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sources Grid -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <h3 class="text-sm font-bold text-gray-900 mb-4">Sources</h3>
+      <!-- Sources Grid -->
+      <div class="bg-white border border-gray-100 rounded-xl p-5">
+        <h3 class="text-sm font-bold text-gray-900 mb-4">Sources</h3>
+        <% if @sources.any? %>
           <div class="grid grid-cols-3 gap-3">
-            <% sources = [
-              { emoji: "💬", name: "Slack", active: true },
-              { emoji: "✉️", name: "Email", active: true },
-              { emoji: "🐦", name: "Twitter", active: true },
-              { emoji: "📝", name: "Zendesk", active: false },
-              { emoji: "💡", name: "Feature Req", active: true },
-              { emoji: "🎯", name: "Intercom", active: false }
-            ] %>
-
-            <% sources.each do |source| %>
+            <% @sources.each do |source| %>
               <div class="text-center">
-                <div class="flex items-center justify-center mb-2">
-                  <div class="text-2xl"><%= source[:emoji] %></div>
-                </div>
-                <p class="text-[12px] font-medium text-gray-900 mb-1"><%= source[:name] %></p>
-                <div class="flex justify-center">
-                  <div class="w-2 h-2 rounded-full <%= source[:active] ? 'bg-emerald-500' : 'bg-gray-300' %>"></div>
-                </div>
+                <div class="text-2xl mb-2"><%= source_emoji(source.source_type) %></div>
+                <p class="text-[12px] font-medium text-gray-900 mb-1"><%= source.source_type.titleize %></p>
+                <div class="flex justify-center"><div class="w-2 h-2 rounded-full <%= source.active? ? 'bg-emerald-500' : 'bg-gray-300' %>"></div></div>
               </div>
             <% end %>
           </div>
-        </div>
+        <% else %>
+          <p class="text-sm text-gray-400 text-center py-4"><%= link_to "Connect your first source", new_source_path, class: "text-indigo-600 font-medium" %></p>
+        <% end %>
       </div>
     </div>
+  </div>
 
-    <!-- Feedback Pipeline (Kanban) -->
-    <div class="bg-white border border-gray-100 rounded-xl p-5 mb-6">
-      <div class="flex items-center justify-between mb-5">
-        <h2 class="text-sm font-bold text-gray-900">Feedback Pipeline</h2>
-        <span class="bg-blue-100 text-blue-700 text-[11px] font-bold px-2 py-1 rounded-full">NEW</span>
-      </div>
-
-      <div class="grid grid-cols-4 gap-5">
-        <!-- Raw Feedback Column -->
-        <div class="border-l-[3px] border-gray-400 pl-4">
-          <div class="flex items-center gap-2 mb-4">
-            <h3 class="text-xs font-bold text-gray-900">Raw Feedback</h3>
-            <span class="bg-gray-100 text-gray-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full">8</span>
-          </div>
-          <div class="space-y-2">
-            <% 2.times do |i| %>
-              <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                <h4 class="text-xs font-semibold text-gray-900 line-clamp-1">User reported slow loading</h4>
-                <p class="text-[10px] text-gray-400 mt-1">2 hours ago • Slack</p>
-                <span class="inline-block bg-indigo-50 text-indigo-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-2">Performance</span>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <!-- Insights Column -->
-        <div class="border-l-[3px] border-indigo-500 pl-4">
-          <div class="flex items-center gap-2 mb-4">
-            <h3 class="text-xs font-bold text-gray-900">Insights</h3>
-            <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full">5</span>
-          </div>
-          <div class="space-y-2">
-            <% 2.times do |i| %>
-              <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                <h4 class="text-xs font-semibold text-gray-900 line-clamp-1">Dashboard perf issue identified</h4>
-                <p class="text-[10px] text-gray-400 mt-1">Affects 15% of users</p>
-                <span class="inline-block bg-amber-50 text-amber-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-2">Analysis</span>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <!-- Action Items Column -->
-        <div class="border-l-[3px] border-amber-500 pl-4">
-          <div class="flex items-center gap-2 mb-4">
-            <h3 class="text-xs font-bold text-gray-900">Action Items</h3>
-            <span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
-          </div>
-          <div class="space-y-2">
-            <% 2.times do |i| %>
-              <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                <h4 class="text-xs font-semibold text-gray-900 line-clamp-1">Optimize database queries</h4>
-                <p class="text-[10px] text-gray-400 mt-1">Assigned • Est. 2 days</p>
-                <span class="inline-block bg-blue-50 text-blue-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-2">Engineering</span>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <!-- Shipped Column -->
-        <div class="border-l-[3px] border-emerald-500 pl-4">
-          <div class="flex items-center gap-2 mb-4">
-            <h3 class="text-xs font-bold text-gray-900">Shipped</h3>
-            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full">12</span>
-          </div>
-          <div class="space-y-2">
-            <% 2.times do |i| %>
-              <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                <h4 class="text-xs font-semibold text-gray-900 line-clamp-1">Faster export feature</h4>
-                <p class="text-[10px] text-gray-400 mt-1">v2.4.0 • Last week</p>
-                <span class="inline-block bg-emerald-50 text-emerald-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-2">Released</span>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
+  <!-- Pipeline Preview -->
+  <div class="bg-white border border-gray-100 rounded-xl p-5 mb-6">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-sm font-bold text-gray-900">Feedback Pipeline</h2>
+      <%= link_to "View full pipeline", pipeline_path, class: "text-indigo-600 hover:text-indigo-700 text-xs font-medium" %>
     </div>
-
-    <!-- Bottom Two-Column: Recent Feedbacks + Closed-Loop Tracker -->
-    <div class="grid grid-cols-2 gap-5">
-      <!-- Recent Feedbacks -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5">
-        <h2 class="text-sm font-bold text-gray-900 mb-4">Recent Feedbacks</h2>
-        <div class="space-y-3">
-          <% (@recent_feedbacks || []).first(5).each do |feedback| %>
-            <div class="flex gap-2.5 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
-              <% sentiment_colors = {
-                "positive" => "bg-emerald-500",
-                "neutral" => "bg-gray-300",
-                "negative" => "bg-red-400"
-              } %>
-              <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= sentiment_colors[feedback.sentiment] || 'bg-gray-300' %>"></div>
-              <div class="flex-1 min-w-0">
-                <p class="text-[13px] text-gray-700 line-clamp-2"><%= feedback.content %></p>
-                <div class="flex items-center gap-2 mt-2">
-                  <% (feedback.topics || []).first(2).each do |topic| %>
-                    <span class="text-[10px] bg-gray-50 border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded">
-                      <%= topic %>
-                    </span>
-                  <% end %>
-                </div>
-                <p class="text-[11px] text-gray-400 mt-2">
-                  <%= feedback.source&.source_type || "Unknown" %> • <%= time_ago_in_words(feedback.created_at) %> ago
-                </p>
-              </div>
+    <div class="grid grid-cols-4 gap-5">
+      <% unprocessed = current_account.feedbacks.unprocessed.order(created_at: :desc).limit(3) %>
+      <% processed = current_account.feedbacks.processed.order(processed_at: :desc).limit(3) %>
+      <div class="border-l-[3px] border-gray-400 pl-4">
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Raw</h3><span class="bg-gray-100 text-gray-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= @unprocessed_count %></span></div>
+        <div class="space-y-2">
+          <% unprocessed.each do |fb| %>
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= fb.content.truncate(60) %></h4>
+              <p class="text-[10px] text-gray-400 mt-1"><%= format_time_ago(fb.received_at) %> &bull; <%= fb.source&.source_type&.titleize %></p>
             </div>
           <% end %>
         </div>
-        <%= link_to "View all", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium mt-4 inline-block" %>
       </div>
-
-      <!-- Closed-Loop Tracker -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-sm font-bold text-gray-900">Closed-Loop Tracker</h2>
-          <span class="bg-indigo-100 text-indigo-700 text-[11px] font-bold px-2 py-1 rounded-full">NEW</span>
+      <div class="border-l-[3px] border-indigo-500 pl-4">
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Processed</h3><span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= current_account.feedbacks.processed.count %></span></div>
+        <div class="space-y-2">
+          <% processed.each do |fb| %>
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= fb.content.truncate(60) %></h4>
+              <p class="text-[10px] text-gray-400 mt-1"><%= fb.sentiment&.titleize %></p>
+              <% (fb.topics || []).first(2).each do |t| %>
+                <span class="inline-block bg-indigo-50 text-indigo-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-1"><%= t %></span>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-        <div class="space-y-3">
-          <% closed_loop_items = [
-            { status: "shipped", title: "Dashboard Export", description: "CSV export feature shipped in v2.4", icon: "✅", icon_bg: "bg-emerald-50" },
-            { status: "progress", title: "Auth Improvements", description: "SSO integration in progress", icon: "⚙️", icon_bg: "bg-blue-50" },
-            { status: "planned", title: "Mobile App", description: "Planned for Q2 2026", icon: "📱", icon_bg: "bg-amber-50" }
-          ] %>
-
-          <% closed_loop_items.each do |item| %>
-            <div class="flex gap-3 pb-3 border-b border-gray-100 last:border-0">
-              <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center <%= item[:icon_bg] %> text-base">
-                <%= item[:icon] %>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="text-sm font-semibold text-gray-900"><%= item[:title] %></h3>
-                <p class="text-[12px] text-gray-500 mt-1"><%= item[:description] %></p>
-              </div>
+      </div>
+      <div class="border-l-[3px] border-amber-500 pl-4">
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Themes</h3><span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= @themes.size %></span></div>
+        <div class="space-y-2">
+          <% @themes.first(3).each do |theme| %>
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= theme.respond_to?(:title) ? theme.title : theme["title"] %></h4>
+              <p class="text-[10px] text-gray-400 mt-1"><%= theme.respond_to?(:feedback_count) ? theme.feedback_count : theme["feedback_count"] %> feedbacks</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="border-l-[3px] border-emerald-500 pl-4">
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Syntheses</h3><span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= current_account.weekly_syntheses.count %></span></div>
+        <div class="space-y-2">
+          <% current_account.weekly_syntheses.order(week_start: :desc).limit(3).each do |s| %>
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= s.week_label %></h4>
+              <p class="text-[10px] text-gray-400 mt-1"><%= s.feedback_count %> feedbacks analyzed</p>
             </div>
           <% end %>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Recent Feedbacks -->
+  <div class="bg-white border border-gray-100 rounded-xl p-5">
+    <h2 class="text-sm font-bold text-gray-900 mb-4">Recent Feedbacks</h2>
+    <% if @recent_feedbacks.any? %>
+      <div class="space-y-3">
+        <% @recent_feedbacks.first(5).each do |feedback| %>
+          <div class="flex gap-2.5 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
+            <% sentiment_dot = { "positive" => "bg-emerald-500", "neutral" => "bg-gray-300", "negative" => "bg-red-400" } %>
+            <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= sentiment_dot[feedback.sentiment] || 'bg-gray-300' %>"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13px] text-gray-700 line-clamp-2"><%= feedback.content %></p>
+              <div class="flex items-center gap-2 mt-2">
+                <% (feedback.topics || []).first(2).each do |topic| %>
+                  <span class="text-[10px] bg-gray-50 border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded"><%= topic %></span>
+                <% end %>
+              </div>
+              <p class="text-[11px] text-gray-400 mt-2"><%= feedback.source&.source_type&.titleize || "Unknown" %> &bull; <%= format_time_ago(feedback.received_at) %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <%= link_to "View all feedbacks", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium mt-4 inline-block" %>
+    <% else %>
+      <p class="text-sm text-gray-400 text-center py-4">No feedbacks yet. Connect a source to get started.</p>
+    <% end %>
   </div>
 </div>

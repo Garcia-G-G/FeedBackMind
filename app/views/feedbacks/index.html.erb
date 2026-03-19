@@ -1,126 +1,98 @@
 <% content_for(:page_title) { "Feedbacks" } %>
 
-<div class="min-h-screen bg-gray-50">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Page Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Feedbacks</h1>
-      <p class="mt-2 text-sm text-gray-500">Manage and review all customer feedback</p>
+<div class="mx-auto max-w-7xl">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">Feedbacks</h1>
+      <p class="text-sm text-gray-500 mt-1"><%= @total_count %> total</p>
     </div>
+  </div>
 
-    <!-- Filter Bar -->
-    <div class="bg-white border border-gray-100 rounded-xl p-4 mb-6">
-      <div class="flex flex-wrap gap-3 items-center">
-        <!-- Sentiment Filter -->
-        <div class="flex-shrink-0">
-          <label for="sentiment-filter" class="sr-only">Sentiment</label>
-          <select id="sentiment-filter" name="sentiment" class="border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-            <option value="">All Sentiments</option>
-            <option value="positive">Positive</option>
-            <option value="neutral">Neutral</option>
-            <option value="negative">Negative</option>
-          </select>
-        </div>
+  <!-- Filter Bar -->
+  <div class="bg-white border border-gray-100 rounded-xl p-4 mb-6">
+    <%= form_with url: feedbacks_path, method: :get, local: true, class: "flex flex-wrap gap-3 items-center" do |f| %>
+      <select name="sentiment" class="border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        <option value="">All Sentiments</option>
+        <% %w[positive neutral negative].each do |s| %>
+          <option value="<%= s %>" <%= "selected" if params[:sentiment] == s %>><%= s.titleize %></option>
+        <% end %>
+      </select>
 
-        <!-- Source Type Filter -->
-        <div class="flex-shrink-0">
-          <label for="source-filter" class="sr-only">Source</label>
-          <select id="source-filter" name="source_type" class="border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-            <option value="">All Sources</option>
-            <option value="slack">Slack</option>
-            <option value="email">Email</option>
-            <option value="twitter">Twitter</option>
-            <option value="zendesk">Zendesk</option>
-            <option value="feature_request">Feature Request</option>
-            <option value="intercom">Intercom</option>
-          </select>
-        </div>
+      <select name="source_type" class="border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        <option value="">All Sources</option>
+        <% current_account.sources.distinct.pluck(:source_type).each do |st| %>
+          <option value="<%= st %>" <%= "selected" if params[:source_type] == st %>><%= st.titleize %></option>
+        <% end %>
+      </select>
 
-        <!-- Topic/Search Filter -->
-        <div class="flex-shrink-0 flex-1 min-w-[200px]">
-          <label for="topic-filter" class="sr-only">Search topics</label>
-          <input type="text" id="topic-filter" name="topic" placeholder="Search topics..." class="w-full border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white placeholder-gray-400 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-        </div>
+      <select name="status" class="border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        <option value="">All Status</option>
+        <option value="processed" <%= "selected" if params[:status] == "processed" %>>Processed</option>
+        <option value="unprocessed" <%= "selected" if params[:status] == "unprocessed" %>>Unprocessed</option>
+      </select>
 
-        <!-- Clear Filters -->
-        <div class="flex-shrink-0">
-          <%= link_to "Clear filters", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium" %>
-        </div>
+      <div class="flex-1 min-w-[200px]">
+        <input type="text" name="search" value="<%= params[:search] %>" placeholder="Search content..." class="w-full border border-gray-200 rounded-lg text-[13px] px-3 py-2 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
       </div>
-    </div>
 
-    <!-- Feedbacks List Card -->
-    <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
-      <div class="divide-y divide-gray-100">
-        <% if @feedbacks.present? %>
-          <% @feedbacks.each do |feedback| %>
-            <div class="p-5 hover:bg-gray-50 transition-colors">
-              <div class="flex gap-3">
-                <!-- Sentiment Indicator -->
-                <% sentiment_colors = {
-                  "positive" => "bg-emerald-500",
-                  "neutral" => "bg-gray-300",
-                  "negative" => "bg-red-400"
-                } %>
-                <div class="w-3 h-3 rounded-full flex-shrink-0 mt-1.5 <%= sentiment_colors[feedback.sentiment] || 'bg-gray-300' %>"></div>
+      <button type="submit" class="px-4 py-2 bg-indigo-500 text-white text-[13px] font-medium rounded-lg hover:bg-indigo-600 transition-colors">Filter</button>
+      <%= link_to "Clear", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-[13px] font-medium" %>
+    <% end %>
+  </div>
 
-                <!-- Content -->
-                <div class="flex-1 min-w-0">
-                  <p class="text-[14px] text-gray-900 leading-relaxed"><%= feedback.content %></p>
-
-                  <!-- Topics Tags -->
-                  <% if feedback.topics.present? %>
-                    <div class="flex flex-wrap gap-2 mt-3">
-                      <% feedback.topics.each do |topic| %>
-                        <span class="text-[11px] bg-indigo-50 border border-indigo-200 text-indigo-700 font-medium px-2 py-1 rounded-full">
-                          <%= topic %>
-                        </span>
-                      <% end %>
-                    </div>
-                  <% end %>
-
-                  <!-- Meta Information -->
-                  <div class="flex items-center gap-4 mt-3 text-[12px] text-gray-500">
-                    <span>
-                      <strong class="text-gray-700"><%= feedback.source&.source_type&.capitalize || "Unknown" %></strong>
-                    </span>
-                    <span><%= time_ago_in_words(feedback.created_at) %> ago</span>
-                    <% if feedback.respond_to?(:user) && feedback.user.present? %>
-                      <span>By <strong class="text-gray-700"><%= feedback.user.name %></strong></span>
+  <!-- Feedbacks List -->
+  <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
+    <div class="divide-y divide-gray-100">
+      <% if @feedbacks.any? %>
+        <% @feedbacks.each do |feedback| %>
+          <%= link_to feedback_path(feedback), class: "block p-5 hover:bg-gray-50 transition-colors" do %>
+            <div class="flex gap-3">
+              <% dot_color = { "positive" => "bg-emerald-500", "neutral" => "bg-gray-300", "negative" => "bg-red-400" } %>
+              <div class="w-3 h-3 rounded-full flex-shrink-0 mt-1.5 <%= dot_color[feedback.sentiment] || 'bg-gray-200' %>"></div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[14px] text-gray-900 leading-relaxed line-clamp-2"><%= feedback.content %></p>
+                <% if feedback.topics.present? %>
+                  <div class="flex flex-wrap gap-1.5 mt-2">
+                    <% feedback.topics.first(4).each do |topic| %>
+                      <span class="text-[10px] bg-indigo-50 text-indigo-700 font-medium px-2 py-0.5 rounded-full"><%= topic %></span>
                     <% end %>
                   </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="flex-shrink-0 ml-4">
-                  <%= link_to "View", feedback_path(feedback), class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium" %>
+                <% end %>
+                <div class="flex items-center gap-3 mt-2 text-[12px] text-gray-400">
+                  <span><%= source_emoji(feedback.source&.source_type) %> <%= feedback.source&.source_type&.titleize %></span>
+                  <span><%= feedback.author_name || "Anonymous" %></span>
+                  <span><%= format_time_ago(feedback.received_at) %></span>
+                  <% if feedback.processed? %>
+                    <span class="text-emerald-600 font-medium">Processed</span>
+                  <% else %>
+                    <span class="text-amber-600 font-medium">Pending</span>
+                  <% end %>
                 </div>
               </div>
             </div>
           <% end %>
-        <% else %>
-          <div class="px-5 py-12 text-center">
-            <p class="text-gray-500">No feedbacks found. Try adjusting your filters.</p>
-          </div>
+        <% end %>
+      <% else %>
+        <div class="px-5 py-12 text-center">
+          <p class="text-gray-400">No feedbacks found. Try adjusting your filters.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <% total_pages = (@total_count.to_f / @per_page).ceil %>
+  <% if total_pages > 1 %>
+    <div class="mt-6 flex items-center justify-between">
+      <p class="text-sm text-gray-500">Page <strong><%= @page %></strong> of <strong><%= total_pages %></strong></p>
+      <div class="flex gap-3">
+        <% if @page > 1 %>
+          <%= link_to "← Previous", feedbacks_path(request.query_parameters.merge(page: @page - 1)), class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
+        <% end %>
+        <% if @page < total_pages %>
+          <%= link_to "Next →", feedbacks_path(request.query_parameters.merge(page: @page + 1)), class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" %>
         <% end %>
       </div>
     </div>
-
-    <!-- Pagination -->
-    <% if @feedbacks.respond_to?(:current_page) && (@feedbacks.current_page > 1 || @feedbacks.next_page) %>
-      <div class="mt-6 flex items-center justify-between">
-        <div class="text-sm text-gray-500">
-          Page <span class="font-medium"><%= @feedbacks.current_page %></span> of <span class="font-medium"><%= @feedbacks.total_pages %></span>
-        </div>
-        <div class="flex gap-3">
-          <% if @feedbacks.current_page > 1 %>
-            <%= link_to "← Previous", feedbacks_path(page: @feedbacks.current_page - 1), class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors" %>
-          <% end %>
-          <% if @feedbacks.next_page %>
-            <%= link_to "Next →", feedbacks_path(page: @feedbacks.next_page), class: "px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors" %>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
+  <% end %>
 </div>

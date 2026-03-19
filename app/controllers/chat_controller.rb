@@ -1,5 +1,9 @@
 class ChatController < ApplicationController
   def create
+    unless current_account.chat_enabled?
+      return render json: { error: "Chat requires Growth or Scale plan." }, status: :forbidden
+    end
+
     message_text = params[:message]
     return head :bad_request if message_text.blank?
 

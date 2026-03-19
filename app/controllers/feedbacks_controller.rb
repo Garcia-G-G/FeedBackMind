@@ -2,10 +2,20 @@ class FeedbacksController < ApplicationController
   before_action :set_feedback, only: [:show]
 
   def index
-    @feedbacks = apply_filters(current_account.feedbacks.includes(:source))
-    @feedbacks = @feedbacks.order(created_at: :desc)
+    @feedbacks = current_account.feedbacks.includes(:source).order(received_at: :desc)
 
-    apply_pagination
+    # Filters
+    @feedbacks = @feedbacks.where(sentiment: params[:sentiment]) if params[:sentiment].present?
+    @feedbacks = @feedbacks.joins(:source).where(sources: { source_type: params[:source_type] }) if params[:source_type].present?
+    @feedbacks = @feedbacks.where("feedbacks.content ILIKE ?", "%#{params[:search]}%") if params[:search].present?
+    @feedbacks = @feedbacks.unprocessed if params[:status] == "unprocessed"
+    @feedbacks = @feedbacks.processed if params[:status] == "processed"
+
+    # Pagination
+    @page = [params[:page].to_i, 1].max
+    @per_page = 20
+    @total_count = @feedbacks.count
+    @feedbacks = @feedbacks.offset((@page - 1) * @per_page).limit(@per_page)
   end
 
   def show
@@ -15,20 +25,5 @@ class FeedbacksController < ApplicationController
 
   def set_feedback
     @feedback = current_account.feedbacks.find(params[:id])
-  end
-
-  def apply_filters(feedbacks)
-    feedbacks = feedbacks.where(sentiment: params[:sentiment]) if params[:sentiment].present?
-    feedbacks = feedbacks.where(sources: { source_type: params[:source_type] }) if params[:source_type].present?
-    feedbacks = feedbacks.where('content ILIKE ?', "%#{params[:topic]}%") if params[:topic].present?
-    feedbacks
-  end
-
-  def apply_pagination
-    page = params[:page] || 1
-    limit = params[:limit] || 20
-    offset = (page.to_i - 1) * limit.to_i
-
-    @feedbacks = @feedbacks.offset(offset).limit(limit)
   end
 end
