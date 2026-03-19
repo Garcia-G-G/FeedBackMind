@@ -1,4 +1,3 @@
-web: bin/rails server -p 3000
-css: bin/rails tailwindcss:watch
-js: bun run build --watch
+web: bin/rails server -p 3500
+js: bun x esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --watch=forever
 worker: bundle exec sidekiq -C config/sidekiq.yml

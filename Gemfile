@@ -8,6 +8,7 @@ gem "rails", "~> 7.2"
 gem "pg", "~> 1.5"
 gem "puma", ">= 6.0"
 gem "redis", ">= 5.0"
+gem "connection_pool", "~> 2.4"
 
 # Frontend (Hotwire)
 gem "turbo-rails", "~> 2.0"
