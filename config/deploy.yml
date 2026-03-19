@@ -15,6 +15,10 @@ proxy:
   ssl: true
   host: 5.161.238.195.sslip.io
   app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 10
+    timeout: 30
 
 registry:
   server: ghcr.io
@@ -75,12 +79,6 @@ accessories:
     port: "127.0.0.1:6379:6379"
     directories:
       - data:/data
-
-healthcheck:
-  path: /up
-  port: 3000
-  interval: 10
-  max_attempts: 30
 
 ssh:
   user: root
