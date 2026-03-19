@@ -67,7 +67,7 @@
               </svg>
               <span><strong><%= theme.feedback_count %></strong> feedbacks</span>
             </div>
-            <% if theme.sources.any? %>
+            <% if theme.respond_to?(:sources) && theme.sources.present? %>
               <div class="flex items-center gap-2 text-gray-700">
                 <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -78,7 +78,7 @@
           </div>
 
           <!-- Action items -->
-          <% if theme.action_items.any? %>
+          <% if theme.respond_to?(:action_items) && theme.action_items.present? %>
             <div class="border-t border-gray-100 pt-4">
               <p class="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">
                 Suggested Actions

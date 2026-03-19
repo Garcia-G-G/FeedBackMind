@@ -14,24 +14,27 @@ RSpec.describe Feedback, type: :model do
     let(:account) { create(:account) }
     let(:source) { create(:source, account: account) }
 
-    before do
-      ActsAsTenant.current_tenant = account
-    end
+    before { ActsAsTenant.current_tenant = account }
 
-    it ".unprocessed returns feedbacks without processed_at" do
+    it ".unprocessed returns unprocessed feedbacks" do
       processed = create(:feedback, :processed, account: account, source: source)
-      unprocessed = create(:feedback, :unprocessed, account: account, source: source)
-
+      unprocessed = create(:feedback, account: account, source: source, processed_at: nil)
       expect(Feedback.unprocessed).to include(unprocessed)
       expect(Feedback.unprocessed).not_to include(processed)
     end
 
-    it ".by_topic finds feedbacks with matching topic" do
+    it ".by_topic finds by topic" do
       fb = create(:feedback, account: account, source: source, topics: ["billing", "pricing"])
       other = create(:feedback, account: account, source: source, topics: ["onboarding"])
-
       expect(Feedback.by_topic("billing")).to include(fb)
       expect(Feedback.by_topic("billing")).not_to include(other)
+    end
+
+    it ".by_sentiment filters sentiment" do
+      pos = create(:feedback, account: account, source: source, sentiment: :positive)
+      neg = create(:feedback, account: account, source: source, sentiment: :negative)
+      expect(Feedback.by_sentiment("positive")).to include(pos)
+      expect(Feedback.by_sentiment("positive")).not_to include(neg)
     end
   end
 end
