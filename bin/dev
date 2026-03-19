@@ -1,11 +1,16 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-if gem list --no-installed --exact --silent foreman; then
-  echo "Installing foreman..."
-  gem install foreman
-fi
+# Start all processes. Ctrl+C stops everything.
+trap 'kill 0' EXIT
 
-# Default to port 3000 if not specified
-export PORT="${PORT:-3000}"
+# Build Tailwind CSS first
+bundle exec rails tailwindcss:build 2>/dev/null
 
-exec foreman start -f Procfile.dev --env /dev/null "$@"
+# Start JS watcher in background
+bun x esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --watch=forever &
+
+# Start Sidekiq in background (optional — skip if Redis isn't running)
+bundle exec sidekiq -C config/sidekiq.yml &  2>/dev/null
+
+# Start Rails server in foreground
+exec bundle exec rails server -p "${PORT:-3500}"
