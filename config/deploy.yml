@@ -28,7 +28,7 @@ registry:
     - KAMAL_REGISTRY_PASSWORD
 
 builder:
-  multiarch: false
+  arch: amd64
   args:
     RUBY_VERSION: 3.3.8
 
