@@ -20,15 +20,15 @@ RSpec.describe Account, type: :model do
 
   describe "#plan_limits" do
     it "returns correct limits for each plan" do
-      expect(build(:account, plan: :starter).plan_limits[:feedbacks_per_month]).to eq(500)
-      expect(build(:account, :growth).plan_limits[:feedbacks_per_month]).to eq(2_000)
+      expect(build(:account, plan: :starter).plan_limits[:feedbacks_per_month]).to eq(1_000)
+      expect(build(:account, :growth).plan_limits[:feedbacks_per_month]).to eq(10_000)
       expect(build(:account, :scale).plan_limits[:feedbacks_per_month]).to eq(Float::INFINITY)
     end
   end
 
   describe "#feedback_limit_reached?" do
     it "returns true when at limit" do
-      expect(build(:account, plan: :starter, feedback_count_this_month: 500).feedback_limit_reached?).to be true
+      expect(build(:account, plan: :starter, feedback_count_this_month: 1_000).feedback_limit_reached?).to be true
     end
 
     it "returns false for scale plan" do

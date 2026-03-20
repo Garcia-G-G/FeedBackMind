@@ -1,204 +1,418 @@
-<%# Marketing landing page for non-authenticated users %>
+<%# Marketing landing page — Editorial design %>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <title>FeedbackMind — AI-Powered Feedback Intelligence for PMs</title>
+  <title>FeedbackMind — AI-Powered Feedback Intelligence for Product Teams</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Connect all your feedback sources and get AI-powered insights. FeedbackMind synthesizes Intercom, Gmail, Slack, Jira, and more into actionable themes.">
+  <meta name="description" content="Connect all your feedback sources. FeedbackMind reads every message, finds the patterns, and tells you what to build next.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= csrf_meta_tags %>
+  <style>
+    .font-serif-display { font-family: 'DM Serif Display', Georgia, serif; }
+    .font-sans-dm { font-family: 'DM Sans', -apple-system, sans-serif; }
+    .perspective-card { transform: perspective(1200px) rotateY(-2deg) rotateX(1deg); transition: transform 0.4s ease; }
+    .perspective-card:hover { transform: perspective(1200px) rotateY(0deg) rotateX(0deg); }
+  </style>
 </head>
-<body class="bg-white font-sans text-gray-900 antialiased">
+<body class="font-sans-dm bg-white text-stone-900 antialiased overflow-x-hidden">
 
-  <!-- Nav -->
-  <nav class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 bg-indigo-500 rounded-lg flex items-center justify-center text-white text-[11px] font-extrabold">FM</div>
-        <span class="font-bold text-[15px] tracking-tight">FeedbackMind</span>
-      </div>
-      <div class="flex items-center gap-6">
-        <a href="#features" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors font-medium">Features</a>
-        <a href="#pricing" class="text-[13px] text-gray-500 hover:text-gray-900 transition-colors font-medium">Pricing</a>
-        <%= link_to "Sign in", new_user_session_path, class: "text-[13px] text-gray-500 hover:text-gray-900 transition-colors font-medium" %>
-        <%= link_to "Get Started", new_user_registration_path, class: "text-[13px] font-semibold bg-indigo-500 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-600 transition-colors" %>
+  <!-- ━━━ NAV ━━━ -->
+  <nav class="fixed top-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-b border-black/[0.04]">
+    <div class="max-w-[1200px] mx-auto px-8 h-14 flex items-center justify-between">
+      <a href="/" class="font-bold text-[17px] tracking-tight text-stone-900">FeedbackMind</a>
+      <div class="flex items-center gap-7">
+        <a href="#features" class="text-[13.5px] font-medium text-stone-500 hover:text-stone-900 transition-colors">Features</a>
+        <a href="#pricing" class="text-[13.5px] font-medium text-stone-500 hover:text-stone-900 transition-colors">Pricing</a>
+        <%= link_to "Log in", new_user_session_path, class: "text-[13.5px] font-medium text-stone-500 hover:text-stone-900 transition-colors" %>
+        <%= link_to "Start free trial", new_user_registration_path, class: "text-[13px] font-semibold bg-stone-900 text-white px-4 py-[7px] rounded-md hover:bg-stone-800 transition-colors" %>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="pt-32 pb-20 px-6">
-    <div class="max-w-3xl mx-auto text-center">
-      <div class="inline-flex items-center gap-2 text-[12px] font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full mb-6">
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Powered by GPT-4.1
-      </div>
-      <h1 class="text-5xl font-extrabold tracking-tight leading-[1.1] mb-5">
-        Turn scattered feedback into
-        <span class="text-indigo-500">actionable intelligence</span>
-      </h1>
-      <p class="text-lg text-gray-500 leading-relaxed mb-8 max-w-xl mx-auto">
-        Connect Intercom, Gmail, Slack, Jira, App Store and more. FeedbackMind synthesizes everything into weekly themes, impact scores, and AI-powered answers.
-      </p>
-      <div class="flex items-center justify-center gap-3">
-        <%= link_to new_user_registration_path, class: "inline-flex items-center gap-2 bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold text-[15px] hover:bg-indigo-600 shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/25 transition-all hover:-translate-y-0.5" do %>
+  <!-- ━━━ HERO ━━━ -->
+  <section class="pt-36 pb-20 px-8">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <!-- Left: copy -->
+      <div class="max-w-[520px]">
+        <p class="text-xs font-semibold uppercase tracking-[0.1em] text-indigo-600 mb-5">For product teams</p>
+        <h1 class="font-serif-display text-[50px] leading-[1.08] tracking-tight mb-6">
+          Your users are already telling you what to build <em class="italic text-stone-500">next</em>
+        </h1>
+        <p class="text-[17px] leading-[1.65] text-stone-500 mb-9 max-w-[440px]">
+          FeedbackMind connects to every channel where customers talk, finds patterns across thousands of messages, and tells you what matters this week.
+        </p>
+        <%= link_to new_user_registration_path, class: "inline-flex items-center gap-2.5 bg-stone-900 text-white px-7 py-3.5 rounded-lg text-sm font-semibold hover:bg-stone-800 transition-all hover:-translate-y-0.5" do %>
           Start free trial
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <svg class="w-4 h-4 opacity-60" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <% end %>
-        <a href="#features" class="inline-flex items-center gap-2 border border-gray-200 text-gray-600 px-6 py-3 rounded-xl font-medium text-[15px] hover:border-gray-300 transition-all">
-          See how it works
-        </a>
-      </div>
-      <p class="text-[12px] text-gray-400 mt-4">Free 14-day trial. No credit card required.</p>
-    </div>
-  </section>
-
-  <!-- Social proof -->
-  <section class="pb-16 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <p class="text-[12px] uppercase tracking-wider text-gray-400 font-semibold mb-6">Trusted by product teams at</p>
-      <div class="flex items-center justify-center gap-12 opacity-40">
-        <span class="text-xl font-bold">Stripe</span>
-        <span class="text-xl font-bold">Vercel</span>
-        <span class="text-xl font-bold">Linear</span>
-        <span class="text-xl font-bold">Notion</span>
-        <span class="text-xl font-bold">Figma</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features -->
-  <section id="features" class="py-20 px-6 bg-gray-50">
-    <div class="max-w-5xl mx-auto">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl font-extrabold tracking-tight mb-3">Everything competitors miss</h2>
-        <p class="text-gray-500 text-lg">Features that Productboard, Canny, and UserVoice don't have.</p>
+        <p class="text-xs text-stone-400 mt-3.5">Free for 14 days · No credit card required</p>
       </div>
 
-      <div class="grid grid-cols-3 gap-5">
-        <!-- Feature 1 -->
-        <div class="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <!-- Right: product mockup with 3D perspective -->
+      <div class="relative">
+        <div class="perspective-card bg-stone-900 rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.04)]">
+          <!-- Window chrome -->
+          <div class="flex items-center gap-[7px] px-4 py-3 border-b border-white/[0.06]">
+            <span class="w-[10px] h-[10px] rounded-full bg-red-500"></span>
+            <span class="w-[10px] h-[10px] rounded-full bg-yellow-400"></span>
+            <span class="w-[10px] h-[10px] rounded-full bg-green-500"></span>
           </div>
-          <h3 class="font-bold text-[15px] mb-2">AI Impact Scoring</h3>
-          <p class="text-[13px] text-gray-500 leading-relaxed">Every theme gets an estimated MRR impact. Know exactly how much revenue is at risk from each feedback cluster.</p>
+          <!-- Dashboard content -->
+          <div class="p-6">
+            <div class="flex justify-between items-baseline mb-6">
+              <span class="text-white text-[15px] font-semibold">Weekly Synthesis</span>
+              <span class="text-stone-500 text-xs">Mar 10 – 16, 2026</span>
+            </div>
+            <!-- Metrics row -->
+            <div class="grid grid-cols-3 gap-3 mb-7">
+              <div class="bg-white/[0.04] border border-white/[0.06] rounded-xl p-4">
+                <div class="text-white text-2xl font-bold tracking-tight">1,247</div>
+                <div class="text-stone-500 text-[11px] mt-1">Feedbacks</div>
+              </div>
+              <div class="bg-white/[0.04] border border-white/[0.06] rounded-xl p-4">
+                <div class="text-white text-2xl font-bold tracking-tight">72%</div>
+                <div class="text-stone-500 text-[11px] mt-1">Positive</div>
+              </div>
+              <div class="bg-white/[0.04] border border-white/[0.06] rounded-xl p-4">
+                <div class="text-white text-2xl font-bold tracking-tight">8</div>
+                <div class="text-stone-500 text-[11px] mt-1">Themes</div>
+              </div>
+            </div>
+            <!-- Theme rows -->
+            <div class="space-y-2">
+              <div class="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] rounded-lg p-3">
+                <div class="w-[3px] h-7 rounded bg-red-500 shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-stone-200 text-[13px] font-medium">Mobile app crashes on iOS 19</div>
+                  <div class="text-stone-500 text-[11px]">142 mentions · 89% negative</div>
+                </div>
+                <span class="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-red-500/10 text-red-400">Urgent</span>
+              </div>
+              <div class="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] rounded-lg p-3">
+                <div class="w-[3px] h-7 rounded bg-green-500 shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-stone-200 text-[13px] font-medium">New export feature well received</div>
+                  <div class="text-stone-500 text-[11px]">203 mentions · 94% positive</div>
+                </div>
+                <span class="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-green-500/10 text-green-400">Positive</span>
+              </div>
+              <div class="flex items-center gap-3 bg-white/[0.03] border border-white/[0.05] rounded-lg p-3">
+                <div class="w-[3px] h-7 rounded bg-amber-500 shrink-0"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-stone-200 text-[13px] font-medium">Dashboard loading time complaints</div>
+                  <div class="text-stone-500 text-[11px]">89 mentions · trending up</div>
+                </div>
+                <span class="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-amber-500/10 text-amber-400">Rising</span>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- Feature 2 -->
-        <div class="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <h3 class="font-bold text-[15px] mb-2">Sentiment Timeline</h3>
-          <p class="text-[13px] text-gray-500 leading-relaxed">Not just pie charts — see how sentiment evolves daily with spike detection that explains what caused changes.</p>
+        <!-- Floating annotations that break out of the card boundary -->
+        <div class="absolute -left-10 bottom-16 bg-white rounded-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] z-10 hidden lg:block">
+          <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-stone-400 mb-1">Sentiment shift</div>
+          <div class="text-green-600 text-lg font-bold">+12%</div>
+          <div class="text-stone-400 text-[11.5px]">vs. last week</div>
         </div>
-
-        <!-- Feature 3 -->
-        <div class="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <h3 class="font-bold text-[15px] mb-2">RAG-Powered Chat</h3>
-          <p class="text-[13px] text-gray-500 leading-relaxed">Ask questions about your feedback in natural language. AI searches across all sources and cites specific feedbacks.</p>
-        </div>
-
-        <!-- Feature 4 -->
-        <div class="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          </div>
-          <h3 class="font-bold text-[15px] mb-2">Feedback Pipeline</h3>
-          <p class="text-[13px] text-gray-500 leading-relaxed">Visual kanban from Raw Feedback to Shipped. Track every piece of feedback from collection to resolution.</p>
-        </div>
-
-        <!-- Feature 5 -->
-        <div class="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          </div>
-          <h3 class="font-bold text-[15px] mb-2">Closed-Loop Tracker</h3>
-          <p class="text-[13px] text-gray-500 leading-relaxed">Know which feedbacks led to shipped features. Track user notifications and post-fix satisfaction rates.</p>
-        </div>
-
-        <!-- Feature 6 -->
-        <div class="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </div>
-          <h3 class="font-bold text-[15px] mb-2">Command Palette</h3>
-          <p class="text-[13px] text-gray-500 leading-relaxed">Press ⌘K to search anything instantly. Navigate, trigger actions, and find feedbacks without touching the mouse.</p>
+        <div class="absolute -right-7 top-20 bg-white rounded-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] z-10 hidden lg:block">
+          <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-stone-400 mb-1">Urgent issues</div>
+          <div class="text-red-600 text-lg font-bold">3</div>
+          <div class="text-stone-400 text-[11.5px]">need attention</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Pricing -->
-  <section id="pricing" class="py-20 px-6">
-    <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl font-extrabold tracking-tight mb-3">Simple, transparent pricing</h2>
-        <p class="text-gray-500 text-lg">Start free, scale as you grow.</p>
+  <!-- ━━━ SOCIAL PROOF ━━━ -->
+  <section class="px-8 pb-16">
+    <div class="max-w-[1200px] mx-auto flex items-center gap-12">
+      <span class="text-xs font-semibold uppercase tracking-[0.08em] text-stone-400 whitespace-nowrap">Trusted by</span>
+      <div class="flex gap-10 items-center flex-wrap">
+        <span class="text-base font-bold text-stone-300">Lumina</span>
+        <span class="text-base font-bold text-stone-300">Stackbase</span>
+        <span class="text-base font-bold text-stone-300">Orbitly</span>
+        <span class="text-base font-bold text-stone-300">Planum</span>
+        <span class="text-base font-bold text-stone-300">Keyflow</span>
       </div>
+    </div>
+  </section>
 
-      <div class="grid grid-cols-3 gap-5">
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 class="font-bold mb-1">Starter</h3>
-          <div class="text-3xl font-extrabold mb-1">$49<span class="text-base font-normal text-gray-400">/mo</span></div>
-          <p class="text-[13px] text-gray-400 mb-5">For small teams getting started</p>
-          <ul class="space-y-2 text-[13px] text-gray-600 mb-6">
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>500 feedbacks/month</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>3 sources</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Weekly synthesis</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="text-gray-400">AI Chat</span></li>
+  <!-- ━━━ EDITORIAL BLOCK ━━━ -->
+  <section class="px-8 py-20">
+    <div class="max-w-[620px] mx-auto">
+      <h2 class="font-serif-display text-[34px] leading-[1.25] tracking-tight mb-7">The feedback problem isn't volume. It's visibility.</h2>
+      <p class="text-[16.5px] leading-[1.75] text-stone-600 mb-5">
+        Your team collects feedback from Intercom, Slack, surveys, support tickets, and app store reviews. Hundreds of messages every week. The data is there — the problem is that <strong class="text-stone-900 font-semibold">no one has time to read it all, remember it all, and connect the dots</strong>.
+      </p>
+      <blockquote class="font-serif-display italic text-[22px] leading-[1.5] text-stone-700 border-l-[3px] border-indigo-600 pl-6 my-10">
+        "We had 2,000 support tickets last month. Somewhere in there was the signal to prioritize mobile performance. We found it three sprints too late."
+      </blockquote>
+      <p class="text-[16.5px] leading-[1.75] text-stone-600">
+        FeedbackMind exists so that never happens again. It reads everything, finds the patterns, and delivers a clear weekly synthesis — so your roadmap reflects what users actually need, not what you <em>think</em> they need.
+      </p>
+    </div>
+  </section>
+
+  <!-- ━━━ FEATURE 1: SENTIMENT ━━━ -->
+  <section id="features" class="py-24 px-8 bg-stone-50">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <p class="text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 mb-3.5">Sentiment</p>
+        <h3 class="font-serif-display text-[30px] leading-[1.2] tracking-tight mb-4">Context-aware sentiment, not just positive/negative</h3>
+        <p class="text-[15.5px] leading-[1.7] text-stone-500 mb-6 max-w-[420px]">
+          FeedbackMind understands sarcasm, mixed signals, and the difference between frustration and a feature request. Every piece of feedback gets scored on a nuanced scale.
+        </p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Detects frustration, confusion, delight, and urgency</li>
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Tracks sentiment trends week over week</li>
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Alerts you when sentiment drops on key themes</li>
+        </ul>
+      </div>
+      <!-- Visual: stacked bar chart -->
+      <div class="bg-white border border-stone-200 rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+        <div class="flex justify-between items-baseline mb-7">
+          <span class="text-sm font-semibold">Sentiment over time</span>
+          <span class="text-xs text-stone-400">Last 8 weeks</span>
+        </div>
+        <div class="flex items-end gap-1 h-[100px] mb-6">
+          <% [[55,20,25],[60,18,22],[52,23,25],[45,20,35],[50,22,28],[58,24,18],[65,20,15],[72,16,12]].each do |pos, neu, neg| %>
+            <div class="flex-1 flex flex-col gap-[2px]">
+              <div class="rounded-t" style="height:<%= neg %>px;background:#ef4444"></div>
+              <div style="height:<%= neu %>px;background:#fbbf24"></div>
+              <div class="rounded-b" style="height:<%= pos %>px;background:#22c55e"></div>
+            </div>
+          <% end %>
+        </div>
+        <div class="flex gap-5">
+          <div class="flex items-center gap-1.5 text-xs text-stone-500"><span class="w-2 h-2 rounded-sm bg-green-500"></span> Positive</div>
+          <div class="flex items-center gap-1.5 text-xs text-stone-500"><span class="w-2 h-2 rounded-sm bg-yellow-400"></span> Neutral</div>
+          <div class="flex items-center gap-1.5 text-xs text-stone-500"><span class="w-2 h-2 rounded-sm bg-red-500"></span> Negative</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ FEATURE 2: THEMES (reversed layout) ━━━ -->
+  <section class="py-24 px-8">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <!-- Visual first on desktop -->
+      <div class="bg-white border border-stone-200 rounded-2xl p-7 shadow-[0_4px_24px_rgba(0,0,0,0.04)] order-2 lg:order-1">
+        <% [
+          ["1", "Mobile app performance", "142 mentions · mostly iOS", "↑ 34%", "green"],
+          ["2", "Dashboard load time", "89 mentions · enterprise segment", "↑ 18%", "green"],
+          ["3", "Onboarding confusion", "67 mentions · new users", "New", "indigo"],
+          ["4", "Pricing page unclear", "56 mentions · trial users", "↓ 8%", "red"]
+        ].each_with_index do |(rank, name, mentions, trend, color), i| %>
+          <div class="flex items-center py-3.5 <%= i < 3 ? 'border-b border-stone-100' : '' %>">
+            <span class="font-serif-display text-[22px] text-stone-300 w-9 shrink-0"><%= rank %></span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-stone-900"><%= name %></div>
+              <div class="text-xs text-stone-400"><%= mentions %></div>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full
+              <%= color == 'green' ? 'bg-green-50 text-green-600' : '' %>
+              <%= color == 'red' ? 'bg-red-50 text-red-600' : '' %>
+              <%= color == 'indigo' ? 'bg-indigo-50 text-indigo-600' : '' %>
+            "><%= trend %></span>
+          </div>
+        <% end %>
+      </div>
+      <!-- Text second on desktop -->
+      <div class="order-1 lg:order-2">
+        <p class="text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 mb-3.5">Themes</p>
+        <h3 class="font-serif-display text-[30px] leading-[1.2] tracking-tight mb-4">Patterns surface automatically — no tagging required</h3>
+        <p class="text-[15.5px] leading-[1.7] text-stone-500 mb-6 max-w-[420px]">
+          Using vector embeddings (not keyword matching), FeedbackMind clusters similar feedback into themes with urgency scores, trend direction, and representative quotes.
+        </p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Clusters by meaning, not just keywords</li>
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Tracks new and rising themes week over week</li>
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Urgency scoring based on volume, sentiment, and velocity</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ FEATURE 3: AI CHAT ━━━ -->
+  <section class="py-24 px-8 bg-stone-50">
+    <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <p class="text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 mb-3.5">AI Chat</p>
+        <h3 class="font-serif-display text-[30px] leading-[1.2] tracking-tight mb-4">Ask your feedback database anything</h3>
+        <p class="text-[15.5px] leading-[1.7] text-stone-500 mb-6 max-w-[420px]">
+          Don't wait for the weekly report. Ask questions like "what do enterprise users think about our API?" and get instant, source-cited answers from your entire feedback history.
+        </p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Natural language queries across all your data</li>
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Every answer cites specific feedback sources</li>
+          <li class="flex items-start gap-2.5 text-sm text-stone-700"><span class="text-stone-300 font-bold shrink-0">—</span> Follow-up questions to drill deeper</li>
+        </ul>
+      </div>
+      <!-- Chat mockup -->
+      <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+        <div class="px-6 py-4 border-b border-stone-100 text-[13px] font-semibold flex items-center gap-2">
+          <span class="w-[7px] h-[7px] bg-green-500 rounded-full"></span>
+          Ask your feedback
+        </div>
+        <div class="p-5 space-y-4">
+          <div class="ml-auto max-w-[80%] bg-stone-900 text-white px-4 py-3 rounded-xl rounded-br text-[13.5px] leading-relaxed">
+            What are enterprise users saying about onboarding?
+          </div>
+          <div class="mr-auto max-w-[80%] bg-stone-50 border border-stone-100 text-stone-800 px-4 py-3 rounded-xl rounded-bl text-[13.5px] leading-relaxed">
+            Based on <strong class="text-stone-900">312 feedbacks</strong> from enterprise accounts this quarter: <strong class="text-stone-900">SSO integration</strong> (47 mentions), <strong class="text-stone-900">role-based permissions</strong> (38), and <strong class="text-stone-900">bulk user import</strong> (29) are the top requests.
+          </div>
+          <div class="ml-auto max-w-[80%] bg-stone-900 text-white px-4 py-3 rounded-xl rounded-br text-[13.5px] leading-relaxed">
+            Which customers mentioned SSO specifically?
+          </div>
+          <div class="mr-auto max-w-[80%] bg-stone-50 border border-stone-100 text-stone-800 px-4 py-3 rounded-xl rounded-bl text-[13.5px] leading-relaxed">
+            SSO was mentioned by <strong class="text-stone-900">12 enterprise accounts</strong>, including Acme Corp (Intercom, 3 tickets), Globex (Slack), and Initech (NPS survey). 8 of 12 rated it as "blocking procurement."
+          </div>
+        </div>
+        <div class="px-6 py-3.5 border-t border-stone-100 flex items-center gap-3">
+          <span class="text-[13px] text-stone-400 flex-1">Ask a follow-up question…</span>
+          <span class="w-7 h-7 bg-stone-900 rounded-md flex items-center justify-center">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ INTEGRATIONS (shared border grid) ━━━ -->
+  <section class="py-20 px-8">
+    <div class="max-w-[1200px] mx-auto">
+      <div class="flex justify-between items-baseline mb-10">
+        <h2 class="font-serif-display text-[28px] tracking-tight">Connects to your stack</h2>
+        <p class="text-sm text-stone-400">Two minutes per source. No engineering required.</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border border-stone-200 rounded-xl overflow-hidden">
+        <% [
+          ["Intercom", "Chat & tickets", "#FFF1F0", "#E01E5A"],
+          ["Slack", "Channels & threads", "#F3EFFF", "#4A154B"],
+          ["Typeform", "Surveys & forms", "#F0F0F0", "#262626"],
+          ["Jira", "Issues & feedback", "#E8F0FE", "#0052CC"],
+          ["Google Reviews", "App & business", "#E8F5E9", "#4285F4"],
+          ["CSV Upload", "Any data source", "#EEF2FF", "#6366f1"]
+        ].each_with_index do |(name, desc, bg, color), i| %>
+          <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors <%= i < 5 ? 'border-r border-stone-200' : '' %>">
+            <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:<%= bg %>">
+              <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="5" stroke="<%= color %>" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="text-[13px] font-semibold text-stone-700"><%= name %></div>
+            <div class="text-[11px] text-stone-400"><%= desc %></div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ PRICING ━━━ -->
+  <section id="pricing" class="py-24 px-8 bg-stone-50">
+    <div class="max-w-[960px] mx-auto">
+      <div class="mb-12">
+        <h2 class="font-serif-display text-4xl tracking-tight mb-2.5">Simple pricing, no surprises</h2>
+        <p class="text-base text-stone-500">14-day free trial on every plan. No credit card required.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Starter -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-8 hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow">
+          <div class="text-[13px] font-semibold uppercase tracking-[0.06em] text-stone-400 mb-4">Starter</div>
+          <div class="flex items-baseline gap-1 mb-1.5">
+            <span class="font-serif-display text-[44px] tracking-tight">$29</span>
+            <span class="text-sm text-stone-400">/mo</span>
+          </div>
+          <p class="text-sm text-stone-500 leading-relaxed mb-7 pb-7 border-b border-stone-100">For small teams starting to listen to users systematically.</p>
+          <ul class="space-y-2 mb-8">
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">1,000 feedbacks per month</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">3 source connections</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">Weekly synthesis report</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">Email support</li>
           </ul>
-          <%= link_to "Get started", new_user_registration_path, class: "block text-center py-2.5 rounded-lg border border-gray-200 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors" %>
+          <%= link_to "Get started", new_user_registration_path, class: "block text-center py-3 rounded-lg border border-stone-200 text-sm font-semibold text-stone-900 hover:bg-stone-50 transition-colors" %>
         </div>
 
-        <div class="bg-white rounded-xl border-2 border-indigo-500 p-6 relative shadow-lg shadow-indigo-500/10">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Popular</div>
-          <h3 class="font-bold mb-1">Growth</h3>
-          <div class="text-3xl font-extrabold mb-1">$149<span class="text-base font-normal text-gray-400">/mo</span></div>
-          <p class="text-[13px] text-gray-400 mb-5">For growing product teams</p>
-          <ul class="space-y-2 text-[13px] text-gray-600 mb-6">
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>5,000 feedbacks/month</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited sources</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Weekly synthesis</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>AI Chat (RAG)</li>
+        <!-- Growth — POPULAR -->
+        <div class="bg-white border-2 border-stone-900 rounded-2xl p-8 relative shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.1)] transition-shadow">
+          <div class="absolute -top-[11px] left-8 bg-stone-900 text-white text-[11px] font-semibold px-3 py-[3px] rounded-full tracking-[0.02em]">Most popular</div>
+          <div class="text-[13px] font-semibold uppercase tracking-[0.06em] text-stone-400 mb-4">Growth</div>
+          <div class="flex items-baseline gap-1 mb-1.5">
+            <span class="font-serif-display text-[44px] tracking-tight">$109</span>
+            <span class="text-sm text-stone-400">/mo</span>
+          </div>
+          <p class="text-sm text-stone-500 leading-relaxed mb-7 pb-7 border-b border-stone-100">For product teams that need deeper analysis and real-time answers.</p>
+          <ul class="space-y-2 mb-8">
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-indigo-600 before:text-xs">10,000 feedbacks per month</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-indigo-600 before:text-xs">10 source connections</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-indigo-600 before:text-xs">Weekly synthesis report</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-indigo-600 before:text-xs">AI Chat — ask your data</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-indigo-600 before:text-xs">Priority support</li>
           </ul>
-          <%= link_to "Get started", new_user_registration_path, class: "block text-center py-2.5 rounded-lg bg-indigo-500 text-white text-[13px] font-semibold hover:bg-indigo-600 transition-colors" %>
+          <%= link_to "Get started", new_user_registration_path, class: "block text-center py-3 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors" %>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 class="font-bold mb-1">Scale</h3>
-          <div class="text-3xl font-extrabold mb-1">$399<span class="text-base font-normal text-gray-400">/mo</span></div>
-          <p class="text-[13px] text-gray-400 mb-5">For enterprise teams</p>
-          <ul class="space-y-2 text-[13px] text-gray-600 mb-6">
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited feedbacks</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited sources</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Daily synthesis</li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+        <!-- Scale -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-8 hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow">
+          <div class="text-[13px] font-semibold uppercase tracking-[0.06em] text-stone-400 mb-4">Scale</div>
+          <div class="flex items-baseline gap-1 mb-1.5">
+            <span class="font-serif-display text-[44px] tracking-tight">$209</span>
+            <span class="text-sm text-stone-400">/mo</span>
+          </div>
+          <p class="text-sm text-stone-500 leading-relaxed mb-7 pb-7 border-b border-stone-100">For orgs processing feedback at scale across multiple products.</p>
+          <ul class="space-y-2 mb-8">
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">Unlimited feedbacks</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">Unlimited sources</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">Weekly synthesis report</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">AI Chat — ask your data</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">REST API access</li>
+            <li class="text-sm text-stone-700 pl-5 relative before:content-['✓'] before:absolute before:left-0 before:text-stone-400 before:text-xs">Dedicated support</li>
           </ul>
-          <%= link_to "Contact us", new_user_registration_path, class: "block text-center py-2.5 rounded-lg border border-gray-200 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors" %>
+          <%= link_to "Get started", new_user_registration_path, class: "block text-center py-3 rounded-lg border border-stone-200 text-sm font-semibold text-stone-900 hover:bg-stone-50 transition-colors" %>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="border-t border-gray-100 py-10 px-6">
-    <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="w-6 h-6 bg-indigo-500 rounded-md flex items-center justify-center text-white text-[9px] font-extrabold">FM</div>
-        <span class="text-[13px] text-gray-400">FeedbackMind &copy; <%= Date.current.year %></span>
+  <!-- ━━━ TESTIMONIAL ━━━ -->
+  <section class="py-24 px-8">
+    <div class="max-w-[720px] mx-auto">
+      <div class="font-serif-display text-[72px] leading-none text-stone-200 mb-5">"</div>
+      <p class="font-serif-display text-[26px] leading-[1.45] text-stone-800 mb-7">
+        We used to spend Friday afternoons manually tagging support tickets into a spreadsheet. FeedbackMind replaced that entire ritual and catches patterns we never would have found — three sprints earlier than we would have.
+      </p>
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center text-base font-bold text-stone-500">MG</div>
+        <div>
+          <div class="text-[15px] font-semibold text-stone-900">María González</div>
+          <div class="text-[13px] text-stone-400">Head of Product, Lumina</div>
+        </div>
       </div>
-      <div class="flex gap-6 text-[13px] text-gray-400">
-        <a href="#" class="hover:text-gray-600 transition-colors">Privacy</a>
-        <a href="#" class="hover:text-gray-600 transition-colors">Terms</a>
-        <a href="#" class="hover:text-gray-600 transition-colors">Docs</a>
+    </div>
+  </section>
+
+  <!-- ━━━ FINAL CTA ━━━ -->
+  <section class="py-20 px-8 text-center relative">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-px bg-stone-200"></div>
+    <h2 class="font-serif-display text-[38px] tracking-tight mb-4">Start hearing what your users are really saying</h2>
+    <p class="text-base text-stone-500 mb-8">14-day trial. No credit card. Takes 5 minutes to set up.</p>
+    <%= link_to new_user_registration_path, class: "inline-flex items-center gap-2.5 bg-stone-900 text-white px-8 py-3.5 rounded-lg text-[15px] font-semibold hover:bg-stone-800 transition-all hover:-translate-y-0.5" do %>
+      Start your free trial
+      <svg class="w-4 h-4 opacity-60" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <% end %>
+  </section>
+
+  <!-- ━━━ FOOTER ━━━ -->
+  <footer class="border-t border-stone-100 py-8 px-8">
+    <div class="max-w-[1200px] mx-auto flex items-center justify-between">
+      <p class="text-[13px] text-stone-400">FeedbackMind &copy; <%= Date.current.year %></p>
+      <div class="flex gap-6">
+        <a href="#" class="text-[13px] text-stone-400 hover:text-stone-700 transition-colors">Privacy</a>
+        <a href="#" class="text-[13px] text-stone-400 hover:text-stone-700 transition-colors">Terms</a>
+        <a href="#" class="text-[13px] text-stone-400 hover:text-stone-700 transition-colors">Twitter</a>
       </div>
     </div>
   </footer>

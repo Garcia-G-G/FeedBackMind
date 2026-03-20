@@ -29,8 +29,8 @@ class Account < ApplicationRecord
 
   # === Plan Limits ===
   PLAN_LIMITS = {
-    "starter" => { users: 1, sources: 3, feedbacks_per_month: 500, chat_enabled: false, prd_enabled: false },
-    "growth"  => { users: 5, sources: 10, feedbacks_per_month: 2_000, chat_enabled: true, prd_enabled: false },
+    "starter" => { users: 1, sources: 3, feedbacks_per_month: 1_000, chat_enabled: false, prd_enabled: false },
+    "growth"  => { users: 5, sources: 10, feedbacks_per_month: 10_000, chat_enabled: true, prd_enabled: false },
     "scale"   => { users: Float::INFINITY, sources: Float::INFINITY, feedbacks_per_month: Float::INFINITY, chat_enabled: true, prd_enabled: true }
   }.freeze
 
