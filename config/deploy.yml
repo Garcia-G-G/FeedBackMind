@@ -38,6 +38,8 @@ env:
     RAILS_LOG_LEVEL: info
     RAILS_SERVE_STATIC_FILES: "true"
     RAILS_MAX_THREADS: "5"
+    APP_HOST: "5.161.238.195.sslip.io"
+    APP_PROTOCOL: "https"
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE

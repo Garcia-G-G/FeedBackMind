@@ -38,7 +38,7 @@ class SourceConnectionsController < ApplicationController
 
     source = current_account.sources.find_or_initialize_by(source_type: source_type)
     source.active = true
-    source.config = source.config.merge(
+    source.config = (source.config || {}).merge(
       "access_token" => auth.credentials.token,
       "refresh_token" => auth.credentials.refresh_token,
       "uid" => auth.uid,
@@ -133,7 +133,7 @@ class SourceConnectionsController < ApplicationController
   def save_source(source_type, token_data)
     source = current_account.sources.find_or_initialize_by(source_type: source_type)
     source.active = true
-    source.config = source.config.merge(
+    source.config = (source.config || {}).merge(
       "access_token" => token_data["access_token"],
       "refresh_token" => token_data["refresh_token"],
       "token_type" => token_data["token_type"]

@@ -3,6 +3,11 @@ class SettingsController < ApplicationController
     @account = current_account
   end
 
+  def regenerate_token
+    current_account.regenerate_api_token!
+    redirect_to settings_path, notice: "API token regenerated."
+  end
+
   def update
     @account = current_account
 

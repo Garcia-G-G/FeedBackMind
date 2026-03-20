@@ -54,7 +54,7 @@ class Feedback < ApplicationRecord
 
   # For display: formatted metadata
   def source_label
-    "#{source.source_type.titleize} — #{received_at&.strftime('%b %d, %Y')}"
+    "#{source&.source_type&.titleize || 'Unknown'} — #{received_at&.strftime('%b %d, %Y')}"
   end
 
   def to_context_string

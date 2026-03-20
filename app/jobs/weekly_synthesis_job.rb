@@ -18,6 +18,7 @@ class WeeklySynthesisJob
       end
     rescue => e
       Rails.logger.error("[WeeklySynthesisJob] Error processing account #{account.id}: #{e.message}")
+      Rails.logger.error(e.backtrace&.first(5)&.join("\n"))
       # Continue with next account, don't let one failure block all
     end
   end

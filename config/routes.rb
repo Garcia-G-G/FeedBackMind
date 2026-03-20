@@ -65,7 +65,9 @@ Rails.application.routes.draw do
 
     resource :pipeline, only: [:show], controller: "pipeline"
     resource :loop_tracker, only: [:show], controller: "loop_tracker"
-    resource :settings, only: [:show, :update], controller: "settings"
+    resource :settings, only: [:show, :update], controller: "settings" do
+      post :regenerate_token
+    end
 
     post "chat", to: "chat#create", as: :chat
 

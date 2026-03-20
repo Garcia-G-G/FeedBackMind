@@ -43,6 +43,9 @@ gem "postmark-rails", "~> 0.22"
 gem "kamal", "~> 2.0"
 gem "thruster", "~> 0.1"
 
+# CSV (removed from default gems in Ruby 3.4)
+gem "csv"
+
 # Utilities
 gem "bootsnap", require: false
 gem "tzinfo-data", platforms: [:windows, :jruby]

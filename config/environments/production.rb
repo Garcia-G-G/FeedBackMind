@@ -52,11 +52,14 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "5.161.238.195.sslip.io", protocol: "https" }
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch("APP_HOST", "5.161.238.195.sslip.io"),
+    protocol: ENV.fetch("APP_PROTOCOL", "https")
+  }
 
   # ActionCable allowed origins
   config.action_cable.allowed_request_origins = [
-    /https:\/\/5\.161\.238\.195\.sslip\.io/,
+    /https?:\/\/#{Regexp.escape(ENV.fetch("APP_HOST", "5.161.238.195.sslip.io"))}/,
     /https:\/\/.*\.feedbackmind\.io/
   ]
 
