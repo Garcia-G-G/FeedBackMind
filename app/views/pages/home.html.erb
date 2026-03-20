@@ -262,13 +262,13 @@
             What are enterprise users saying about onboarding?
           </div>
           <div class="mr-auto max-w-[80%] bg-stone-50 border border-stone-100 text-stone-800 px-4 py-3 rounded-xl rounded-bl text-[13.5px] leading-relaxed">
-            Based on <strong class="text-stone-900">312 feedbacks</strong> from enterprise accounts this quarter: <strong class="text-stone-900">SSO integration</strong> (47 mentions), <strong class="text-stone-900">role-based permissions</strong> (38), and <strong class="text-stone-900">bulk user import</strong> (29) are the top requests.
+            Based on <strong class="text-stone-900">312 feedbacks</strong> from enterprise accounts this quarter: <strong class="text-stone-900">SSO integration</strong> (47 mentions), <strong class="text-stone-900">role-based permissions</strong> (38), and <strong class="text-stone-900">bulk user import</strong> (29) are the top requests. Sentiment around onboarding has dropped 18% since February — primarily driven by teams with 50+ seats.
           </div>
           <div class="ml-auto max-w-[80%] bg-stone-900 text-white px-4 py-3 rounded-xl rounded-br text-[13.5px] leading-relaxed">
             Which customers mentioned SSO specifically?
           </div>
           <div class="mr-auto max-w-[80%] bg-stone-50 border border-stone-100 text-stone-800 px-4 py-3 rounded-xl rounded-bl text-[13.5px] leading-relaxed">
-            SSO was mentioned by <strong class="text-stone-900">12 enterprise accounts</strong>, including Acme Corp (Intercom, 3 tickets), Globex (Slack), and Initech (NPS survey). 8 of 12 rated it as "blocking procurement."
+            SSO was mentioned by <strong class="text-stone-900">12 enterprise accounts</strong>, including Acme Corp (via Intercom, 3 tickets), Globex (Slack, 2 messages), and Initech (NPS survey). 8 of 12 rated it as "blocking procurement."
           </div>
         </div>
         <div class="px-6 py-3.5 border-t border-stone-100 flex items-center gap-3">
@@ -289,24 +289,48 @@
         <p class="text-sm text-stone-400">Two minutes per source. No engineering required.</p>
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border border-stone-200 rounded-xl overflow-hidden">
-        <% [
-          ["Intercom", "Chat & tickets", "#FFF1F0", "#E01E5A"],
-          ["Slack", "Channels & threads", "#F3EFFF", "#4A154B"],
-          ["Typeform", "Surveys & forms", "#F0F0F0", "#262626"],
-          ["Jira", "Issues & feedback", "#E8F0FE", "#0052CC"],
-          ["Google Reviews", "App & business", "#E8F5E9", "#4285F4"],
-          ["CSV Upload", "Any data source", "#EEF2FF", "#6366f1"]
-        ].each_with_index do |(name, desc, bg, color), i| %>
-          <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors <%= i < 5 ? 'border-r border-stone-200' : '' %>">
-            <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:<%= bg %>">
-              <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none">
-                <circle cx="10" cy="10" r="5" stroke="<%= color %>" stroke-width="1.5"/>
-              </svg>
-            </div>
-            <div class="text-[13px] font-semibold text-stone-700"><%= name %></div>
-            <div class="text-[11px] text-stone-400"><%= desc %></div>
+        <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors border-r border-stone-200">
+          <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#FFF1F0">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#E01E5A" stroke-width="1.5"/><path d="M7 10h6" stroke="#E01E5A" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
-        <% end %>
+          <div class="text-[13px] font-semibold text-stone-700">Intercom</div>
+          <div class="text-[11px] text-stone-400">Chat & tickets</div>
+        </div>
+        <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors border-r border-stone-200">
+          <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#F3EFFF">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none"><rect x="4" y="4" width="12" height="12" rx="2" stroke="#4A154B" stroke-width="1.5"/><path d="M7 10h6M10 7v6" stroke="#4A154B" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="text-[13px] font-semibold text-stone-700">Slack</div>
+          <div class="text-[11px] text-stone-400">Channels & threads</div>
+        </div>
+        <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors border-r border-stone-200">
+          <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#F0F0F0">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none"><rect x="4" y="4" width="12" height="12" rx="3" stroke="#262626" stroke-width="1.5"/><path d="M7 9h6M7 12h3" stroke="#262626" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="text-[13px] font-semibold text-stone-700">Typeform</div>
+          <div class="text-[11px] text-stone-400">Surveys & forms</div>
+        </div>
+        <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors border-r border-stone-200">
+          <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#E8F0FE">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none"><path d="M10 5L6 10h3v5l4-5h-3V5z" stroke="#0052CC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="text-[13px] font-semibold text-stone-700">Jira</div>
+          <div class="text-[11px] text-stone-400">Issues & feedback</div>
+        </div>
+        <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors border-r border-stone-200">
+          <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#E8F5E9">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-6" stroke="#4285F4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10" r="7" stroke="#4285F4" stroke-width="1.5"/></svg>
+          </div>
+          <div class="text-[13px] font-semibold text-stone-700">Google Reviews</div>
+          <div class="text-[11px] text-stone-400">App & business</div>
+        </div>
+        <div class="bg-white p-7 text-center hover:bg-stone-50 transition-colors">
+          <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#EEF2FF">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none"><path d="M5 8l5-3 5 3v4l-5 3-5-3V8z" stroke="#6366f1" stroke-width="1.5" stroke-linejoin="round"/><path d="M5 8l5 3 5-3M10 11v5" stroke="#6366f1" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="text-[13px] font-semibold text-stone-700">CSV Upload</div>
+          <div class="text-[11px] text-stone-400">Any data source</div>
+        </div>
       </div>
     </div>
   </section>
