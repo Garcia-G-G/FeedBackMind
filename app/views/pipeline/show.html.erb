@@ -2,32 +2,32 @@
 
 <div class="h-screen overflow-hidden flex flex-col">
   <!-- Kanban header -->
-  <div class="px-6 py-4 border-b border-gray-200 bg-white">
-    <h1 class="text-2xl font-bold text-gray-900">Feedback Pipeline</h1>
-    <p class="text-sm text-gray-600 mt-1">Manage feedback through each stage of the process</p>
+  <div class="px-6 py-4 border-b border-stone-200 bg-white">
+    <h1 class="text-2xl font-bold text-stone-900 font-serif-display">Feedback Pipeline</h1>
+    <p class="text-sm text-stone-600 mt-1">Manage feedback through each stage of the process</p>
   </div>
 
   <!-- Kanban board -->
   <div class="flex-1 overflow-x-auto">
     <div class="flex gap-4 p-6 min-w-full">
       <!-- Raw column -->
-      <div class="flex-shrink-0 w-80 bg-gray-50 rounded-xl border border-gray-200 flex flex-col">
-        <div class="px-4 py-3 border-b border-gray-200 bg-white rounded-t-xl">
-          <h2 class="font-semibold text-gray-900 text-sm">
+      <div class="flex-shrink-0 w-80 bg-stone-50 rounded-xl border border-stone-200 flex flex-col">
+        <div class="px-4 py-3 border-b border-stone-200 bg-white rounded-t-xl">
+          <h2 class="font-semibold text-stone-900 text-sm">
             Raw Feedback
-            <span class="text-gray-500 font-normal ml-2">
+            <span class="text-stone-500 font-normal ml-2">
               <%= @raw_feedbacks&.count || 0 %>
             </span>
           </h2>
         </div>
         <div class="flex-1 overflow-y-auto p-3 space-y-3">
           <% (@raw_feedbacks || []).each do |item| %>
-            <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-sm transition-shadow">
-              <p class="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+            <div class="bg-white rounded-lg border border-stone-200 p-3 hover:shadow-sm transition-shadow">
+              <p class="text-sm font-medium text-stone-900 line-clamp-2 mb-2">
                 <%= item.title || "Untitled" %>
               </p>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700 font-medium">
+                <span class="text-xs px-2 py-1 rounded bg-stone-100 text-stone-700 font-medium">
                   <%= source_emoji(item.source_type) %> <%= item.source_type&.titleize || 'Unknown' %>
                 </span>
               </div>
@@ -40,7 +40,7 @@
             </div>
           <% end %>
           <% if (@raw_feedbacks || []).empty? %>
-            <div class="text-center py-8 text-gray-500">
+            <div class="text-center py-8 text-stone-500">
               <p class="text-xs">No feedbacks</p>
             </div>
           <% end %>
@@ -48,23 +48,23 @@
       </div>
 
       <!-- Insights column -->
-      <div class="flex-shrink-0 w-80 bg-gray-50 rounded-xl border border-gray-200 flex flex-col">
-        <div class="px-4 py-3 border-b border-gray-200 bg-white rounded-t-xl">
-          <h2 class="font-semibold text-gray-900 text-sm">
+      <div class="flex-shrink-0 w-80 bg-stone-50 rounded-xl border border-stone-200 flex flex-col">
+        <div class="px-4 py-3 border-b border-stone-200 bg-white rounded-t-xl">
+          <h2 class="font-semibold text-stone-900 text-sm">
             Insights
-            <span class="text-gray-500 font-normal ml-2">
+            <span class="text-stone-500 font-normal ml-2">
               <%= @insights&.count || 0 %>
             </span>
           </h2>
         </div>
         <div class="flex-1 overflow-y-auto p-3 space-y-3">
           <% (@insights || []).each do |item| %>
-            <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-sm transition-shadow">
-              <p class="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+            <div class="bg-white rounded-lg border border-stone-200 p-3 hover:shadow-sm transition-shadow">
+              <p class="text-sm font-medium text-stone-900 line-clamp-2 mb-2">
                 <%= item.title || "Untitled" %>
               </p>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-700 font-medium">
+                <span class="text-xs px-2 py-1 rounded bg-stone-100 text-stone-700 font-medium">
                   <%= item.feedback_count || 0 %> feedbacks
                 </span>
               </div>
@@ -77,7 +77,7 @@
             </div>
           <% end %>
           <% if (@insights || []).empty? %>
-            <div class="text-center py-8 text-gray-500">
+            <div class="text-center py-8 text-stone-500">
               <p class="text-xs">No insights</p>
             </div>
           <% end %>
@@ -85,19 +85,19 @@
       </div>
 
       <!-- Actions column -->
-      <div class="flex-shrink-0 w-80 bg-gray-50 rounded-xl border border-gray-200 flex flex-col">
-        <div class="px-4 py-3 border-b border-gray-200 bg-white rounded-t-xl">
-          <h2 class="font-semibold text-gray-900 text-sm">
+      <div class="flex-shrink-0 w-80 bg-stone-50 rounded-xl border border-stone-200 flex flex-col">
+        <div class="px-4 py-3 border-b border-stone-200 bg-white rounded-t-xl">
+          <h2 class="font-semibold text-stone-900 text-sm">
             Actions
-            <span class="text-gray-500 font-normal ml-2">
+            <span class="text-stone-500 font-normal ml-2">
               <%= @actions&.count || 0 %>
             </span>
           </h2>
         </div>
         <div class="flex-1 overflow-y-auto p-3 space-y-3">
           <% (@actions || []).each do |item| %>
-            <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-sm transition-shadow">
-              <p class="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+            <div class="bg-white rounded-lg border border-stone-200 p-3 hover:shadow-sm transition-shadow">
+              <p class="text-sm font-medium text-stone-900 line-clamp-2 mb-2">
                 <%= item.title || "Untitled" %>
               </p>
               <div class="flex items-center justify-between mb-2">
@@ -114,7 +114,7 @@
             </div>
           <% end %>
           <% if (@actions || []).empty? %>
-            <div class="text-center py-8 text-gray-500">
+            <div class="text-center py-8 text-stone-500">
               <p class="text-xs">No actions</p>
             </div>
           <% end %>
@@ -122,19 +122,19 @@
       </div>
 
       <!-- Shipped column -->
-      <div class="flex-shrink-0 w-80 bg-gray-50 rounded-xl border border-gray-200 flex flex-col">
-        <div class="px-4 py-3 border-b border-gray-200 bg-white rounded-t-xl">
-          <h2 class="font-semibold text-gray-900 text-sm">
+      <div class="flex-shrink-0 w-80 bg-stone-50 rounded-xl border border-stone-200 flex flex-col">
+        <div class="px-4 py-3 border-b border-stone-200 bg-white rounded-t-xl">
+          <h2 class="font-semibold text-stone-900 text-sm">
             Shipped
-            <span class="text-gray-500 font-normal ml-2">
+            <span class="text-stone-500 font-normal ml-2">
               <%= @shipped&.count || 0 %>
             </span>
           </h2>
         </div>
         <div class="flex-1 overflow-y-auto p-3 space-y-3">
           <% (@shipped || []).each do |item| %>
-            <div class="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-sm transition-shadow opacity-75">
-              <p class="text-sm font-medium text-gray-900 line-clamp-2 mb-2">
+            <div class="bg-white rounded-lg border border-stone-200 p-3 hover:shadow-sm transition-shadow opacity-75">
+              <p class="text-sm font-medium text-stone-900 line-clamp-2 mb-2">
                 <%= item.title || "Untitled" %>
               </p>
               <div class="flex items-center justify-between">
@@ -145,7 +145,7 @@
             </div>
           <% end %>
           <% if (@shipped || []).empty? %>
-            <div class="text-center py-8 text-gray-500">
+            <div class="text-center py-8 text-stone-500">
               <p class="text-xs">No shipped items</p>
             </div>
           <% end %>

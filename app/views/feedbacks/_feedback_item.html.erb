@@ -1,16 +1,16 @@
-<div id="<%= dom_id(feedback) %>" class="flex gap-2.5 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
-  <% dot_color = { "positive" => "bg-emerald-500", "neutral" => "bg-gray-300", "negative" => "bg-red-400" } %>
-  <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= dot_color[feedback.sentiment] || 'bg-gray-200' %>"></div>
+<div id="<%= dom_id(feedback) %>" class="flex gap-2.5 pb-3 border-b border-stone-200 last:border-0 last:pb-0">
+  <% dot_color = { "positive" => "bg-emerald-500", "neutral" => "bg-stone-300", "negative" => "bg-red-400" } %>
+  <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= dot_color[feedback.sentiment] || 'bg-stone-200' %>"></div>
   <div class="flex-1 min-w-0">
-    <p class="text-[13px] text-gray-700 line-clamp-2"><%= feedback.content %></p>
+    <p class="text-[13px] text-stone-700 line-clamp-2"><%= feedback.content %></p>
     <% if feedback.topics.present? %>
       <div class="flex items-center gap-1.5 mt-1.5">
         <% feedback.topics.first(2).each do |topic| %>
-          <span class="text-[10px] bg-gray-50 border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded"><%= topic %></span>
+          <span class="text-[10px] bg-stone-50 border border-stone-200 text-stone-600 px-1.5 py-0.5 rounded"><%= topic %></span>
         <% end %>
       </div>
     <% end %>
-    <p class="text-[11px] text-gray-400 mt-1.5">
+    <p class="text-[11px] text-stone-400 mt-1.5">
       <%= source_emoji(feedback.source&.source_type) %> <%= feedback.source&.source_type&.titleize || "Unknown" %> &bull; <%= format_time_ago(feedback.received_at) %>
     </p>
   </div>

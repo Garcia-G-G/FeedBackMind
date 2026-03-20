@@ -1,10 +1,10 @@
 <% content_for(:page_title) { "Feedback ##{@feedback.id}" } %>
 
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-stone-50">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <!-- Back Link -->
     <div class="mb-6">
-      <%= link_to "← Back to Feedbacks", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium" %>
+      <%= link_to "← Back to Feedbacks", feedbacks_path, class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-sm font-medium" %>
     </div>
 
     <!-- Main Layout: Two Column -->
@@ -12,24 +12,24 @@
       <!-- Main Content -->
       <div class="space-y-6">
         <!-- Feedback Content Card -->
-        <div class="bg-white border border-gray-100 rounded-xl p-8">
+        <div class="bg-white border border-stone-200 rounded-xl p-8">
           <div class="mb-6">
-            <span class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">Feedback #<%= @feedback.id %></span>
-            <h1 class="text-2xl font-extrabold text-gray-900 mt-2 tracking-tight">
+            <span class="text-[11px] font-medium text-stone-500 uppercase tracking-wider">Feedback #<%= @feedback.id %></span>
+            <h1 class="text-2xl font-extrabold font-serif-display text-stone-900 mt-2 tracking-tight">
               <%= @feedback.content.split.first(10).join(' ') %>...
             </h1>
           </div>
 
           <div class="prose prose-sm max-w-none">
-            <p class="text-[15px] leading-relaxed text-gray-700 whitespace-pre-wrap"><%= @feedback.content %></p>
+            <p class="text-[15px] leading-relaxed text-stone-700 whitespace-pre-wrap"><%= @feedback.content %></p>
           </div>
 
           <!-- Metadata -->
-          <div class="mt-8 pt-8 border-t border-gray-100">
+          <div class="mt-8 pt-8 border-t border-stone-200">
             <div class="grid grid-cols-3 gap-8">
               <div>
-                <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Source</p>
-                <p class="text-sm font-semibold text-gray-900">
+                <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-2">Source</p>
+                <p class="text-sm font-semibold text-stone-900">
                   <% source_icons = {
                     "slack" => "💬",
                     "email" => "✉️",
@@ -43,13 +43,13 @@
                 </p>
               </div>
               <div>
-                <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Created</p>
-                <p class="text-sm font-semibold text-gray-900"><%= @feedback.created_at.strftime("%b %d, %Y") %></p>
-                <p class="text-xs text-gray-500 mt-1"><%= @feedback.created_at.strftime("%I:%M %p") %></p>
+                <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-2">Created</p>
+                <p class="text-sm font-semibold text-stone-900"><%= @feedback.created_at.strftime("%b %d, %Y") %></p>
+                <p class="text-xs text-stone-500 mt-1"><%= @feedback.created_at.strftime("%I:%M %p") %></p>
               </div>
               <div>
-                <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">Status</p>
-                <p class="text-sm font-semibold text-gray-900">Active</p>
+                <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-2">Status</p>
+                <p class="text-sm font-semibold text-stone-900">Active</p>
               </div>
             </div>
           </div>
@@ -57,25 +57,25 @@
 
         <!-- Related Feedbacks (Optional) -->
         <% if @related_feedbacks.present? %>
-          <div class="bg-white border border-gray-100 rounded-xl p-6">
-            <h2 class="text-sm font-bold text-gray-900 mb-4">Related Feedbacks</h2>
+          <div class="bg-white border border-stone-200 rounded-xl p-6">
+            <h2 class="text-sm font-bold text-stone-900 mb-4">Related Feedbacks</h2>
             <div class="space-y-3">
               <% @related_feedbacks.first(3).each do |related| %>
-                <div class="flex gap-3 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
+                <div class="flex gap-3 pb-3 border-b border-stone-200 last:border-0 last:pb-0">
                   <% sentiment_colors = {
                     "positive" => "bg-emerald-500",
-                    "neutral" => "bg-gray-300",
+                    "neutral" => "bg-stone-300",
                     "negative" => "bg-red-400"
                   } %>
-                  <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= sentiment_colors[related.sentiment] || 'bg-gray-300' %>"></div>
+                  <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1 <%= sentiment_colors[related.sentiment] || 'bg-stone-300' %>"></div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-[13px] text-gray-700 line-clamp-2"><%= related.content %></p>
-                    <p class="text-[11px] text-gray-400 mt-1">
+                    <p class="text-[13px] text-stone-700 line-clamp-2"><%= related.content %></p>
+                    <p class="text-[11px] text-stone-400 mt-1">
                       <%= related.source&.source_type&.capitalize || "Unknown" %> • <%= time_ago_in_words(related.created_at) %> ago
                     </p>
                   </div>
                   <div class="flex-shrink-0">
-                    <%= link_to "View", feedback_path(related), class: "text-indigo-600 hover:text-indigo-700 text-xs font-medium whitespace-nowrap" %>
+                    <%= link_to "View", feedback_path(related), class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-xs font-medium whitespace-nowrap" %>
                   </div>
                 </div>
               <% end %>
@@ -87,11 +87,11 @@
       <!-- Sidebar -->
       <div class="space-y-5">
         <!-- Sentiment Badge -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">Sentiment</p>
+        <div class="bg-white border border-stone-200 rounded-xl p-5">
+          <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Sentiment</p>
           <% sentiment_config = {
             "positive" => { bg: "bg-emerald-50", text: "text-emerald-700", icon: "😊" },
-            "neutral" => { bg: "bg-gray-50", text: "text-gray-700", icon: "😐" },
+            "neutral" => { bg: "bg-stone-50", text: "text-stone-700", icon: "😐" },
             "negative" => { bg: "bg-red-50", text: "text-red-700", icon: "😞" }
           } %>
           <% config = sentiment_config[@feedback.sentiment] || sentiment_config["neutral"] %>
@@ -100,32 +100,32 @@
             <p class="text-sm font-bold <%= config[:text] %> uppercase tracking-wide">
               <%= @feedback.sentiment&.humanize || "Unknown" %>
             </p>
-            <p class="text-[11px] text-gray-500 mt-2">Confidence: 92%</p>
+            <p class="text-[11px] text-stone-500 mt-2">Confidence: 92%</p>
           </div>
         </div>
 
         <!-- Source Info -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">Source Details</p>
+        <div class="bg-white border border-stone-200 rounded-xl p-5">
+          <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Source Details</p>
           <div class="space-y-3">
             <div>
-              <p class="text-[11px] text-gray-500 font-medium mb-1">Type</p>
-              <p class="text-sm font-semibold text-gray-900">
+              <p class="text-[11px] text-stone-500 font-medium mb-1">Type</p>
+              <p class="text-sm font-semibold text-stone-900">
                 <%= @feedback.source&.source_type&.humanize || "Unknown" %>
               </p>
             </div>
             <% if @feedback.source&.respond_to?(:name) && @feedback.source.name.present? %>
               <div>
-                <p class="text-[11px] text-gray-500 font-medium mb-1">Channel</p>
-                <p class="text-sm font-semibold text-gray-900"><%= @feedback.source.name %></p>
+                <p class="text-[11px] text-stone-500 font-medium mb-1">Channel</p>
+                <p class="text-sm font-semibold text-stone-900"><%= @feedback.source.name %></p>
               </div>
             <% end %>
             <% if @feedback.respond_to?(:user) && @feedback.user.present? %>
               <div>
-                <p class="text-[11px] text-gray-500 font-medium mb-1">Author</p>
-                <p class="text-sm font-semibold text-gray-900"><%= @feedback.user.name %></p>
+                <p class="text-[11px] text-stone-500 font-medium mb-1">Author</p>
+                <p class="text-sm font-semibold text-stone-900"><%= @feedback.user.name %></p>
                 <% if @feedback.user.email.present? %>
-                  <p class="text-[11px] text-gray-500"><%= @feedback.user.email %></p>
+                  <p class="text-[11px] text-stone-500"><%= @feedback.user.email %></p>
                 <% end %>
               </div>
             <% end %>
@@ -133,73 +133,73 @@
         </div>
 
         <!-- Topics -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">Topics</p>
+        <div class="bg-white border border-stone-200 rounded-xl p-5">
+          <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Topics</p>
           <% if @feedback.topics.present? %>
             <div class="flex flex-wrap gap-2">
               <% @feedback.topics.each do |topic| %>
-                <span class="text-[11px] bg-indigo-50 border border-indigo-200 text-indigo-700 font-medium px-2.5 py-1.5 rounded-full">
+                <span class="text-[11px] bg-stone-100 border border-stone-300 text-stone-700 font-medium px-2.5 py-1.5 rounded-full">
                   <%= topic %>
                 </span>
               <% end %>
             </div>
           <% else %>
-            <p class="text-sm text-gray-500">No topics assigned</p>
+            <p class="text-sm text-stone-500">No topics assigned</p>
           <% end %>
         </div>
 
         <!-- Processing Status -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">Status</p>
+        <div class="bg-white border border-stone-200 rounded-xl p-5">
+          <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Status</p>
           <div class="space-y-2">
             <div class="flex items-center gap-2">
               <div class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></div>
-              <span class="text-sm text-gray-900 font-medium">Processed</span>
+              <span class="text-sm text-stone-900 font-medium">Processed</span>
             </div>
             <div class="flex items-center gap-2">
               <div class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></div>
-              <span class="text-sm text-gray-900 font-medium">Analyzed</span>
+              <span class="text-sm text-stone-900 font-medium">Analyzed</span>
             </div>
             <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0"></div>
-              <span class="text-sm text-gray-500 font-medium">Actioned</span>
+              <div class="w-2 h-2 rounded-full bg-stone-300 flex-shrink-0"></div>
+              <span class="text-sm text-stone-500 font-medium">Actioned</span>
             </div>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">Actions</p>
+        <div class="bg-white border border-stone-200 rounded-xl p-5">
+          <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Actions</p>
           <div class="space-y-2">
-            <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700">
+            <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors text-sm font-medium text-stone-700">
               📌 Pin
             </button>
-            <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700">
+            <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors text-sm font-medium text-stone-700">
               ⭐ Star
             </button>
-            <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 transition-colors text-sm font-medium text-indigo-700">
+            <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-stone-900 bg-stone-900 text-white hover:bg-stone-800 transition-colors text-sm font-medium">
               ✓ Resolve
             </button>
           </div>
         </div>
 
         <!-- Timeline -->
-        <div class="bg-white border border-gray-100 rounded-xl p-5">
-          <p class="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">Activity</p>
+        <div class="bg-white border border-stone-200 rounded-xl p-5">
+          <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Activity</p>
           <div class="space-y-3 text-[12px]">
             <div class="flex gap-2">
-              <div class="text-gray-500">•</div>
+              <div class="text-stone-500">•</div>
               <div>
-                <p class="font-medium text-gray-900">Created</p>
-                <p class="text-gray-500"><%= @feedback.created_at.strftime("%b %d, %Y") %></p>
+                <p class="font-medium text-stone-900">Created</p>
+                <p class="text-stone-500"><%= @feedback.created_at.strftime("%b %d, %Y") %></p>
               </div>
             </div>
             <% if @feedback.updated_at != @feedback.created_at %>
               <div class="flex gap-2">
-                <div class="text-gray-500">•</div>
+                <div class="text-stone-500">•</div>
                 <div>
-                  <p class="font-medium text-gray-900">Updated</p>
-                  <p class="text-gray-500"><%= @feedback.updated_at.strftime("%b %d, %Y") %></p>
+                  <p class="font-medium text-stone-900">Updated</p>
+                  <p class="text-stone-500"><%= @feedback.updated_at.strftime("%b %d, %Y") %></p>
                 </div>
               </div>
             <% end %>

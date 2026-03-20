@@ -1,6 +1,6 @@
 <%= turbo_stream.append "chat_messages" do %>
   <div class="flex justify-end mb-3">
-    <div class="bg-indigo-500 text-white rounded-xl rounded-br-sm px-4 py-2.5 max-w-[80%] text-sm">
+    <div class="bg-stone-900 text-white rounded-xl rounded-br-sm px-4 py-2.5 max-w-[80%] text-sm">
       <%= @user_message.content %>
     </div>
   </div>
@@ -8,10 +8,10 @@
 
 <%= turbo_stream.append "chat_messages" do %>
   <div class="flex justify-start mb-3">
-    <div class="bg-gray-100 text-gray-900 rounded-xl rounded-bl-sm px-4 py-2.5 max-w-[80%] text-sm">
+    <div class="bg-stone-100 text-stone-900 rounded-xl rounded-bl-sm px-4 py-2.5 max-w-[80%] text-sm">
       <%= simple_format(@assistant_message.content) %>
       <% if @assistant_message.source_feedback_ids.present? %>
-        <p class="text-[10px] text-gray-400 mt-2"><%= @assistant_message.source_feedback_ids.size %> sources cited</p>
+        <p class="text-[10px] text-stone-400 mt-2"><%= @assistant_message.source_feedback_ids.size %> sources cited</p>
       <% end %>
     </div>
   </div>
@@ -19,5 +19,5 @@
 
 <%= turbo_stream.replace "chat_input" do %>
   <input type="text" name="message" id="chat_input" placeholder="Ask about your feedback..." autocomplete="off"
-    class="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+    class="flex-1 px-4 py-2.5 border border-stone-200 rounded-lg text-sm focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none">
 <% end %>

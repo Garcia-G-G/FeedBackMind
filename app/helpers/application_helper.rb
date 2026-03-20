@@ -7,14 +7,14 @@ module ApplicationHelper
   # @param badge [Integer, nil] Optional badge count/text
   # @param badge_warn [Boolean] Whether to use warning color for badge
   def sidebar_link(label, path, icon_name, active, badge: nil, badge_warn: false)
-    active_classes = active ? "bg-indigo-50 text-indigo-600" : "text-gray-700 hover:bg-gray-50"
+    active_classes = active ? "bg-stone-100 text-stone-900" : "text-stone-700 hover:bg-stone-50"
     icon_svg = render_sidebar_icon(icon_name)
 
     content_tag :div, class: "relative" do
       link_to path, class: "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors #{active_classes}" do
         content_tag(:span, icon_svg.html_safe, class: "flex-shrink-0 w-5 h-5") +
         content_tag(:span, label, class: "flex-1 text-sm font-medium") +
-        (badge.present? ? content_tag(:span, badge, class: "ml-2 px-2 py-0.5 rounded-full text-xs font-semibold #{badge_warn ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-700'}") : "")
+        (badge.present? ? content_tag(:span, badge, class: "ml-2 px-2 py-0.5 rounded-full text-xs font-semibold #{badge_warn ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-700'}") : "")
       end
     end
   end
@@ -31,7 +31,7 @@ module ApplicationHelper
     when "negative"
       "text-red-700"
     else
-      "text-gray-700"
+      "text-stone-700"
     end
   end
 
@@ -49,7 +49,7 @@ module ApplicationHelper
     when "positive"
       "bg-emerald-100 text-emerald-700"
     else
-      "bg-gray-100 text-gray-700"
+      "bg-stone-100 text-stone-700"
     end
   end
 

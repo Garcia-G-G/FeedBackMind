@@ -22,21 +22,21 @@
 <div class="mx-auto max-w-7xl">
   <!-- 4 Metric Cards -->
   <div class="grid grid-cols-4 gap-3.5 mb-6">
-    <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
-      <p class="text-xs text-gray-400 font-medium mb-3">Total Feedbacks</p>
-      <div class="text-3xl font-extrabold tracking-tight text-gray-900"><%= number_with_delimiter(@feedbacks_count) %></div>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-stone-400 font-medium mb-3">Total Feedbacks</p>
+      <div class="text-3xl font-extrabold tracking-tight text-stone-900"><%= number_with_delimiter(@feedbacks_count) %></div>
     </div>
-    <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
-      <p class="text-xs text-gray-400 font-medium mb-3">Sentiment Score</p>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-stone-400 font-medium mb-3">Sentiment Score</p>
       <div class="text-3xl font-extrabold tracking-tight <%= @sentiment_score >= 60 ? 'text-emerald-600' : @sentiment_score >= 40 ? 'text-amber-600' : 'text-red-600' %>"><%= @sentiment_score %>%</div>
     </div>
-    <div class="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-shadow">
-      <p class="text-xs text-gray-400 font-medium mb-3">Active Sources</p>
-      <div class="text-3xl font-extrabold tracking-tight text-gray-900"><%= @active_sources_count %>/<%= @total_sources_count %></div>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-stone-400 font-medium mb-3">Active Sources</p>
+      <div class="text-3xl font-extrabold tracking-tight text-stone-900"><%= @active_sources_count %>/<%= @total_sources_count %></div>
     </div>
-    <div class="bg-white border border-gray-100 rounded-xl p-5 border-l-[3px] border-l-indigo-500 hover:shadow-sm transition-shadow">
-      <p class="text-xs text-gray-400 font-medium mb-3">Unprocessed</p>
-      <div class="text-3xl font-extrabold tracking-tight text-gray-900"><%= @unprocessed_count %></div>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 border-l-[3px] border-l-stone-900 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-stone-400 font-medium mb-3">Unprocessed</p>
+      <div class="text-3xl font-extrabold tracking-tight text-stone-900"><%= @unprocessed_count %></div>
       <% if @unprocessed_count > 0 %>
         <p class="text-[10px] text-amber-600 font-medium mt-1"><%= @unprocessed_count %> awaiting AI processing</p>
       <% end %>
@@ -44,13 +44,13 @@
   </div>
 
   <!-- Sentiment Timeline -->
-  <div class="bg-white border border-gray-100 rounded-xl p-5 mb-6">
+  <div class="bg-white border border-stone-200 rounded-xl p-5 mb-6">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-sm font-bold text-gray-900">Sentiment Timeline</h2>
+      <h2 class="text-sm font-bold text-stone-900">Sentiment Timeline</h2>
       <div class="flex gap-3">
-        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div><span class="text-[12px] text-gray-500">Positive</span></div>
-        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-gray-300 rounded-full"></div><span class="text-[12px] text-gray-500">Neutral</span></div>
-        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-red-400 rounded-full"></div><span class="text-[12px] text-gray-500">Negative</span></div>
+        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div><span class="text-[12px] text-stone-500">Positive</span></div>
+        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-stone-300 rounded-full"></div><span class="text-[12px] text-stone-500">Neutral</span></div>
+        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 bg-red-400 rounded-full"></div><span class="text-[12px] text-stone-500">Negative</span></div>
       </div>
     </div>
 
@@ -62,80 +62,80 @@
             <% if day_total > 0 %>
               <div class="w-full flex flex-col items-stretch gap-px h-32">
                 <div class="bg-emerald-500 rounded-t-sm flex-grow" style="flex-basis: <%= (day[:positive].to_f / day_total * 100).round %>%"></div>
-                <div class="bg-gray-300 flex-grow" style="flex-basis: <%= (day[:neutral].to_f / day_total * 100).round %>%"></div>
+                <div class="bg-stone-300 flex-grow" style="flex-basis: <%= (day[:neutral].to_f / day_total * 100).round %>%"></div>
                 <div class="bg-red-400 rounded-b-sm flex-grow" style="flex-basis: <%= (day[:negative].to_f / day_total * 100).round %>%"></div>
               </div>
             <% else %>
-              <div class="h-32 flex items-end justify-center"><div class="w-full bg-gray-100 rounded h-1"></div></div>
+              <div class="h-32 flex items-end justify-center"><div class="w-full bg-stone-100 rounded h-1"></div></div>
             <% end %>
-            <span class="text-[11px] text-gray-500 text-center font-medium"><%= day[:label] %></span>
+            <span class="text-[11px] text-stone-500 text-center font-medium"><%= day[:label] %></span>
           </div>
         <% end %>
       </div>
     <% else %>
-      <div class="h-40 flex items-center justify-center text-sm text-gray-400">No sentiment data for this period</div>
+      <div class="h-40 flex items-center justify-center text-sm text-stone-400">No sentiment data for this period</div>
     <% end %>
   </div>
 
   <!-- Two-Column: Themes + Sentiment/Sources -->
   <div class="grid grid-cols-[1fr_380px] gap-5 mb-6">
     <!-- Weekly Themes -->
-    <div class="bg-white border border-gray-100 rounded-xl overflow-hidden">
-      <div class="border-b border-gray-100 px-5 py-4 flex items-center justify-between bg-gray-50">
-        <h2 class="text-sm font-bold text-gray-900">Weekly Themes</h2>
+    <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
+      <div class="border-b border-stone-200 px-5 py-4 flex items-center justify-between bg-stone-50">
+        <h2 class="text-sm font-bold text-stone-900">Weekly Themes</h2>
         <div class="flex items-center gap-2">
           <span class="bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">AI</span>
           <% if @weekly_synthesis %>
-            <%= link_to "View synthesis", synthesis_path(@weekly_synthesis), class: "text-indigo-600 hover:text-indigo-700 text-xs font-medium" %>
+            <%= link_to "View synthesis", synthesis_path(@weekly_synthesis), class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-xs font-medium" %>
           <% end %>
         </div>
       </div>
 
       <% if @themes.any? %>
-        <div class="divide-y divide-gray-100">
+        <div class="divide-y divide-stone-200">
           <% @themes.each do |theme| %>
             <div class="p-4">
               <div class="flex items-start justify-between mb-2">
-                <h3 class="text-sm font-semibold text-gray-900"><%= theme.respond_to?(:title) ? theme.title : theme["title"] %></h3>
+                <h3 class="text-sm font-semibold text-stone-900"><%= theme.respond_to?(:title) ? theme.title : theme["title"] %></h3>
                 <% urgency = theme.respond_to?(:urgency) ? theme.urgency : theme["urgency"] %>
                 <span class="text-[10px] uppercase font-semibold rounded-full px-2 py-0.5 <%= urgency_color(urgency) %>"><%= urgency %></span>
               </div>
-              <p class="text-[13px] text-gray-500 mb-3"><%= theme.respond_to?(:description) ? theme.description : theme["description"] %></p>
+              <p class="text-[13px] text-stone-500 mb-3"><%= theme.respond_to?(:description) ? theme.description : theme["description"] %></p>
               <% quotes = theme.respond_to?(:sample_quotes) ? theme.sample_quotes : theme["sample_quotes"] %>
               <% if quotes.present? %>
-                <blockquote class="text-[12px] italic text-gray-600 border-l-[3px] border-gray-200 bg-gray-50 rounded-md pl-3 py-2 mb-3">"<%= quotes.first %>"</blockquote>
+                <blockquote class="text-[12px] italic text-stone-600 border-l-[3px] border-stone-200 bg-stone-50 rounded-md pl-3 py-2 mb-3">"<%= quotes.first %>"</blockquote>
               <% end %>
-              <div class="text-[11px] text-gray-500">
+              <div class="text-[11px] text-stone-500">
                 <strong><%= theme.respond_to?(:feedback_count) ? theme.feedback_count : theme["feedback_count"] %></strong> feedbacks
               </div>
             </div>
           <% end %>
         </div>
       <% else %>
-        <div class="p-8 text-center text-sm text-gray-400">No synthesis yet. <%= link_to "Generate one", new_synthesis_path, class: "text-indigo-600 hover:text-indigo-700 font-medium" %></div>
+        <div class="p-8 text-center text-sm text-stone-400">No synthesis yet. <%= link_to "Generate one", new_synthesis_path, class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 font-medium" %></div>
       <% end %>
     </div>
 
     <!-- Right Column -->
     <div class="flex flex-col gap-5">
       <!-- Sentiment Breakdown -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5">
-        <h3 class="text-sm font-bold text-gray-900 mb-4">Sentiment Breakdown</h3>
+      <div class="bg-white border border-stone-200 rounded-xl p-5">
+        <h3 class="text-sm font-bold text-stone-900 mb-4">Sentiment Breakdown</h3>
         <div class="flex justify-center mb-6">
           <svg viewBox="0 0 100 100" class="w-32 h-32">
             <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="<%= pos_dash %> <%= circumference %>" stroke-dashoffset="0" transform="rotate(-90 50 50)"></circle>
             <circle cx="50" cy="50" r="40" fill="none" stroke="#d1d5db" stroke-width="8" stroke-dasharray="<%= neu_dash %> <%= circumference %>" stroke-dashoffset="<%= -pos_dash %>" transform="rotate(-90 50 50)"></circle>
             <circle cx="50" cy="50" r="40" fill="none" stroke="#f87171" stroke-width="8" stroke-dasharray="<%= neg_dash %> <%= circumference %>" stroke-dashoffset="<%= -(pos_dash + neu_dash) %>" transform="rotate(-90 50 50)"></circle>
-            <text x="50" y="50" text-anchor="middle" dy="0.3em" class="text-xs font-bold fill-gray-900"><%= @sentiment_score %>%</text>
+            <text x="50" y="50" text-anchor="middle" dy="0.3em" class="text-xs font-bold fill-stone-900"><%= @sentiment_score %>%</text>
           </svg>
         </div>
         <div class="space-y-2">
-          <% [["Positive", "bg-emerald-500", pos_pct], ["Neutral", "bg-gray-300", neu_pct], ["Negative", "bg-red-400", neg_pct]].each do |label, color, pct| %>
+          <% [["Positive", "bg-emerald-500", pos_pct], ["Neutral", "bg-stone-300", neu_pct], ["Negative", "bg-red-400", neg_pct]].each do |label, color, pct| %>
             <div class="flex items-center justify-between text-[12px]">
-              <div class="flex items-center gap-2"><div class="w-2 h-2 <%= color %> rounded-full"></div><span class="text-gray-600"><%= label %></span></div>
+              <div class="flex items-center gap-2"><div class="w-2 h-2 <%= color %> rounded-full"></div><span class="text-stone-600"><%= label %></span></div>
               <div class="flex items-center gap-1">
-                <div class="w-20 h-1 bg-gray-100 rounded-full overflow-hidden"><div class="<%= color %> h-full" style="width: <%= pct %>%"></div></div>
-                <span class="font-semibold text-gray-900 w-8"><%= pct %>%</span>
+                <div class="w-20 h-1 bg-stone-100 rounded-full overflow-hidden"><div class="<%= color %> h-full" style="width: <%= pct %>%"></div></div>
+                <span class="font-semibold text-stone-900 w-8"><%= pct %>%</span>
               </div>
             </div>
           <% end %>
@@ -143,77 +143,77 @@
       </div>
 
       <!-- Sources Grid -->
-      <div class="bg-white border border-gray-100 rounded-xl p-5">
-        <h3 class="text-sm font-bold text-gray-900 mb-4">Sources</h3>
+      <div class="bg-white border border-stone-200 rounded-xl p-5">
+        <h3 class="text-sm font-bold text-stone-900 mb-4">Sources</h3>
         <% if @sources.any? %>
           <div class="grid grid-cols-3 gap-3">
             <% @sources.each do |source| %>
               <div class="text-center">
                 <div class="text-2xl mb-2"><%= source_emoji(source.source_type) %></div>
-                <p class="text-[12px] font-medium text-gray-900 mb-1"><%= source.source_type.titleize %></p>
-                <div class="flex justify-center"><div class="w-2 h-2 rounded-full <%= source.active? ? 'bg-emerald-500' : 'bg-gray-300' %>"></div></div>
+                <p class="text-[12px] font-medium text-stone-900 mb-1"><%= source.source_type.titleize %></p>
+                <div class="flex justify-center"><div class="w-2 h-2 rounded-full <%= source.active? ? 'bg-emerald-500' : 'bg-stone-300' %>"></div></div>
               </div>
             <% end %>
           </div>
         <% else %>
-          <p class="text-sm text-gray-400 text-center py-4"><%= link_to "Connect your first source", new_source_path, class: "text-indigo-600 font-medium" %></p>
+          <p class="text-sm text-stone-400 text-center py-4"><%= link_to "Connect your first source", new_source_path, class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 font-medium" %></p>
         <% end %>
       </div>
     </div>
   </div>
 
   <!-- Pipeline Preview -->
-  <div class="bg-white border border-gray-100 rounded-xl p-5 mb-6">
+  <div class="bg-white border border-stone-200 rounded-xl p-5 mb-6">
     <div class="flex items-center justify-between mb-5">
-      <h2 class="text-sm font-bold text-gray-900">Feedback Pipeline</h2>
-      <%= link_to "View full pipeline", pipeline_path, class: "text-indigo-600 hover:text-indigo-700 text-xs font-medium" %>
+      <h2 class="text-sm font-bold text-stone-900">Feedback Pipeline</h2>
+      <%= link_to "View full pipeline", pipeline_path, class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-xs font-medium" %>
     </div>
     <div class="grid grid-cols-4 gap-5">
       <% unprocessed = current_account.feedbacks.unprocessed.order(created_at: :desc).limit(3) %>
       <% processed = current_account.feedbacks.processed.order(processed_at: :desc).limit(3) %>
-      <div class="border-l-[3px] border-gray-400 pl-4">
-        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Raw</h3><span class="bg-gray-100 text-gray-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= @unprocessed_count %></span></div>
+      <div class="border-l-[3px] border-stone-400 pl-4">
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-stone-900">Raw</h3><span class="bg-stone-100 text-stone-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= @unprocessed_count %></span></div>
         <div class="space-y-2">
           <% unprocessed.each do |fb| %>
-            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= fb.content.truncate(60) %></h4>
-              <p class="text-[10px] text-gray-400 mt-1"><%= format_time_ago(fb.received_at) %> &bull; <%= fb.source&.source_type&.titleize %></p>
+            <div class="bg-stone-50 rounded-lg p-3 border border-stone-200">
+              <h4 class="text-xs font-semibold text-stone-900 line-clamp-1"><%= fb.content.truncate(60) %></h4>
+              <p class="text-[10px] text-stone-400 mt-1"><%= format_time_ago(fb.received_at) %> &bull; <%= fb.source&.source_type&.titleize %></p>
             </div>
           <% end %>
         </div>
       </div>
-      <div class="border-l-[3px] border-indigo-500 pl-4">
-        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Processed</h3><span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= current_account.feedbacks.processed.count %></span></div>
+      <div class="border-l-[3px] border-stone-900 pl-4">
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-stone-900">Processed</h3><span class="bg-stone-100 text-stone-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= current_account.feedbacks.processed.count %></span></div>
         <div class="space-y-2">
           <% processed.each do |fb| %>
-            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= fb.content.truncate(60) %></h4>
-              <p class="text-[10px] text-gray-400 mt-1"><%= fb.sentiment&.titleize %></p>
+            <div class="bg-stone-50 rounded-lg p-3 border border-stone-200">
+              <h4 class="text-xs font-semibold text-stone-900 line-clamp-1"><%= fb.content.truncate(60) %></h4>
+              <p class="text-[10px] text-stone-400 mt-1"><%= fb.sentiment&.titleize %></p>
               <% (fb.topics || []).first(2).each do |t| %>
-                <span class="inline-block bg-indigo-50 text-indigo-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-1"><%= t %></span>
+                <span class="inline-block bg-stone-100 text-stone-700 text-[9px] font-medium px-1.5 py-0.5 rounded mt-1"><%= t %></span>
               <% end %>
             </div>
           <% end %>
         </div>
       </div>
       <div class="border-l-[3px] border-amber-500 pl-4">
-        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Themes</h3><span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= @themes.size %></span></div>
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-stone-900">Themes</h3><span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= @themes.size %></span></div>
         <div class="space-y-2">
           <% @themes.first(3).each do |theme| %>
-            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= theme.respond_to?(:title) ? theme.title : theme["title"] %></h4>
-              <p class="text-[10px] text-gray-400 mt-1"><%= theme.respond_to?(:feedback_count) ? theme.feedback_count : theme["feedback_count"] %> feedbacks</p>
+            <div class="bg-stone-50 rounded-lg p-3 border border-stone-200">
+              <h4 class="text-xs font-semibold text-stone-900 line-clamp-1"><%= theme.respond_to?(:title) ? theme.title : theme["title"] %></h4>
+              <p class="text-[10px] text-stone-400 mt-1"><%= theme.respond_to?(:feedback_count) ? theme.feedback_count : theme["feedback_count"] %> feedbacks</p>
             </div>
           <% end %>
         </div>
       </div>
       <div class="border-l-[3px] border-emerald-500 pl-4">
-        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-gray-900">Syntheses</h3><span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= current_account.weekly_syntheses.count %></span></div>
+        <div class="flex items-center gap-2 mb-4"><h3 class="text-xs font-bold text-stone-900">Syntheses</h3><span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full"><%= current_account.weekly_syntheses.count %></span></div>
         <div class="space-y-2">
           <% current_account.weekly_syntheses.order(week_start: :desc).limit(3).each do |s| %>
-            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-              <h4 class="text-xs font-semibold text-gray-900 line-clamp-1"><%= s.week_label %></h4>
-              <p class="text-[10px] text-gray-400 mt-1"><%= s.feedback_count %> feedbacks analyzed</p>
+            <div class="bg-stone-50 rounded-lg p-3 border border-stone-200">
+              <h4 class="text-xs font-semibold text-stone-900 line-clamp-1"><%= s.week_label %></h4>
+              <p class="text-[10px] text-stone-400 mt-1"><%= s.feedback_count %> feedbacks analyzed</p>
             </div>
           <% end %>
         </div>
@@ -222,17 +222,17 @@
   </div>
 
   <!-- Recent Feedbacks -->
-  <div class="bg-white border border-gray-100 rounded-xl p-5">
-    <h2 class="text-sm font-bold text-gray-900 mb-4">Recent Feedbacks</h2>
+  <div class="bg-white border border-stone-200 rounded-xl p-5">
+    <h2 class="text-sm font-bold text-stone-900 mb-4">Recent Feedbacks</h2>
     <% if @recent_feedbacks.any? %>
       <div id="recent_feedbacks" class="space-y-3">
         <% @recent_feedbacks.first(5).each do |feedback| %>
           <%= render "feedbacks/feedback_item", feedback: feedback %>
         <% end %>
       </div>
-      <%= link_to "View all feedbacks", feedbacks_path, class: "text-indigo-600 hover:text-indigo-700 text-sm font-medium mt-4 inline-block" %>
+      <%= link_to "View all feedbacks", feedbacks_path, class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-sm font-medium mt-4 inline-block" %>
     <% else %>
-      <p class="text-sm text-gray-400 text-center py-4">No feedbacks yet. Connect a source to get started.</p>
+      <p class="text-sm text-stone-400 text-center py-4">No feedbacks yet. Connect a source to get started.</p>
     <% end %>
   </div>
 

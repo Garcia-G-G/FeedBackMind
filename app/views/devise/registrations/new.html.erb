@@ -1,23 +1,23 @@
 <% content_for(:page_title) { "Sign Up" } %>
 
-<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
   <div class="w-full max-w-md">
     <!-- Logo/Header -->
     <div class="text-center mb-8">
       <div class="flex justify-center mb-4">
-        <div class="h-12 w-12 bg-indigo-500 rounded-lg flex items-center justify-center">
+        <div class="h-12 w-12 bg-stone-900 rounded-lg flex items-center justify-center">
           <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
         </div>
       </div>
-      <h1 class="text-2xl font-bold text-gray-900">Create Account</h1>
-      <p class="text-sm text-gray-600 mt-2">Start centralizing your customer feedback today</p>
+      <h1 class="text-2xl font-bold font-serif-display text-stone-900">Create Account</h1>
+      <p class="text-sm text-stone-500 mt-2">Start centralizing your customer feedback today</p>
     </div>
 
     <!-- Sign up card -->
-    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-8">
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true) do |f| %>
+    <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true, html: { novalidate: true }) do |f| %>
         <% if resource.errors.any? %>
           <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
             <p class="text-sm font-semibold text-red-900 mb-2">
@@ -34,49 +34,49 @@
         <div class="space-y-4">
           <!-- Name field -->
           <div>
-            <%= f.label :name, "Your Name", class: "block text-sm font-semibold text-gray-900 mb-1.5" %>
-            <%= f.text_field :name, autofocus: true, placeholder: "Jane Doe", class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" %>
+            <%= f.label :name, "Your Name", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+            <%= f.text_field :name, autofocus: true, placeholder: "Jane Doe", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
           </div>
 
           <!-- Email field -->
           <div>
-            <%= f.label :email, "Email address", class: "block text-sm font-semibold text-gray-900 mb-1.5" %>
-            <%= f.email_field :email, autocomplete: "email", placeholder: "you@example.com", class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" %>
+            <%= f.label :email, "Email address", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+            <%= f.email_field :email, autocomplete: "email", placeholder: "you@example.com", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
           </div>
 
           <!-- Password field -->
           <div>
-            <%= f.label :password, "Password", class: "block text-sm font-semibold text-gray-900 mb-1.5" %>
+            <%= f.label :password, "Password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
             <% if @minimum_password_length %>
-              <em class="text-xs text-gray-600">(<%= @minimum_password_length %> characters minimum)</em>
+              <em class="text-xs text-stone-600">(<%= @minimum_password_length %> characters minimum)</em>
             <% end %>
-            <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" %>
+            <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
           </div>
 
           <!-- Password confirmation field -->
           <div>
-            <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-semibold text-gray-900 mb-1.5" %>
-            <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" %>
+            <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
           </div>
 
           <!-- Sign up button -->
-          <%= f.submit "Create Account", class: "w-full mt-6 px-4 py-2.5 rounded-lg bg-indigo-500 text-white font-semibold hover:bg-indigo-600 transition-colors cursor-pointer" %>
+          <%= f.submit "Create Account", class: "w-full mt-6 px-4 py-2.5 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
         </div>
       <% end %>
 
       <!-- Sign in link -->
-      <div class="text-center mt-6 text-sm text-gray-600">
+      <div class="text-center mt-6 text-sm text-stone-500">
         Already have an account?
-        <%= link_to "Sign in", new_session_path(resource_name), class: "text-indigo-600 hover:text-indigo-700 font-semibold" %>
+        <%= link_to "Sign in", new_session_path(resource_name), class: "text-stone-900 hover:text-stone-700 underline font-semibold" %>
       </div>
     </div>
 
     <!-- Terms -->
-    <p class="text-xs text-gray-600 text-center mt-6">
+    <p class="text-xs text-stone-500 text-center mt-6">
       By creating an account, you agree to our
-      <%= link_to "Terms of Service", "#", class: "text-indigo-600 hover:text-indigo-700" %>
+      <%= link_to "Terms of Service", "#", class: "text-stone-900 hover:text-stone-700 underline" %>
       and
-      <%= link_to "Privacy Policy", "#", class: "text-indigo-600 hover:text-indigo-700" %>
+      <%= link_to "Privacy Policy", "#", class: "text-stone-900 hover:text-stone-700 underline" %>
     </p>
   </div>
 </div>

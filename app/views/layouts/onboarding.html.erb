@@ -7,16 +7,16 @@
   <%= csp_meta_tag %>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 </head>
-<body class="h-full bg-gray-50 font-sans text-gray-900 antialiased">
+<body class="h-full bg-stone-50 font-sans text-stone-900 antialiased">
   <div class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
     <!-- Logo -->
     <div class="flex items-center gap-2.5 mb-8">
-      <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center text-white text-sm font-extrabold">FM</div>
+      <div class="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center text-white text-sm font-extrabold">FM</div>
       <span class="font-bold text-lg tracking-tight">FeedbackMind</span>
     </div>
 
@@ -27,8 +27,8 @@
         <div class="flex items-center">
           <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
             <%= if s < step then 'bg-emerald-500 text-white'
-                elsif s == step then 'bg-indigo-500 text-white'
-                else 'bg-gray-200 text-gray-400'
+                elsif s == step then 'bg-stone-900 text-white'
+                else 'bg-stone-200 text-stone-400'
                 end %>">
             <% if s < step %>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -37,7 +37,7 @@
             <% end %>
           </div>
           <% unless s == 3 %>
-            <div class="w-16 h-0.5 <%= s < step ? 'bg-emerald-500' : 'bg-gray-200' %>"></div>
+            <div class="w-16 h-0.5 <%= s < step ? 'bg-emerald-500' : 'bg-stone-200' %>"></div>
           <% end %>
         </div>
       <% end %>

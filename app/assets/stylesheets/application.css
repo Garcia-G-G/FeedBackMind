@@ -5,10 +5,12 @@
 
 /* ── Font ── */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.font-serif-display { font-family: 'DM Serif Display', Georgia, serif; }
 
 /* ── Animations ── */
 @keyframes fadeIn {
@@ -59,7 +61,7 @@ body {
 /* ── Command Palette ── */
 .cmd-result:hover svg,
 .cmd-result.selected svg {
-  color: #6366F1;
+  color: #1c1917;
 }
 
 /* ── Chat loading dots ── */
@@ -84,24 +86,24 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E5E7EB;
+  background: #d6d3d1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #D1D5DB;
+  background: #a8a29e;
 }
 
 /* ── Sidebar nav active indicator ── */
 .nav-item-active {
-  background: #EEF2FF;
-  color: #6366F1;
+  background: rgb(245 245 244);
+  color: #1c1917;
   font-weight: 500;
 }
 
 /* ── Turbo progress bar ── */
 .turbo-progress-bar {
   height: 2px;
-  background: #6366F1;
+  background: #1c1917;
 }
 
 /* ── Timeline bars hover ── */
@@ -115,7 +117,7 @@ body {
   transition: all 0.15s ease;
 }
 .pipeline-item:hover {
-  border-color: #E5E7EB;
+  border-color: #d6d3d1;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
@@ -129,11 +131,19 @@ body {
   opacity: 0.8;
 }
 
-/* ── Form focus states ── */
+/* ── Form focus states — override browser defaults ── */
 input:focus, select:focus, textarea:focus {
-  border-color: #6366F1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
-  outline: none;
+  border-color: #78716c !important;
+  box-shadow: 0 0 0 3px rgba(28, 25, 23, 0.06) !important;
+  outline: none !important;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none !important;
+}
+/* Override Chrome autofill blue highlight */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #1c1917 !important;
 }
 
 /* ── Line clamp utility ── */
