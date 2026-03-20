@@ -67,10 +67,8 @@ RUN bundle exec bootsnap precompile -j 1 app/ lib/
 # Build JavaScript with esbuild
 RUN yarn build
 
-# Build Tailwind CSS (uses tailwindcss-rails gem with config/tailwind.config.js)
-RUN bin/rails tailwindcss:build
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+# Build Tailwind CSS and precompile assets for production
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails tailwindcss:build
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
