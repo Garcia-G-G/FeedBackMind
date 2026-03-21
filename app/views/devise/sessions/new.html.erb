@@ -17,6 +17,18 @@
 
     <!-- Sign in card -->
     <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
+      <% if alert.present? %>
+        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-start gap-2">
+          <svg class="w-4 h-4 text-red-500 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/></svg>
+          <%= alert %>
+        </div>
+      <% end %>
+      <% if notice.present? %>
+        <div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-800">
+          <%= notice %>
+        </div>
+      <% end %>
+
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), local: true, html: { novalidate: true }) do |f| %>
         <div class="space-y-4">
           <!-- Email field -->
@@ -26,9 +38,15 @@
           </div>
 
           <!-- Password field -->
-          <div>
+          <div data-controller="password-visibility">
             <%= f.label :password, "Password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
-            <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+            <div style="position:relative">
+              <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "w-full px-4 py-2.5 pr-11 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+              <button type="button" data-action="click->password-visibility#toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)" class="text-stone-400 hover:text-stone-600 transition-colors" tabindex="-1">
+                <svg data-password-visibility-target="iconShow" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg data-password-visibility-target="iconHide" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
           </div>
 
           <!-- Remember me -->

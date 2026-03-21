@@ -1,4 +1,4 @@
-<% content_for(:page_title) { "Sign Up" } %>
+<% content_for(:page_title) { "Set New Password" } %>
 
 <div class="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
   <div class="w-full max-w-md">
@@ -11,11 +11,11 @@
           </svg>
         </div>
       </div>
-      <h1 class="text-2xl font-bold font-serif-display text-stone-900">Create Account</h1>
-      <p class="text-sm text-stone-500 mt-2">Start centralizing your customer feedback today</p>
+      <h1 class="text-2xl font-bold font-serif-display text-stone-900">Set new password</h1>
+      <p class="text-sm text-stone-500 mt-2">Choose a strong password for your account</p>
     </div>
 
-    <!-- Sign up card -->
+    <!-- Reset password card -->
     <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
       <% if alert.present? %>
         <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-start gap-2">
@@ -24,11 +24,13 @@
         </div>
       <% end %>
 
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true, html: { novalidate: true }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, novalidate: true }) do |f| %>
+        <%= f.hidden_field :reset_password_token %>
+
         <% if resource.errors.any? %>
           <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
             <p class="text-sm font-semibold text-red-900 mb-2">
-              <%= pluralize(resource.errors.count, "error") %> prohibited this sign up:
+              <%= pluralize(resource.errors.count, "error") %>:
             </p>
             <ul class="text-sm text-red-800 space-y-1">
               <% resource.errors.full_messages.each do |message| %>
@@ -39,26 +41,11 @@
         <% end %>
 
         <div class="space-y-4">
-          <!-- Name field -->
-          <div>
-            <%= f.label :name, "Your Name", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
-            <%= f.text_field :name, autofocus: true, placeholder: "Jane Doe", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
-          </div>
-
-          <!-- Email field -->
-          <div>
-            <%= f.label :email, "Email address", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
-            <%= f.email_field :email, autocomplete: "email", placeholder: "you@example.com", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
-          </div>
-
-          <!-- Password field -->
           <div data-controller="password-visibility">
-            <%= f.label :password, "Password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
-            <% if @minimum_password_length %>
-              <em class="text-xs text-stone-500">(<%= @minimum_password_length %> characters minimum)</em>
-            <% end %>
+            <%= f.label :password, "New password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+            <em class="text-xs text-stone-500">(<%= @minimum_password_length %> characters minimum)</em>
             <div style="position:relative">
-              <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "w-full px-4 py-2.5 pr-11 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+              <%= f.password_field :password, autofocus: true, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "w-full px-4 py-2.5 pr-11 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
               <button type="button" data-action="click->password-visibility#toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)" class="text-stone-400 hover:text-stone-600 transition-colors" tabindex="-1">
                 <svg data-password-visibility-target="iconShow" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <svg data-password-visibility-target="iconHide" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -66,9 +53,8 @@
             </div>
           </div>
 
-          <!-- Password confirmation field -->
           <div data-controller="password-visibility">
-            <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+            <%= f.label :password_confirmation, "Confirm new password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
             <div style="position:relative">
               <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "w-full px-4 py-2.5 pr-11 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
               <button type="button" data-action="click->password-visibility#toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)" class="text-stone-400 hover:text-stone-600 transition-colors" tabindex="-1">
@@ -78,24 +64,13 @@
             </div>
           </div>
 
-          <!-- Sign up button -->
-          <%= f.submit "Create Account", class: "w-full mt-6 px-4 py-2.5 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
+          <%= f.submit "Change my password", class: "w-full mt-6 px-4 py-2.5 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
         </div>
       <% end %>
 
-      <!-- Sign in link -->
       <div class="text-center mt-6 text-sm text-stone-500">
-        Already have an account?
-        <%= link_to "Sign in", new_session_path(resource_name), class: "text-stone-900 hover:text-stone-700 underline font-semibold" %>
+        <%= link_to "Back to sign in", new_session_path(resource_name), class: "text-stone-900 hover:text-stone-700 underline font-semibold" %>
       </div>
     </div>
-
-    <!-- Terms -->
-    <p class="text-xs text-stone-500 text-center mt-6">
-      By creating an account, you agree to our
-      <%= link_to "Terms of Service", "#", class: "text-stone-900 hover:text-stone-700 underline" %>
-      and
-      <%= link_to "Privacy Policy", "#", class: "text-stone-900 hover:text-stone-700 underline" %>
-    </p>
   </div>
 </div>
