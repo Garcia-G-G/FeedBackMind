@@ -7,25 +7,16 @@ export default class extends Controller {
     const clickedButton = event.currentTarget
 
     this.btnTargets.forEach(button => {
-      button.classList.remove("bg-white", "text-gray-900", "shadow-sm")
-      button.classList.add("text-gray-400")
+      button.classList.remove("bg-white", "text-stone-900", "shadow-sm")
+      button.classList.add("text-stone-400")
     })
 
-    clickedButton.classList.remove("text-gray-400")
-    clickedButton.classList.add("bg-white", "text-gray-900", "shadow-sm")
+    clickedButton.classList.remove("text-stone-400")
+    clickedButton.classList.add("bg-white", "text-stone-900", "shadow-sm")
 
     const period = clickedButton.getAttribute("data-period")
-
-    // Update Turbo Frame if available, otherwise full visit
-    const frame = document.querySelector("turbo-frame#dashboard_content")
-    if (frame) {
-      const url = new URL(window.location)
-      url.searchParams.set("period", period)
-      frame.src = url.toString()
-    } else {
-      const url = new URL(window.location)
-      url.searchParams.set("period", period)
-      Turbo.visit(url.toString())
-    }
+    const url = new URL(window.location)
+    url.searchParams.set("period", period)
+    Turbo.visit(url.toString())
   }
 }

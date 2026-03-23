@@ -1,6 +1,6 @@
 <% content_for(:page_title) { "Dashboard" } %>
 
-<%= turbo_frame_tag "dashboard_content" do %>
+<%# Dashboard content %>
 <%
   # Compute sentiment percentages for donut + legend
   total_sentiment = (@sentiment_data[:positive] + @sentiment_data[:neutral] + @sentiment_data[:negative]).to_f
@@ -238,4 +238,3 @@
 
   <%= turbo_stream_from current_account %>
 </div>
-<% end %>
