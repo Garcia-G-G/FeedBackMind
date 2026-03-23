@@ -16,7 +16,9 @@ user = User.find_or_create_by!(email: "garcia@feedbackmind.com") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.role = :owner
+  u.onboarding_completed_at = Time.current
 end
+user.update!(onboarding_completed_at: Time.current) if user.onboarding_completed_at.nil?
 puts "  User: #{user.email} / password123"
 
 # === 3. Sources (6 active) ===

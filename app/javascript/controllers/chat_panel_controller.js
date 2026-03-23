@@ -32,39 +32,51 @@ export default class extends Controller {
     this.panelTarget.classList.remove("flex")
   }
 
-  async send() {
-    const message = this.inputTarget.value.trim()
+  send(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
 
+    const message = this.inputTarget.value.trim()
     if (!message) return
 
     this.appendMessage(message, "user")
     this.inputTarget.value = ""
+    this.inputTarget.focus()
 
     this.showLoading()
 
-    try {
-      const response = await fetch("/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "text/vnd.turbo-stream.html"
-        },
-        body: JSON.stringify({ message })
-      })
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
 
-      if (response.ok) {
-        const html = await response.text()
-        Turbo.connectStreamSource(new EventSource("/chat/stream"))
-        this.messagesTarget.insertAdjacentHTML("beforeend", html)
-        this.scrollToBottom()
-      }
-    } catch (error) {
-      console.error("Chat error:", error)
-      this.appendMessage("Sorry, something went wrong. Please try again.", "ai")
-    } finally {
+    fetch("/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-Token": csrfToken,
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: JSON.stringify({ message }),
+      credentials: "same-origin"
+    })
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      return response.json()
+    })
+    .then(data => {
       this.hideLoading()
+      if (data.assistant_message) {
+        this.appendMessage(data.assistant_message.content, "ai")
+      }
       this.scrollToBottom()
-    }
+    })
+    .catch(error => {
+      console.error("Chat error:", error)
+      this.hideLoading()
+      this.appendMessage("Sorry, something went wrong. Please try again.", "ai")
+      this.scrollToBottom()
+    })
   }
 
   useSuggestion(event) {
@@ -78,9 +90,9 @@ export default class extends Controller {
     div.textContent = content
 
     if (role === "user") {
-      div.className = "max-w-[85%] text-[13px] leading-relaxed px-3.5 py-2.5 rounded-xl rounded-br bg-indigo-500 text-white self-end"
+      div.className = "max-w-[85%] text-[13px] leading-relaxed px-3.5 py-2.5 rounded-xl rounded-br bg-stone-900 text-white self-end"
     } else if (role === "ai") {
-      div.className = "max-w-[85%] text-[13px] leading-relaxed px-3.5 py-2.5 rounded-xl rounded-bl bg-gray-50 self-start"
+      div.className = "max-w-[85%] text-[13px] leading-relaxed px-3.5 py-2.5 rounded-xl rounded-bl bg-stone-50 self-start"
     }
 
     this.messagesTarget.appendChild(div)
@@ -92,9 +104,9 @@ export default class extends Controller {
     loadingDiv.id = "chat-loading"
     loadingDiv.className = "flex gap-1 self-start"
     loadingDiv.innerHTML = `
-      <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
-      <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-      <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+      <div class="w-2 h-2 bg-stone-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+      <div class="w-2 h-2 bg-stone-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      <div class="w-2 h-2 bg-stone-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
     `
     this.messagesTarget.appendChild(loadingDiv)
     this.scrollToBottom()
