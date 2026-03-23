@@ -47,9 +47,13 @@ Rails.application.configure do
   # Use Sidekiq as the Active Job queue adapter.
   config.active_job.queue_adapter = :sidekiq
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+  # Email via Postmark
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {
+    api_token: ENV.fetch("POSTMARK_API_KEY", "")
+  }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = {
