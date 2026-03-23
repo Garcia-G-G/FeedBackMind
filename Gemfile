@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "~> 3.2"
 
-gem "rails", "~> 7.2"
+gem "rails", "~> 8.0"
 
 # Core
 gem "pg", "~> 1.5"
@@ -63,7 +63,7 @@ end
 group :development do
   gem "web-console"
   gem "letter_opener", "~> 1.10"
-  gem "annotate", "~> 3.2"
+  # gem "annotate" — removed, incompatible with Rails 8
 end
 
 group :test do
