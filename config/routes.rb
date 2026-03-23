@@ -67,6 +67,8 @@ Rails.application.routes.draw do
     resource :loop_tracker, only: [:show], controller: "loop_tracker"
     resource :settings, only: [:show, :update], controller: "settings" do
       post :regenerate_token
+      post :invite_member
+      delete :remove_member
     end
 
     post "chat", to: "chat#create", as: :chat

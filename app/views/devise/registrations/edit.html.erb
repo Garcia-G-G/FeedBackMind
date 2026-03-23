@@ -1,0 +1,71 @@
+<% content_for(:page_title) { "Edit Profile" } %>
+
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold font-serif-display text-stone-900 mb-6">Edit Profile</h1>
+
+  <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, novalidate: true }) do |f| %>
+      <% if resource.errors.any? %>
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <ul class="text-sm text-red-800 space-y-1">
+            <% resource.errors.full_messages.each do |message| %>
+              <li>• <%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-4">
+        <div>
+          <%= f.label :name, "Name", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+          <%= f.text_field :name, class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+        </div>
+
+        <div>
+          <%= f.label :email, "Email", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+          <%= f.email_field :email, class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+        </div>
+
+        <hr class="border-stone-200 my-2">
+
+        <p class="text-sm text-stone-500">Leave password fields blank if you don't want to change it</p>
+
+        <div data-controller="password-visibility">
+          <%= f.label :password, "New password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+          <div style="position:relative">
+            <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "w-full px-4 py-2.5 pr-11 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+            <button type="button" data-action="click->password-visibility#toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)" class="text-stone-400 hover:text-stone-600 transition-colors" tabindex="-1">
+              <svg data-password-visibility-target="iconShow" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg data-password-visibility-target="iconHide" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div data-controller="password-visibility">
+          <%= f.label :password_confirmation, "Confirm new password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+          <div style="position:relative">
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", data: { password_visibility_target: "input" }, class: "w-full px-4 py-2.5 pr-11 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+            <button type="button" data-action="click->password-visibility#toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)" class="text-stone-400 hover:text-stone-600 transition-colors" tabindex="-1">
+              <svg data-password-visibility-target="iconShow" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg data-password-visibility-target="iconHide" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <hr class="border-stone-200 my-2">
+
+        <div>
+          <%= f.label :current_password, "Current password", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+          <em class="text-xs text-stone-500">(required to save changes)</em>
+          <%= f.password_field :current_password, autocomplete: "current-password", class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+        </div>
+
+        <%= f.submit "Update Profile", class: "w-full mt-6 px-4 py-2.5 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
+      </div>
+    <% end %>
+
+    <div class="mt-6 pt-6 border-t border-stone-200">
+      <%= link_to "← Back to Settings", settings_path, class: "text-sm text-stone-500 hover:text-stone-700" %>
+    </div>
+  </div>
+</div>
