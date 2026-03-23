@@ -24,24 +24,55 @@
           <% (@raw_feedbacks || []).each do |item| %>
             <div class="bg-white rounded-lg border border-stone-200 p-3 hover:shadow-sm transition-shadow">
               <p class="text-sm font-medium text-stone-900 line-clamp-2 mb-2">
-                <%= item.title || "Untitled" %>
+                <%= item.content.truncate(80) %>
               </p>
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs px-2 py-1 rounded bg-stone-100 text-stone-700 font-medium">
-                  <%= source_emoji(item.source_type) %> <%= item.source_type&.titleize || 'Unknown' %>
+                  <%= source_emoji(item.source&.source_type) %> <%= item.source&.source_type&.titleize || 'Unknown' %>
                 </span>
               </div>
-              <% if item.urgency.present? %>
-                <% urgency_classes = urgency_color(item.urgency) %>
-                <span class="text-xs font-semibold <%= urgency_classes %> px-2 py-1 rounded">
-                  <%= item.urgency.titleize %>
-                </span>
-              <% end %>
+              <p class="text-[10px] text-stone-400"><%= format_time_ago(item.received_at) %></p>
             </div>
           <% end %>
           <% if (@raw_feedbacks || []).empty? %>
             <div class="text-center py-8 text-stone-500">
               <p class="text-xs">No feedbacks</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Processed column -->
+      <div class="flex-shrink-0 w-80 bg-stone-50 rounded-xl border border-stone-200 flex flex-col">
+        <div class="px-4 py-3 border-b border-stone-200 bg-white rounded-t-xl">
+          <h2 class="font-semibold text-stone-900 text-sm">
+            Processed
+            <span class="text-stone-500 font-normal ml-2">
+              <%= @processed_feedbacks&.count || 0 %>
+            </span>
+          </h2>
+        </div>
+        <div class="flex-1 overflow-y-auto p-3 space-y-3">
+          <% (@processed_feedbacks || []).each do |item| %>
+            <div class="bg-white rounded-lg border border-stone-200 p-3 hover:shadow-sm transition-shadow">
+              <p class="text-sm font-medium text-stone-900 line-clamp-2 mb-2">
+                <%= item.content.truncate(80) %>
+              </p>
+              <div class="flex items-center gap-2 mb-2">
+                <% if item.sentiment.present? %>
+                  <span class="text-xs px-2 py-1 rounded <%= case item.sentiment; when 'positive' then 'bg-emerald-100 text-emerald-700'; when 'negative' then 'bg-red-100 text-red-700'; else 'bg-stone-100 text-stone-700'; end %> font-medium">
+                    <%= item.sentiment.titleize %>
+                  </span>
+                <% end %>
+              </div>
+              <% (item.topics || []).first(2).each do |t| %>
+                <span class="inline-block text-[10px] bg-stone-100 text-stone-600 px-1.5 py-0.5 rounded mr-1"><%= t %></span>
+              <% end %>
+            </div>
+          <% end %>
+          <% if (@processed_feedbacks || []).empty? %>
+            <div class="text-center py-8 text-stone-500">
+              <p class="text-xs">No processed feedbacks</p>
             </div>
           <% end %>
         </div>
@@ -68,7 +99,7 @@
                   <%= item.feedback_count || 0 %> feedbacks
                 </span>
               </div>
-              <% if item.urgency.present? %>
+              <% if item.respond_to?(:urgency) && item.urgency.present? %>
                 <% urgency_classes = urgency_color(item.urgency) %>
                 <span class="text-xs font-semibold <%= urgency_classes %> px-2 py-1 rounded">
                   <%= item.urgency.titleize %>
@@ -105,7 +136,7 @@
                   <%= item.feedback_count || 0 %> linked
                 </span>
               </div>
-              <% if item.urgency.present? %>
+              <% if item.respond_to?(:urgency) && item.urgency.present? %>
                 <% urgency_classes = urgency_color(item.urgency) %>
                 <span class="text-xs font-semibold <%= urgency_classes %> px-2 py-1 rounded">
                   <%= item.urgency.titleize %>
