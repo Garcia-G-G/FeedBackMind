@@ -15,8 +15,10 @@ module ApiAuthenticatable
       return
     end
 
-    @current_account = Account.find_by(api_token: token)
-    unless @current_account
+    account = Account.find_by(api_token: token)
+    if account && ActiveSupport::SecurityUtils.secure_compare(account.api_token.to_s, token)
+      @current_account = account
+    else
       render json: { error: "Invalid API token", code: "unauthorized" }, status: :unauthorized
     end
   end

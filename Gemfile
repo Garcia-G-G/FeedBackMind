@@ -46,6 +46,9 @@ gem "thruster", "~> 0.1"
 # CSV (removed from default gems in Ruby 3.4)
 gem "csv"
 
+# Security
+gem "rack-attack", "~> 6.7"
+
 # Utilities
 gem "bootsnap", require: false
 gem "tzinfo-data", platforms: [:windows, :jruby]

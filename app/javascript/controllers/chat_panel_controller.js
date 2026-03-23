@@ -61,7 +61,13 @@ export default class extends Controller {
       credentials: "same-origin"
     })
     .then(response => {
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      if (!response.ok) {
+        return response.json().then(data => {
+          throw new Error(data.error || `HTTP ${response.status}`)
+        }).catch(() => {
+          throw new Error(response.status === 403 ? "Chat requires Growth or Scale plan." : `HTTP ${response.status}`)
+        })
+      }
       return response.json()
     })
     .then(data => {
@@ -74,7 +80,7 @@ export default class extends Controller {
     .catch(error => {
       console.error("Chat error:", error)
       this.hideLoading()
-      this.appendMessage("Sorry, something went wrong. Please try again.", "ai")
+      this.appendMessage(error.message || "Sorry, something went wrong. Please try again.", "ai")
       this.scrollToBottom()
     })
   }

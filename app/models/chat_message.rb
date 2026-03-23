@@ -10,8 +10,19 @@ class ChatMessage < ApplicationRecord
   enum :role, { user: 0, assistant: 1 }, prefix: true
 
   # === Validations ===
-  validates :content, presence: true
+  validates :content, presence: true, length: { maximum: 10_000 }
   validates :role, presence: true
+
+  # === Callbacks ===
+  before_save :sanitize_content
+
+  private
+
+  def sanitize_content
+    self.content = ActionController::Base.helpers.sanitize(content) if role_user?
+  end
+
+  public
 
   # === Scopes ===
   scope :recent, -> { order(created_at: :desc) }
