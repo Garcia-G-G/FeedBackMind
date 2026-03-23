@@ -40,6 +40,7 @@ env:
     RAILS_MAX_THREADS: "5"
     APP_HOST: "5.161.238.195.sslip.io"
     APP_PROTOCOL: "https"
+    POSTMARK_API_KEY: ""
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
@@ -61,8 +62,6 @@ env:
     - JIRA_CLIENT_SECRET
     - TYPEFORM_CLIENT_ID
     - TYPEFORM_CLIENT_SECRET
-    - POSTMARK_API_KEY
-    - STRIPE_PUBLISHABLE_KEY
 
 accessories:
   db:
