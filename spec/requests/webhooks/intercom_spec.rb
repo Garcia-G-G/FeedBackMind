@@ -21,7 +21,7 @@ RSpec.describe "Webhooks::Intercom", type: :request do
 
   it "accepts valid webhook and enqueues job" do
     expect {
-      post "/webhooks/intercom?account_id=#{account.id}",
+      post "/webhooks/intercom/#{account.id}",
            params: valid_payload,
            headers: { "Content-Type" => "application/json" }
     }.to change(FeedbackIngestJob.jobs, :size).by(1)
@@ -30,7 +30,7 @@ RSpec.describe "Webhooks::Intercom", type: :request do
   end
 
   it "returns 400 for invalid JSON" do
-    post "/webhooks/intercom?account_id=#{account.id}",
+    post "/webhooks/intercom/#{account.id}",
          params: "not json",
          headers: { "Content-Type" => "application/json" }
 

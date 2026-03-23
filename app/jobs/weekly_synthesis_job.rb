@@ -9,10 +9,11 @@ class WeeklySynthesisJob
   # For each active account: collects last 7 days of feedback,
   # groups by semantic similarity, sends to GPT-4.1 for synthesis,
   # saves the WeeklySynthesis record, and sends the email digest.
-  def perform
+  def perform(account_id = nil)
     week_start = Date.current.beginning_of_week(:monday)
 
-    Account.active.find_each do |account|
+    accounts = account_id ? Account.where(id: account_id) : Account.active
+    accounts.find_each do |account|
       ActsAsTenant.with_tenant(account) do
         process_account(account, week_start)
       end

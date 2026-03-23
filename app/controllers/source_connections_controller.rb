@@ -30,6 +30,12 @@ class SourceConnectionsController < ApplicationController
       return
     end
 
+    # Guard: if user session expired during OAuth flow
+    unless current_user
+      redirect_to new_user_session_path, alert: "Your session expired. Please sign in and try connecting again."
+      return
+    end
+
     source_type = case auth.provider
                   when "slack_openid" then :slack
                   when "google_oauth2" then :gmail

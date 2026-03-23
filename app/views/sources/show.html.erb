@@ -76,6 +76,24 @@
     </div>
   </div>
 
+  <!-- Webhook URL -->
+  <% if @source.source_type.in?(%w[slack intercom jira typeform gmail]) %>
+    <div class="bg-white rounded-xl border border-stone-200 p-6">
+      <h2 class="text-lg font-bold text-stone-900 mb-4">Webhook URL</h2>
+      <p class="text-sm text-stone-600 mb-3">Configure this URL in your <%= @source.source_type.titleize %> settings to receive feedback automatically.</p>
+      <div class="flex items-center gap-2" data-controller="clipboard">
+        <code class="flex-1 px-4 py-2.5 bg-stone-50 border border-stone-300 rounded-lg text-sm text-stone-700 break-all font-mono"
+              data-clipboard-target="source">
+          <%= "#{request.base_url}/webhooks/#{@source.source_type}/#{current_account.id}" %>
+        </code>
+        <button type="button" data-action="click->clipboard#copy"
+          class="px-4 py-2 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors font-medium text-sm shrink-0">
+          Copy
+        </button>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Recent Feedbacks -->
   <div class="bg-white rounded-xl border border-stone-200 p-6">
     <h2 class="text-lg font-bold text-stone-900 mb-4">Recent Feedbacks</h2>

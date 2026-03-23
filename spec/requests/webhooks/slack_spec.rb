@@ -5,7 +5,7 @@ RSpec.describe "Webhooks::Slack", type: :request do
   let!(:source) { create(:source, account: account, source_type: :slack, active: true, config: {}) }
 
   it "responds to Slack URL verification challenge" do
-    post "/webhooks/slack?account_id=#{account.id}",
+    post "/webhooks/slack/#{account.id}",
          params: { type: "url_verification", challenge: "test_challenge_token" }.to_json,
          headers: { "Content-Type" => "application/json" }
 
@@ -26,7 +26,7 @@ RSpec.describe "Webhooks::Slack", type: :request do
     }.to_json
 
     expect {
-      post "/webhooks/slack?account_id=#{account.id}",
+      post "/webhooks/slack/#{account.id}",
            params: payload,
            headers: { "Content-Type" => "application/json" }
     }.to change(FeedbackIngestJob.jobs, :size).by(1)

@@ -15,12 +15,12 @@ Rails.application.routes.draw do
 
   # === Webhooks (public, no auth — signature verified per source) ===
   namespace :webhooks do
-    post "intercom", to: "intercom#create", as: :intercom
-    post "slack",    to: "slack#create",    as: :slack
-    post "typeform", to: "typeform#create", as: :typeform
-    post "jira",     to: "jira#create",     as: :jira
-    post "gmail",    to: "gmail#create",    as: :gmail
-    post "stripe",   to: "stripe#create",   as: :stripe
+    post "intercom/:account_id", to: "intercom#create", as: :intercom
+    post "slack/:account_id",    to: "slack#create",    as: :slack
+    post "typeform/:account_id", to: "typeform#create", as: :typeform
+    post "jira/:account_id",     to: "jira#create",     as: :jira
+    post "gmail/:account_id",    to: "gmail#create",    as: :gmail
+    post "stripe",               to: "stripe#create",   as: :stripe
   end
 
   # === API v1 (Bearer token auth) ===
