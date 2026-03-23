@@ -420,12 +420,12 @@ GEM
       websocket (~> 1.0)
     shoulda-matchers (6.5.0)
       activesupport (>= 5.2.0)
-    sidekiq (7.3.10)
-      base64
-      connection_pool (>= 2.3.0, < 3)
-      logger
-      rack (>= 2.2.4, < 3.3)
-      redis-client (>= 0.23.0, < 1)
+    sidekiq (8.0.10)
+      connection_pool (>= 2.5.0)
+      json (>= 2.9.0)
+      logger (>= 1.6.2)
+      rack (>= 3.1.0)
+      redis-client (>= 0.23.2)
     sidekiq-cron (2.3.1)
       cronex (>= 0.13.0)
       fugit (~> 1.8, >= 1.11.1)
@@ -551,7 +551,7 @@ DEPENDENCIES
   ruby-openai (~> 7.3)
   selenium-webdriver
   shoulda-matchers (~> 6.0)
-  sidekiq (~> 7.3)
+  sidekiq (~> 8.0)
   sidekiq-cron (~> 2.0)
   simplecov
   sprockets-rails
