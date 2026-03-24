@@ -132,26 +132,33 @@
         </div>
       </div>
 
-      <% unless current_account.plan_scale? %>
-      <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6">
-        <div class="flex items-start gap-3">
-          <svg class="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0zM8 7a1 1 0 000 2h6a1 1 0 000-2H8zm0 3a1 1 0 000 2h6a1 1 0 000-2H8z" clip-rule="evenodd" />
-          </svg>
-          <div>
-            <p class="text-sm font-semibold text-blue-900">Upgrade available</p>
-            <p class="text-sm text-blue-800 mt-1">Unlock unlimited feedbacks and advanced analytics</p>
+      <!-- Plan Selector -->
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <% [
+          { key: "starter", price: "$29/mo", desc: "1 user · 3 sources · 1K feedbacks" },
+          { key: "growth", price: "$109/mo", desc: "5 users · 10 sources · 10K feedbacks · AI Chat" },
+          { key: "scale", price: "$209/mo", desc: "Unlimited everything · API access" }
+        ].each do |plan| %>
+          <% is_current = current_account.plan == plan[:key] %>
+          <div class="rounded-xl border-2 p-4 <%= is_current ? 'border-stone-900 bg-stone-50' : 'border-stone-200 hover:border-stone-400' %> transition-all">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm font-bold text-stone-900"><%= plan[:key].titleize %></p>
+              <% if is_current %>
+                <span class="text-[10px] font-bold bg-stone-900 text-white px-2 py-0.5 rounded-full">Current</span>
+              <% end %>
+            </div>
+            <p class="text-lg font-bold text-stone-900 font-serif-display mb-1"><%= plan[:price] %></p>
+            <p class="text-xs text-stone-500 mb-3"><%= plan[:desc] %></p>
+            <% unless is_current %>
+              <%= button_to plan[:key] == "starter" ? "Downgrade" : "Upgrade",
+                  change_plan_settings_path(plan: plan[:key]),
+                  method: :post,
+                  class: "w-full text-center py-2 rounded-lg text-xs font-semibold #{plan[:key] == 'starter' ? 'border border-stone-300 text-stone-700 hover:bg-stone-50' : 'bg-stone-900 text-white hover:bg-stone-800'} transition-colors",
+                  data: { turbo_confirm: "Change your plan to #{plan[:key].titleize}?" } %>
+            <% end %>
           </div>
-        </div>
+        <% end %>
       </div>
-      <% end %>
-
-      <% if current_account.stripe_customer_id.present? %>
-        <%= button_to "Manage Subscription", api_v1_billing_portal_path, method: :post,
-            class: "px-6 py-2.5 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-semibold text-sm cursor-pointer" %>
-      <% else %>
-        <p class="text-sm text-stone-500 italic">Stripe billing will be available after deployment configuration.</p>
-      <% end %>
     </div>
 
     <!-- Danger Zone -->

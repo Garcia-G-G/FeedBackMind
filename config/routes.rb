@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     resource :settings, only: [:show, :update], controller: "settings" do
       post :regenerate_token
       post :invite_member
+      post :change_plan
       delete :remove_member
     end
 

@@ -43,15 +43,15 @@
     </div>
 
     <!-- Compose -->
-    <div class="px-3.5 py-3 border-t border-stone-200 flex gap-2" data-action="submit->chat-panel#send">
+    <div class="px-3.5 py-3 border-t border-stone-200 flex gap-2">
       <input
         data-chat-panel-target="input"
-        data-action="keydown.enter->chat-panel#send"
+        data-action="keydown.enter->chat-panel#send:prevent"
         type="text"
         class="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-[13px] outline-none focus:border-stone-400 focus:ring-2 focus:ring-stone-500/10 transition-all placeholder-stone-300"
         placeholder="Ask about your feedback data..."
       >
-      <button data-action="click->chat-panel#send" class="w-9 h-9 rounded-lg bg-stone-900 flex items-center justify-center hover:bg-stone-800 transition-colors shrink-0">
+      <button type="button" data-action="click->chat-panel#send" class="w-9 h-9 rounded-lg bg-stone-900 flex items-center justify-center hover:bg-stone-800 transition-colors shrink-0">
         <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>

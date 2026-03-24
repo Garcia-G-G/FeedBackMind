@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeedbackMind — Prototype B (Dark / Linear Style)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#09090b;color:#fafafa;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(9,9,11,0.8);backdrop-filter:blur(16px);border-bottom:1px solid #1c1c22}
+.nav-inner{max-width:1120px;margin:0 auto;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-weight:800;font-size:17px;color:#fafafa;text-decoration:none;display:flex;align-items:center;gap:10px}
+.nav-logo-mark{width:28px;height:28px;background:linear-gradient(135deg,#818cf8,#6366f1);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:white}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;color:#71717a;text-decoration:none;font-weight:500;transition:color .15s}
+.nav-links a:hover{color:#fafafa}
+.nav-cta{background:#fafafa;color:#09090b;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:600;text-decoration:none}
+.nav-cta:hover{background:#e4e4e7}
+
+/* HERO */
+.hero{padding:160px 32px 100px;max-width:800px;margin:0 auto;text-align:center}
+.hero h1{font-size:64px;font-weight:900;line-height:1.05;letter-spacing:-0.04em;margin-bottom:24px;background:linear-gradient(180deg,#fafafa 0%,#71717a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:18px;color:#a1a1aa;line-height:1.65;max-width:540px;margin:0 auto 40px}
+.hero-actions{display:flex;justify-content:center;gap:12px}
+.btn-w{background:#fafafa;color:#09090b;padding:13px 28px;border-radius:9px;font-size:15px;font-weight:600;text-decoration:none;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.btn-w:hover{background:#e4e4e7;transform:translateY(-1px)}
+.btn-g{background:transparent;color:#a1a1aa;padding:13px 28px;border-radius:9px;font-size:15px;font-weight:500;text-decoration:none;border:1px solid #27272a;transition:all .15s}
+.btn-g:hover{border-color:#3f3f46;color:#fafafa}
+.hero-note{font-size:12px;color:#52525b;margin-top:20px}
+
+/* PRODUCT VISUAL */
+.product-wrap{max-width:1040px;margin:0 auto 100px;padding:0 32px}
+.product-frame{background:#18181b;border:1px solid #27272a;border-radius:16px;overflow:hidden;box-shadow:0 0 80px rgba(99,102,241,0.08)}
+.product-bar{height:40px;background:#111113;display:flex;align-items:center;gap:7px;padding:0 16px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot.r{background:#ef4444}.dot.y{background:#eab308}.dot.g{background:#22c55e}
+.product-body{display:grid;grid-template-columns:200px 1fr;min-height:420px}
+
+/* Sidebar */
+.sb{background:#111113;padding:20px 16px;border-right:1px solid #1c1c22}
+.sb-logo{font-weight:700;font-size:13px;color:#e4e4e7;margin-bottom:24px;display:flex;align-items:center;gap:8px}
+.sb-logo span{width:22px;height:22px;background:#6366f1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:900}
+.sb-item{padding:8px 12px;border-radius:7px;font-size:12px;color:#71717a;margin-bottom:1px;cursor:default}
+.sb-item.on{background:#27272a;color:#fafafa}
+
+/* Main content */
+.mc{padding:24px}
+.mc-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.mc-card{background:#27272a;border-radius:10px;padding:16px}
+.mc-label{font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.mc-val{font-size:28px;font-weight:800;color:#fafafa}
+.mc-delta{font-size:11px;margin-top:2px}
+.mc-delta.up{color:#22c55e}
+.mc-delta.dn{color:#ef4444}
+
+/* Chart area */
+.mc-chart{background:#27272a;border-radius:10px;padding:16px;margin-bottom:12px}
+.mc-chart-t{font-size:11px;color:#71717a;font-weight:600;margin-bottom:12px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:100px}
+.bar{flex:1;border-radius:3px 3px 0 0}
+
+/* Theme pills */
+.mc-themes{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:#27272a;border:1px solid #3f3f46;border-radius:100px;padding:6px 14px;font-size:11px;color:#a1a1aa;font-weight:500;display:flex;align-items:center;gap:6px}
+.pill-dot{width:7px;height:7px;border-radius:50%}
+
+/* SOURCES */
+.sources{max-width:1040px;margin:0 auto 100px;padding:0 32px;text-align:center}
+.sources-label{font-size:12px;color:#52525b;text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:28px}
+.sources-row{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.src{font-size:14px;color:#52525b;font-weight:600;transition:color .15s}
+.src:hover{color:#a1a1aa}
+
+/* FEATURES BENTO */
+.bento{max-width:1040px;margin:0 auto 100px;padding:0 32px}
+.bento-label{font-size:12px;color:#6366f1;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:12px}
+.bento-title{font-size:36px;font-weight:800;letter-spacing:-.02em;margin-bottom:48px;max-width:500px}
+.bento-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto;gap:16px}
+.bento-card{background:#18181b;border:1px solid #27272a;border-radius:14px;padding:28px;transition:border-color .2s}
+.bento-card:hover{border-color:#3f3f46}
+.bento-card.wide{grid-column:span 2}
+.bento-icon{font-size:24px;margin-bottom:16px}
+.bento-card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:#fafafa}
+.bento-card p{font-size:13px;color:#71717a;line-height:1.6}
+.bento-tag{display:inline-block;background:#22c55e;color:#052e16;font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px;text-transform:uppercase;letter-spacing:.05em;vertical-align:middle}
+
+/* PRICING */
+.pricing{max-width:1040px;margin:0 auto 100px;padding:0 32px}
+.pricing-head{text-align:center;margin-bottom:48px}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.p-card{background:#18181b;border:1px solid #27272a;border-radius:14px;padding:32px;position:relative;transition:border-color .2s}
+.p-card:hover{border-color:#3f3f46}
+.p-card.pop{border-color:#6366f1;background:#1a1a2e}
+.p-card.pop::after{content:'Popular';position:absolute;top:-10px;left:24px;background:#6366f1;color:white;font-size:10px;font-weight:700;padding:3px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.05em}
+.p-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.p-desc{font-size:12px;color:#71717a;margin-bottom:20px}
+.p-price{font-size:48px;font-weight:900;letter-spacing:-.02em}
+.p-price span{font-size:15px;font-weight:500;color:#52525b}
+.p-list{list-style:none;padding:0;margin:24px 0}
+.p-list li{padding:7px 0;font-size:13px;color:#a1a1aa;display:flex;align-items:center;gap:8px}
+.p-list li::before{content:'✓';color:#6366f1;font-weight:700;font-size:12px}
+.p-btn{display:block;text-align:center;padding:12px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;transition:all .15s}
+.p-btn.fill{background:#fafafa;color:#09090b}
+.p-btn.fill:hover{background:#e4e4e7}
+.p-btn.line{border:1px solid #27272a;color:#a1a1aa}
+.p-btn.line:hover{border-color:#3f3f46;color:#fafafa}
+
+/* CTA */
+.cta{padding:120px 32px;text-align:center;border-top:1px solid #1c1c22}
+.cta h2{font-size:44px;font-weight:900;letter-spacing:-.03em;margin-bottom:16px;background:linear-gradient(180deg,#fafafa 0%,#71717a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta p{font-size:16px;color:#71717a;margin-bottom:32px}
+
+/* FOOTER */
+footer{padding:40px 32px;max-width:1040px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1c1c22}
+footer span{font-size:12px;color:#3f3f46}
+footer a{font-size:12px;color:#3f3f46;text-decoration:none;margin-left:20px}
+footer a:hover{color:#71717a}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo"><div class="nav-logo-mark">FM</div>FeedbackMind</a>
+    <div class="nav-links">
+      <a href="#feat">Features</a>
+      <a href="#price">Pricing</a>
+      <a href="/users/sign_in">Sign in</a>
+      <a href="/users/sign_up" class="nav-cta">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Your feedback has answers. Find&nbsp;them.</h1>
+  <p class="hero-sub">Connect every feedback source — Intercom, Slack, Gmail, Jira — and let AI surface the themes, risks, and opportunities hiding in plain sight.</p>
+  <div class="hero-actions">
+    <a href="/users/sign_up" class="btn-w">Start free trial →</a>
+    <a href="#feat" class="btn-g">Learn more</a>
+  </div>
+  <p class="hero-note">14 days free · No credit card</p>
+</section>
+
+<!-- Product screenshot -->
+<div class="product-wrap">
+  <div class="product-frame">
+    <div class="product-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+    <div class="product-body">
+      <div class="sb">
+        <div class="sb-logo"><span>FM</span> FeedbackMind</div>
+        <div class="sb-item on">Dashboard</div>
+        <div class="sb-item">Feedback</div>
+        <div class="sb-item">Syntheses</div>
+        <div class="sb-item">Sources</div>
+        <div class="sb-item">Pipeline</div>
+        <div class="sb-item">Settings</div>
+      </div>
+      <div class="mc">
+        <div class="mc-row">
+          <div class="mc-card"><div class="mc-label">Feedback</div><div class="mc-val">2,847</div><div class="mc-delta up">↑ 23%</div></div>
+          <div class="mc-card"><div class="mc-label">Positive</div><div class="mc-val">72%</div><div class="mc-delta up">↑ 8%</div></div>
+          <div class="mc-card"><div class="mc-label">Themes</div><div class="mc-val">12</div><div class="mc-delta dn">3 urgent</div></div>
+        </div>
+        <div class="mc-chart">
+          <div class="mc-chart-t">Sentiment · Last 30 days</div>
+          <div class="bars">
+            <div class="bar" style="height:55%;background:#22c55e"></div>
+            <div class="bar" style="height:48%;background:#22c55e"></div>
+            <div class="bar" style="height:30%;background:#71717a"></div>
+            <div class="bar" style="height:62%;background:#22c55e"></div>
+            <div class="bar" style="height:58%;background:#22c55e"></div>
+            <div class="bar" style="height:22%;background:#ef4444"></div>
+            <div class="bar" style="height:75%;background:#22c55e"></div>
+            <div class="bar" style="height:70%;background:#22c55e"></div>
+            <div class="bar" style="height:38%;background:#71717a"></div>
+            <div class="bar" style="height:65%;background:#22c55e"></div>
+            <div class="bar" style="height:68%;background:#22c55e"></div>
+            <div class="bar" style="height:18%;background:#ef4444"></div>
+            <div class="bar" style="height:72%;background:#22c55e"></div>
+            <div class="bar" style="height:60%;background:#22c55e"></div>
+          </div>
+        </div>
+        <div class="mc-themes">
+          <div class="pill"><div class="pill-dot" style="background:#ef4444"></div>Checkout bugs · 38</div>
+          <div class="pill"><div class="pill-dot" style="background:#22c55e"></div>Mobile praise · 24</div>
+          <div class="pill"><div class="pill-dot" style="background:#eab308"></div>Pricing page · 15</div>
+          <div class="pill"><div class="pill-dot" style="background:#3b82f6"></div>Dark mode · 12</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sources">
+  <div class="sources-label">Connects with</div>
+  <div class="sources-row">
+    <span class="src">Intercom</span><span class="src">Slack</span><span class="src">Gmail</span><span class="src">Jira</span><span class="src">Typeform</span><span class="src">App Store</span><span class="src">CSV</span>
+  </div>
+</div>
+
+<!-- Features bento -->
+<section class="bento" id="feat">
+  <div class="bento-label">Features</div>
+  <div class="bento-title">Built for PMs who ship based on evidence</div>
+  <div class="bento-grid">
+    <div class="bento-card wide">
+      <div class="bento-icon">⌘</div>
+      <h3>Command Palette <span class="bento-tag">Unique</span></h3>
+      <p>Press ⌘K to search feedback, navigate, trigger actions, or ask AI. Linear-style speed for everything.</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon">💰</div>
+      <h3>Impact Score</h3>
+      <p>Every theme gets an MRR impact estimate. Prioritize what moves revenue.</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon">📈</div>
+      <h3>Sentiment Timeline</h3>
+      <p>Track how sentiment shifts after each release. Did that update help or hurt?</p>
+    </div>
+    <div class="bento-card">
+      <div class="bento-icon">🔄</div>
+      <h3>Feedback Pipeline</h3>
+      <p>Kanban board: New → Planned → In Progress → Shipped. Every request tracked.</p>
+    </div>
+    <div class="bento-card wide">
+      <div class="bento-icon">🔔</div>
+      <h3>Closed-Loop Tracker</h3>
+      <p>Ship a fix, notify the customers who asked for it. Close the loop automatically. Build loyalty at scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="price">
+  <div class="pricing-head">
+    <div class="bento-label">Pricing</div>
+    <div class="bento-title" style="max-width:100%;margin-bottom:0">Simple pricing. Start free.</div>
+  </div>
+  <div class="pricing-grid">
+    <div class="p-card">
+      <div class="p-name">Starter</div>
+      <div class="p-desc">Solo PMs getting started</div>
+      <div class="p-price">$29<span>/mo</span></div>
+      <ul class="p-list">
+        <li>1 team member</li><li>3 sources</li><li>500 feedbacks/mo</li><li>Weekly synthesis</li>
+      </ul>
+      <a href="/users/sign_up" class="p-btn line">Start free trial</a>
+    </div>
+    <div class="p-card pop">
+      <div class="p-name">Growth</div>
+      <div class="p-desc">Teams that need deeper insights</div>
+      <div class="p-price">$109<span>/mo</span></div>
+      <ul class="p-list">
+        <li>5 team members</li><li>10 sources</li><li>2,000 feedbacks/mo</li><li>AI Chat</li><li>Sentiment timeline</li><li>Closed-loop tracker</li>
+      </ul>
+      <a href="/users/sign_up" class="p-btn fill">Start free trial</a>
+    </div>
+    <div class="p-card">
+      <div class="p-name">Scale</div>
+      <div class="p-desc">Product orgs at scale</div>
+      <div class="p-price">$209<span>/mo</span></div>
+      <ul class="p-list">
+        <li>Unlimited everything</li><li>AI PRD generation</li><li>Impact scoring</li><li>Role-based views</li><li>Priority support</li>
+      </ul>
+      <a href="/users/sign_up" class="p-btn line">Start free trial</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Stop reading feedback.<br>Start understanding it.</h2>
+  <p>14-day free trial. Set up in 5 minutes.</p>
+  <a href="/users/sign_up" class="btn-w">Start free trial →</a>
+</section>
+
+<footer>
+  <span>© 2026 FeedbackMind</span>
+  <div><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Twitter</a></div>
+</footer>
+
+</body>
+</html>

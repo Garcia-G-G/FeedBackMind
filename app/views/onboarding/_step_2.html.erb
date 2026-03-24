@@ -1,41 +1,57 @@
 <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
-  <h1 class="text-2xl font-bold font-serif-display text-stone-900 mb-2">Connect your first source</h1>
-  <p class="text-sm text-stone-500 mb-6">Where does your customer feedback come from? You can add more later.</p>
+  <h1 class="text-2xl font-bold font-serif-display text-stone-900 mb-2">Connect your feedback sources</h1>
+  <p class="text-sm text-stone-500 mb-6">Connect the tools where your customers leave feedback. You can always add more from the Sources page later.</p>
 
-  <div class="grid grid-cols-2 gap-4 mb-6">
+  <% already_connected = current_account.sources.where(active: true).pluck(:source_type) %>
+
+  <div class="grid grid-cols-2 gap-3 mb-6">
     <%
       sources = [
-        { provider: "slack", emoji: "💼", name: "Slack", desc: "Feedback from channels" },
-        { provider: "gmail", emoji: "📧", name: "Gmail", desc: "Customer emails" },
-        { provider: "jira", emoji: "🔧", name: "Jira", desc: "Issues & comments" },
-        { provider: "typeform", emoji: "📋", name: "Typeform", desc: "Survey responses" },
-        { provider: "csv", emoji: "📄", name: "CSV Upload", desc: "Import from file" }
+        { provider: "slack", icon: "💬", name: "Slack", desc: "Channels & threads" },
+        { provider: "gmail", icon: "✉️", name: "Gmail", desc: "Customer emails" },
+        { provider: "jira", icon: "⚡", name: "Jira", desc: "Issues & comments" },
+        { provider: "typeform", icon: "📊", name: "Typeform", desc: "Survey responses" },
       ]
     %>
     <% sources.each do |src| %>
-      <% if src[:provider] == "csv" %>
-        <%= link_to new_source_path, class: "flex items-center gap-3 p-4 rounded-xl border border-stone-200 hover:border-stone-400 hover:bg-stone-50/30 transition-all" do %>
-          <div class="text-2xl"><%= src[:emoji] %></div>
-          <div>
+      <% connected = already_connected.include?(src[:provider]) %>
+      <% if connected %>
+        <div class="flex items-center gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/50">
+          <div class="text-2xl"><%= src[:icon] %></div>
+          <div class="flex-1">
             <p class="font-semibold text-sm text-stone-900"><%= src[:name] %></p>
-            <p class="text-xs text-stone-500"><%= src[:desc] %></p>
+            <p class="text-xs text-emerald-600 font-medium">✓ Connected</p>
           </div>
-        <% end %>
+        </div>
       <% else %>
-        <%= button_to connect_source_path(provider: src[:provider]), method: :post, class: "flex items-center gap-3 p-4 rounded-xl border border-stone-200 hover:border-stone-400 hover:bg-stone-50/30 transition-all text-left w-full" do %>
-          <div class="text-2xl"><%= src[:emoji] %></div>
-          <div>
+        <%= button_to connect_source_path(provider: src[:provider]), method: :post, class: "flex items-center gap-3 p-4 rounded-xl border border-stone-200 hover:border-stone-900 hover:shadow-sm transition-all text-left w-full group" do %>
+          <div class="text-2xl"><%= src[:icon] %></div>
+          <div class="flex-1">
             <p class="font-semibold text-sm text-stone-900"><%= src[:name] %></p>
-            <p class="text-xs text-stone-500"><%= src[:desc] %></p>
+            <p class="text-xs text-stone-400"><%= src[:desc] %></p>
           </div>
+          <span class="text-xs font-medium text-stone-400 group-hover:text-stone-900 transition-colors">Connect →</span>
         <% end %>
       <% end %>
     <% end %>
   </div>
 
+  <div class="bg-stone-50 rounded-lg p-4 mb-6">
+    <div class="flex items-center gap-3">
+      <span class="text-lg">📄</span>
+      <div class="flex-1">
+        <p class="text-sm font-medium text-stone-900">Have a CSV file?</p>
+        <p class="text-xs text-stone-500">You can import feedback from any CSV file in the Sources page.</p>
+      </div>
+    </div>
+  </div>
+
   <div class="flex items-center justify-between pt-4 border-t border-stone-200">
+    <p class="text-xs text-stone-400">You can connect sources anytime from Settings</p>
     <%= form_with url: onboarding_path, method: :patch, local: true do %>
-      <button type="submit" class="text-sm text-stone-500 hover:text-stone-700 font-medium">Skip for now →</button>
+      <button type="submit" class="px-5 py-2.5 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors">
+        Continue →
+      </button>
     <% end %>
   </div>
 </div>

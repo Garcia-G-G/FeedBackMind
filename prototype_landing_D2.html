@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FeedbackMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --stone-50: #fafaf9;
+      --stone-100: #f5f5f4;
+      --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1;
+      --stone-400: #a8a29e;
+      --stone-500: #78716c;
+      --stone-600: #57534e;
+      --stone-700: #44403c;
+      --stone-800: #292524;
+      --stone-900: #1c1917;
+      --indigo: #4f46e5;
+      --indigo-light: #e0e7ff;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: #fff;
+      color: var(--stone-900);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ━━━ NAV ━━━ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--stone-900);
+      text-decoration: none;
+      letter-spacing: -0.4px;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-link {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--stone-500);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: var(--stone-900); }
+    .nav-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--stone-900);
+      padding: 7px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .nav-btn:hover { background: var(--stone-800); }
+
+    /* ━━━ HERO ━━━ */
+    .hero {
+      padding: 140px 32px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .hero-left { max-width: 520px; }
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--indigo);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: 50px;
+      line-height: 1.08;
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      color: var(--stone-900);
+    }
+    .hero h1 .italic {
+      font-style: italic;
+      color: var(--stone-600);
+    }
+    .hero-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--stone-500);
+      margin-bottom: 36px;
+      max-width: 440px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--stone-900);
+      color: #fff;
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .hero-cta:hover { background: var(--stone-800); transform: translateY(-1px); }
+    .hero-cta svg { opacity: 0.6; }
+    .hero-note {
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: var(--stone-400);
+    }
+
+    /* product card */
+    .hero-right {
+      position: relative;
+    }
+    .product-card {
+      background: var(--stone-900);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+      transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
+      transition: transform 0.4s ease;
+    }
+    .product-card:hover {
+      transform: perspective(1200px) rotateY(0deg) rotateX(0deg);
+    }
+    .pc-bar {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      gap: 7px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .pc-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .pc-dot:nth-child(1) { background: #ef4444; }
+    .pc-dot:nth-child(2) { background: #fbbf24; }
+    .pc-dot:nth-child(3) { background: #22c55e; }
+    .pc-content {
+      padding: 28px 24px;
+    }
+    .pc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 24px;
+    }
+    .pc-title {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .pc-date {
+      color: var(--stone-500);
+      font-size: 12px;
+    }
+    .pc-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .pc-metric {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 16px 14px;
+    }
+    .pc-metric-val {
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .pc-metric-label {
+      color: var(--stone-500);
+      font-size: 11px;
+      margin-top: 4px;
+      letter-spacing: 0.02em;
+    }
+    .pc-themes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pc-theme {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .pc-theme-bar {
+      width: 3px;
+      height: 28px;
+      border-radius: 2px;
+    }
+    .pc-theme-info { flex: 1; }
+    .pc-theme-name {
+      color: #e7e5e4;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .pc-theme-count {
+      color: var(--stone-500);
+      font-size: 11px;
+    }
+    .pc-theme-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.03em;
+    }
+
+    /* floating annotation */
+    .float-annotation {
+      position: absolute;
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.04);
+      font-size: 13px;
+      z-index: 2;
+      max-width: 200px;
+    }
+    .float-annotation.left {
+      left: -40px;
+      bottom: 60px;
+    }
+    .float-annotation.right {
+      right: -28px;
+      top: 80px;
+    }
+    .fa-label {
+      color: var(--stone-400);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .fa-value {
+      color: var(--stone-900);
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .fa-value.green { color: #16a34a; }
+    .fa-value.red { color: #dc2626; }
+    .fa-detail {
+      color: var(--stone-400);
+      font-size: 11.5px;
+      margin-top: 2px;
+    }
+
+    /* ━━━ LOGOS / SOCIAL PROOF BAR ━━━ */
+    .proof-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 32px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+    .proof-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--stone-400);
+      white-space: nowrap;
+    }
+    .proof-logos {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .proof-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--stone-300);
+      letter-spacing: -0.3px;
+      user-select: none;
+    }
+
+    /* ━━━ LONG-FORM EDITORIAL ━━━ */
+    .editorial-block {
+      max-width: 620px;
+      margin: 40px auto 0;
+      padding: 80px 32px;
+    }
+    .editorial-block h2 {
+      font-family: var(--serif);
+      font-size: 34px;
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+      margin-bottom: 28px;
+    }
+    .editorial-block p {
+      font-size: 16.5px;
+      line-height: 1.75;
+      color: var(--stone-600);
+      margin-bottom: 20px;
+    }
+    .editorial-block p:last-of-type { margin-bottom: 0; }
+    .editorial-block strong { color: var(--stone-900); }
+    .pullquote {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--stone-700);
+      border-left: 3px solid var(--indigo);
+      padding-left: 24px;
+      margin: 40px 0;
+    }
+
+    /* ━━━ FULL-WIDTH FEATURE SECTIONS ━━━ */
+    .feature-section {
+      padding: 100px 32px;
+    }
+    .feature-section.stone-bg {
+      background: var(--stone-50);
+    }
+    .feature-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .feature-inner.reverse .feat-text { order: 2; }
+    .feature-inner.reverse .feat-visual { order: 1; }
+    .feat-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--indigo);
+      margin-bottom: 14px;
+    }
+    .feat-text h3 {
+      font-family: var(--serif);
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+      margin-bottom: 18px;
+    }
+    .feat-text p {
+      font-size: 15.5px;
+      line-height: 1.7;
+      color: var(--stone-500);
+      margin-bottom: 24px;
+      max-width: 420px;
+    }
+    .feat-bullets {
+      list-style: none;
+    }
+    .feat-bullets li {
+      font-size: 14px;
+      color: var(--stone-700);
+      padding: 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+    .feat-bullets li::before {
+      content: '—';
+      color: var(--stone-300);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Feature visuals */
+    .feat-visual {
+      position: relative;
+    }
+
+    /* Sentiment visual */
+    .sentiment-card {
+      background: #fff;
+      border: 1px solid var(--stone-200);
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+    .sc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 28px;
+    }
+    .sc-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .sc-period {
+      font-size: 12px;
+      color: var(--stone-400);
+    }
+    .sc-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 100px;
+      margin-bottom: 24px;
+    }
+    .sc-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      min-height: 4px;
+      position: relative;
+    }
+    .sc-bar .tooltip {
+      display: none;
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--stone-900);
+      color: #fff;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .sc-bar:hover .tooltip { display: block; }
+    .sc-legend {
+      display: flex;
+      gap: 20px;
+    }
+    .sc-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--stone-500);
+    }
+    .sc-legend-dot {
+      width: 8px; height: 8px; border-radius: 2px;
+    }
+
+    /* Theme visual */
+    .theme-card {
+      background: #fff;
+      border: 1px solid var(--stone-200);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+    .tc-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--stone-100);
+    }
+    .tc-item:last-child { border-bottom: none; }
+    .tc-rank {
+      font-family: var(--serif);
+      font-size: 22px;
+      color: var(--stone-300);
+      width: 36px;
+      flex-shrink: 0;
+    }
+    .tc-info { flex: 1; }
+    .tc-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--stone-900);
+      margin-bottom: 2px;
+    }
+    .tc-mentions {
+      font-size: 12px;
+      color: var(--stone-400);
+    }
+    .tc-trend {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .tc-trend.up { background: #f0fdf4; color: #16a34a; }
+    .tc-trend.down { background: #fef2f2; color: #dc2626; }
+    .tc-trend.new { background: var(--indigo-light); color: var(--indigo); }
+
+    /* Chat visual */
+    .chat-card {
+      background: #fff;
+      border: 1px solid var(--stone-200);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+    .cc-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--stone-100);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cc-online {
+      width: 7px; height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+    .cc-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .cc-msg {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+    .cc-msg.user {
+      align-self: flex-end;
+      background: var(--stone-900);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .cc-msg.ai {
+      align-self: flex-start;
+      background: var(--stone-50);
+      color: var(--stone-800);
+      border: 1px solid var(--stone-100);
+      border-bottom-left-radius: 4px;
+    }
+    .cc-msg.ai strong { color: var(--stone-900); }
+    .cc-input {
+      padding: 14px 24px;
+      border-top: 1px solid var(--stone-100);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cc-input-field {
+      flex: 1;
+      font-size: 13px;
+      color: var(--stone-400);
+    }
+    .cc-send {
+      width: 28px; height: 28px;
+      background: var(--stone-900);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ━━━ INTEGRATIONS (horizontal scroll feel) ━━━ */
+    .integrations-section {
+      padding: 80px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .int-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 40px;
+    }
+    .int-header h2 {
+      font-family: var(--serif);
+      font-size: 28px;
+      letter-spacing: -0.3px;
+    }
+    .int-header p {
+      font-size: 14px;
+      color: var(--stone-400);
+    }
+    .int-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1px;
+      background: var(--stone-200);
+      border: 1px solid var(--stone-200);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .int-cell {
+      background: #fff;
+      padding: 28px 20px;
+      text-align: center;
+      transition: background 0.15s;
+    }
+    .int-cell:hover { background: var(--stone-50); }
+    .int-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .int-cell-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--stone-700);
+      margin-bottom: 3px;
+    }
+    .int-cell-desc {
+      font-size: 11px;
+      color: var(--stone-400);
+    }
+
+    /* ━━━ PRICING ━━━ */
+    .pricing-section {
+      padding: 100px 32px;
+      background: var(--stone-50);
+    }
+    .pricing-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .pricing-top {
+      margin-bottom: 52px;
+    }
+    .pricing-top h2 {
+      font-family: var(--serif);
+      font-size: 36px;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .pricing-top p {
+      font-size: 16px;
+      color: var(--stone-500);
+    }
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .p-card {
+      background: #fff;
+      border: 1px solid var(--stone-200);
+      border-radius: 14px;
+      padding: 32px 28px;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .p-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+    .p-card.pop {
+      border-color: var(--stone-900);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .p-card.pop::before {
+      content: 'Most popular';
+      position: absolute;
+      top: -11px;
+      left: 28px;
+      background: var(--stone-900);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.02em;
+    }
+    .p-name {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--stone-400);
+      margin-bottom: 16px;
+    }
+    .p-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .p-amount {
+      font-family: var(--serif);
+      font-size: 44px;
+      letter-spacing: -1px;
+      color: var(--stone-900);
+    }
+    .p-per {
+      font-size: 14px;
+      color: var(--stone-400);
+    }
+    .p-desc {
+      font-size: 14px;
+      color: var(--stone-500);
+      line-height: 1.5;
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--stone-100);
+    }
+    .p-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+    .p-features li {
+      font-size: 14px;
+      color: var(--stone-700);
+      padding: 7px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .p-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--stone-400);
+      font-size: 12px;
+    }
+    .p-card.pop .p-features li::before { color: var(--indigo); }
+    .p-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid var(--stone-200);
+      background: #fff;
+      color: var(--stone-900);
+    }
+    .p-btn:hover { background: var(--stone-50); }
+    .p-card.pop .p-btn {
+      background: var(--stone-900);
+      color: #fff;
+      border-color: var(--stone-900);
+    }
+    .p-card.pop .p-btn:hover { background: var(--stone-800); }
+
+    /* ━━━ QUOTE ━━━ */
+    .quote-section {
+      padding: 100px 32px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .quote-mark {
+      font-family: var(--serif);
+      font-size: 72px;
+      line-height: 0.8;
+      color: var(--stone-200);
+      margin-bottom: 20px;
+    }
+    .quote-text {
+      font-family: var(--serif);
+      font-size: 26px;
+      line-height: 1.45;
+      color: var(--stone-800);
+      margin-bottom: 28px;
+    }
+    .quote-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .qa-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--stone-200), var(--stone-300));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--stone-500);
+    }
+    .qa-info {}
+    .qa-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--stone-900);
+    }
+    .qa-role {
+      font-size: 13px;
+      color: var(--stone-400);
+    }
+
+    /* ━━━ FINAL CTA ━━━ */
+    .final-cta {
+      padding: 80px 32px 100px;
+      text-align: center;
+      position: relative;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 300px;
+      height: 1px;
+      background: var(--stone-200);
+      transform: translateX(-50%);
+    }
+    .final-cta h2 {
+      font-family: var(--serif);
+      font-size: 38px;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .final-cta p {
+      font-size: 16px;
+      color: var(--stone-500);
+      margin-bottom: 32px;
+    }
+    .final-cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--stone-900);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .final-cta-link:hover { background: var(--stone-800); transform: translateY(-1px); }
+
+    /* ━━━ FOOTER ━━━ */
+    .site-footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px;
+      border-top: 1px solid var(--stone-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-footer p {
+      font-size: 13px;
+      color: var(--stone-400);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--stone-400);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--stone-700); }
+
+    /* ━━━ RESPONSIVE ━━━ */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 110px; }
+      .hero-left { max-width: 100%; }
+      .product-card { transform: none; }
+      .float-annotation { display: none; }
+      .feature-inner { grid-template-columns: 1fr; gap: 40px; }
+      .feature-inner.reverse .feat-text { order: 1; }
+      .feature-inner.reverse .feat-visual { order: 2; }
+      .int-grid { grid-template-columns: repeat(3, 1fr); }
+      .pricing-cards { grid-template-columns: 1fr; }
+      .proof-bar { flex-direction: column; align-items: flex-start; gap: 20px; }
+    }
+    @media (max-width: 600px) {
+      .int-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero h1 { font-size: 36px; }
+      .nav-right { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#" class="wordmark">FeedbackMind</a>
+    <div class="nav-right">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <a href="#" class="nav-link">Log in</a>
+      <a href="#" class="nav-btn">Start free trial</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">For product teams</div>
+    <h1>Your users are already telling you what to build <span class="italic">next</span></h1>
+    <p class="hero-sub">FeedbackMind connects to every channel where customers talk, finds patterns across thousands of messages, and tells you what matters this week.</p>
+    <a href="#" class="hero-cta">
+      Start free trial
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="hero-note">Free for 14 days · No credit card required</p>
+  </div>
+  <div class="hero-right">
+    <div class="product-card">
+      <div class="pc-bar">
+        <span class="pc-dot"></span>
+        <span class="pc-dot"></span>
+        <span class="pc-dot"></span>
+      </div>
+      <div class="pc-content">
+        <div class="pc-header">
+          <span class="pc-title">Weekly Synthesis</span>
+          <span class="pc-date">Mar 10 – 16, 2026</span>
+        </div>
+        <div class="pc-metrics">
+          <div class="pc-metric">
+            <div class="pc-metric-val">1,247</div>
+            <div class="pc-metric-label">Feedbacks</div>
+          </div>
+          <div class="pc-metric">
+            <div class="pc-metric-val">72%</div>
+            <div class="pc-metric-label">Positive</div>
+          </div>
+          <div class="pc-metric">
+            <div class="pc-metric-val">8</div>
+            <div class="pc-metric-label">Themes</div>
+          </div>
+        </div>
+        <div class="pc-themes">
+          <div class="pc-theme">
+            <div class="pc-theme-bar" style="background:#ef4444"></div>
+            <div class="pc-theme-info">
+              <div class="pc-theme-name">Mobile app crashes on iOS 19</div>
+              <div class="pc-theme-count">142 mentions · 89% negative</div>
+            </div>
+            <span class="pc-theme-badge" style="background:#fef2f2;color:#dc2626;">Urgent</span>
+          </div>
+          <div class="pc-theme">
+            <div class="pc-theme-bar" style="background:#22c55e"></div>
+            <div class="pc-theme-info">
+              <div class="pc-theme-name">New export feature well received</div>
+              <div class="pc-theme-count">203 mentions · 94% positive</div>
+            </div>
+            <span class="pc-theme-badge" style="background:#f0fdf4;color:#16a34a;">Positive</span>
+          </div>
+          <div class="pc-theme">
+            <div class="pc-theme-bar" style="background:#f59e0b"></div>
+            <div class="pc-theme-info">
+              <div class="pc-theme-name">Dashboard loading time complaints</div>
+              <div class="pc-theme-count">89 mentions · trending up</div>
+            </div>
+            <span class="pc-theme-badge" style="background:#fffbeb;color:#d97706;">Rising</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Floating annotations -->
+    <div class="float-annotation left">
+      <div class="fa-label">Sentiment shift</div>
+      <div class="fa-value green">+12%</div>
+      <div class="fa-detail">vs. last week</div>
+    </div>
+    <div class="float-annotation right">
+      <div class="fa-label">Urgent issues</div>
+      <div class="fa-value red">3</div>
+      <div class="fa-detail">need attention</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="proof-bar">
+  <span class="proof-label">Trusted by</span>
+  <div class="proof-logos">
+    <span class="proof-logo">Lumina</span>
+    <span class="proof-logo">Stackbase</span>
+    <span class="proof-logo">Orbitly</span>
+    <span class="proof-logo">Planum</span>
+    <span class="proof-logo">Keyflow</span>
+  </div>
+</div>
+
+<!-- EDITORIAL BLOCK -->
+<section class="editorial-block">
+  <h2>The feedback problem isn't volume. It's visibility.</h2>
+  <p>Your team collects feedback from Intercom, Slack, surveys, support tickets, and app store reviews. Hundreds of messages every week. The data is there — the problem is that <strong>no one has time to read it all, remember it all, and connect the dots</strong>.</p>
+  <div class="pullquote">
+    "We had 2,000 support tickets last month. Somewhere in there was the signal to prioritize mobile performance. We found it three sprints too late."
+  </div>
+  <p>FeedbackMind exists so that never happens again. It reads everything, finds the patterns, and delivers a clear weekly synthesis — so your roadmap reflects what users actually need, not what you <em>think</em> they need.</p>
+</section>
+
+<!-- FEATURE 1: SENTIMENT -->
+<section class="feature-section stone-bg" id="features">
+  <div class="feature-inner">
+    <div class="feat-text">
+      <div class="feat-eyebrow">Sentiment</div>
+      <h3>Context-aware sentiment, not just positive/negative</h3>
+      <p>FeedbackMind understands sarcasm, mixed signals, and the difference between frustration and a feature request. Every piece of feedback gets scored on a nuanced scale.</p>
+      <ul class="feat-bullets">
+        <li>Detects frustration, confusion, delight, and urgency</li>
+        <li>Tracks sentiment trends week over week</li>
+        <li>Alerts you when sentiment drops on key themes</li>
+      </ul>
+    </div>
+    <div class="feat-visual">
+      <div class="sentiment-card">
+        <div class="sc-header">
+          <span class="sc-title">Sentiment over time</span>
+          <span class="sc-period">Last 8 weeks</span>
+        </div>
+        <div class="sc-chart">
+          <div class="sc-bar" style="height:55%;background:#22c55e"><span class="tooltip">W1: 55%</span></div>
+          <div class="sc-bar" style="height:20%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:25%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:60%;background:#22c55e"><span class="tooltip">W2: 60%</span></div>
+          <div class="sc-bar" style="height:18%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:22%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:52%;background:#22c55e"></div>
+          <div class="sc-bar" style="height:23%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:25%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:45%;background:#22c55e"></div>
+          <div class="sc-bar" style="height:20%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:35%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:50%;background:#22c55e"></div>
+          <div class="sc-bar" style="height:22%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:28%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:58%;background:#22c55e"></div>
+          <div class="sc-bar" style="height:24%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:18%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:65%;background:#22c55e"></div>
+          <div class="sc-bar" style="height:20%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:15%;background:#ef4444"></div>
+          <div style="width:4px"></div>
+          <div class="sc-bar" style="height:72%;background:#22c55e"><span class="tooltip">W8: 72% ↑</span></div>
+          <div class="sc-bar" style="height:16%;background:#fbbf24"></div>
+          <div class="sc-bar" style="height:12%;background:#ef4444"></div>
+        </div>
+        <div class="sc-legend">
+          <div class="sc-legend-item"><span class="sc-legend-dot" style="background:#22c55e"></span> Positive</div>
+          <div class="sc-legend-item"><span class="sc-legend-dot" style="background:#fbbf24"></span> Neutral</div>
+          <div class="sc-legend-item"><span class="sc-legend-dot" style="background:#ef4444"></span> Negative</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 2: THEMES -->
+<section class="feature-section">
+  <div class="feature-inner reverse">
+    <div class="feat-text">
+      <div class="feat-eyebrow">Themes</div>
+      <h3>Patterns surface automatically — no tagging required</h3>
+      <p>Using vector embeddings (not keyword matching), FeedbackMind clusters similar feedback into themes with urgency scores, trend direction, and representative quotes.</p>
+      <ul class="feat-bullets">
+        <li>Clusters by meaning, not just keywords</li>
+        <li>Tracks new and rising themes week over week</li>
+        <li>Urgency scoring based on volume, sentiment, and velocity</li>
+      </ul>
+    </div>
+    <div class="feat-visual">
+      <div class="theme-card">
+        <div class="tc-item">
+          <div class="tc-rank">1</div>
+          <div class="tc-info">
+            <div class="tc-name">Mobile app performance</div>
+            <div class="tc-mentions">142 mentions · mostly iOS</div>
+          </div>
+          <span class="tc-trend up">↑ 34%</span>
+        </div>
+        <div class="tc-item">
+          <div class="tc-rank">2</div>
+          <div class="tc-info">
+            <div class="tc-name">Dashboard load time</div>
+            <div class="tc-mentions">89 mentions · enterprise segment</div>
+          </div>
+          <span class="tc-trend up">↑ 18%</span>
+        </div>
+        <div class="tc-item">
+          <div class="tc-rank">3</div>
+          <div class="tc-info">
+            <div class="tc-name">Onboarding confusion</div>
+            <div class="tc-mentions">67 mentions · new users</div>
+          </div>
+          <span class="tc-trend new">New</span>
+        </div>
+        <div class="tc-item">
+          <div class="tc-rank">4</div>
+          <div class="tc-info">
+            <div class="tc-name">Pricing page unclear</div>
+            <div class="tc-mentions">56 mentions · trial users</div>
+          </div>
+          <span class="tc-trend down">↓ 8%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 3: AI CHAT -->
+<section class="feature-section stone-bg">
+  <div class="feature-inner">
+    <div class="feat-text">
+      <div class="feat-eyebrow">AI Chat</div>
+      <h3>Ask your feedback database anything</h3>
+      <p>Don't wait for the weekly report. Ask questions like "what do enterprise users think about our API?" and get instant, source-cited answers from your entire feedback history.</p>
+      <ul class="feat-bullets">
+        <li>Natural language queries across all your data</li>
+        <li>Every answer cites specific feedback sources</li>
+        <li>Follow-up questions to drill deeper</li>
+      </ul>
+    </div>
+    <div class="feat-visual">
+      <div class="chat-card">
+        <div class="cc-header">
+          <span class="cc-online"></span>
+          Ask your feedback
+        </div>
+        <div class="cc-body">
+          <div class="cc-msg user">What are enterprise users saying about onboarding?</div>
+          <div class="cc-msg ai">Based on <strong>312 feedbacks</strong> from enterprise accounts this quarter: <strong>SSO integration</strong> (47 mentions), <strong>role-based permissions</strong> (38), and <strong>bulk user import</strong> (29) are the top requests. Sentiment around onboarding has dropped 18% since February — primarily driven by teams with 50+ seats.</div>
+          <div class="cc-msg user">Which customers mentioned SSO specifically?</div>
+          <div class="cc-msg ai">SSO was mentioned by <strong>12 enterprise accounts</strong>, including Acme Corp (via Intercom, 3 tickets), Globex (Slack, 2 messages), and Initech (NPS survey). 8 of 12 rated it as "blocking procurement."</div>
+        </div>
+        <div class="cc-input">
+          <span class="cc-input-field">Ask a follow-up question…</span>
+          <span class="cc-send">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="integrations-section">
+  <div class="int-header">
+    <h2>Connects to your stack</h2>
+    <p>Two minutes per source. No engineering required.</p>
+  </div>
+  <div class="int-grid">
+    <div class="int-cell">
+      <div class="int-icon-wrap" style="background:#FFF1F0;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#E01E5A" stroke-width="1.5"/><path d="M7 10h6" stroke="#E01E5A" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="int-cell-name">Intercom</div>
+      <div class="int-cell-desc">Chat & tickets</div>
+    </div>
+    <div class="int-cell">
+      <div class="int-icon-wrap" style="background:#F3EFFF;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="4" width="12" height="12" rx="2" stroke="#4A154B" stroke-width="1.5"/><path d="M7 10h6M10 7v6" stroke="#4A154B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="int-cell-name">Slack</div>
+      <div class="int-cell-desc">Channels & threads</div>
+    </div>
+    <div class="int-cell">
+      <div class="int-icon-wrap" style="background:#F0F0F0;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="4" width="12" height="12" rx="3" stroke="#262626" stroke-width="1.5"/><path d="M7 9h6M7 12h3" stroke="#262626" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="int-cell-name">Typeform</div>
+      <div class="int-cell-desc">Surveys & forms</div>
+    </div>
+    <div class="int-cell">
+      <div class="int-icon-wrap" style="background:#E8F0FE;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 5L6 10h3v5l4-5h-3V5z" stroke="#0052CC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="int-cell-name">Jira</div>
+      <div class="int-cell-desc">Issues & feedback</div>
+    </div>
+    <div class="int-cell">
+      <div class="int-icon-wrap" style="background:#E8F5E9;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-6" stroke="#4285F4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10" r="7" stroke="#4285F4" stroke-width="1.5"/></svg>
+      </div>
+      <div class="int-cell-name">Google Reviews</div>
+      <div class="int-cell-desc">App & business</div>
+    </div>
+    <div class="int-cell">
+      <div class="int-icon-wrap" style="background:#EEF2FF;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5-3 5 3v4l-5 3-5-3V8z" stroke="#6366f1" stroke-width="1.5" stroke-linejoin="round"/><path d="M5 8l5 3 5-3M10 11v5" stroke="#6366f1" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="int-cell-name">CSV Upload</div>
+      <div class="int-cell-desc">Any data source</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-top">
+      <h2>Simple pricing, no surprises</h2>
+      <p>14-day free trial on every plan. No credit card required.</p>
+    </div>
+    <div class="pricing-cards">
+      <div class="p-card">
+        <div class="p-name">Starter</div>
+        <div class="p-price">
+          <span class="p-amount">$29</span>
+          <span class="p-per">/mo</span>
+        </div>
+        <div class="p-desc">For small teams starting to listen to users systematically.</div>
+        <ul class="p-features">
+          <li>1,000 feedbacks per month</li>
+          <li>3 source connections</li>
+          <li>Weekly synthesis report</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#" class="p-btn">Get started</a>
+      </div>
+      <div class="p-card pop">
+        <div class="p-name">Growth</div>
+        <div class="p-price">
+          <span class="p-amount">$109</span>
+          <span class="p-per">/mo</span>
+        </div>
+        <div class="p-desc">For product teams that need deeper analysis and real-time answers.</div>
+        <ul class="p-features">
+          <li>10,000 feedbacks per month</li>
+          <li>10 source connections</li>
+          <li>Weekly synthesis report</li>
+          <li>AI Chat — ask your data</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="p-btn">Get started</a>
+      </div>
+      <div class="p-card">
+        <div class="p-name">Scale</div>
+        <div class="p-price">
+          <span class="p-amount">$209</span>
+          <span class="p-per">/mo</span>
+        </div>
+        <div class="p-desc">For orgs processing feedback at scale across multiple products.</div>
+        <ul class="p-features">
+          <li>Unlimited feedbacks</li>
+          <li>Unlimited sources</li>
+          <li>Weekly synthesis report</li>
+          <li>AI Chat — ask your data</li>
+          <li>REST API access</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a href="#" class="p-btn">Get started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="quote-section">
+  <div class="quote-mark">"</div>
+  <div class="quote-text">We used to spend Friday afternoons manually tagging support tickets into a spreadsheet. FeedbackMind replaced that entire ritual and catches patterns we never would have found — three sprints earlier than we would have.</div>
+  <div class="quote-author">
+    <div class="qa-avatar">MG</div>
+    <div class="qa-info">
+      <div class="qa-name">María González</div>
+      <div class="qa-role">Head of Product, Lumina</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Start hearing what your users are really saying</h2>
+  <p>14-day trial. No credit card. Takes 5 minutes to set up.</p>
+  <a href="#" class="final-cta-link">
+    Start your free trial
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <p>&copy; 2026 FeedbackMind</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Twitter</a>
+  </div>
+</footer>
+
+</body>
+</html>

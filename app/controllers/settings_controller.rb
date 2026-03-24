@@ -77,9 +77,25 @@ class SettingsController < ApplicationController
     redirect_to settings_path, notice: "Team member removed."
   end
 
+  def change_plan
+    plan = params[:plan]
+    unless %w[starter growth scale].include?(plan)
+      redirect_to settings_path, alert: "Invalid plan."
+      return
+    end
+
+    if plan == current_account.plan
+      redirect_to settings_path, notice: "You're already on the #{plan.titleize} plan."
+      return
+    end
+
+    current_account.update!(plan: plan)
+    redirect_to settings_path, notice: "Plan changed to #{plan.titleize}."
+  end
+
   private
 
   def account_params
-    params.require(:account).permit(:name, :plan)
+    params.require(:account).permit(:name, :subdomain, :plan)
   end
 end
