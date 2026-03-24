@@ -8,14 +8,28 @@ class SourceConnectionsController < ApplicationController
 
     case provider
     when "slack"
+      if ENV["SLACK_CLIENT_ID"].blank?
+        redirect_to sources_path, alert: "Slack is not configured yet. Please set SLACK_CLIENT_ID and SLACK_CLIENT_SECRET."
+        return
+      end
       redirect_to "/auth/slack_openid", allow_other_host: true
     when "gmail"
+      if ENV["GOOGLE_CLIENT_ID"].blank?
+        redirect_to sources_path, alert: "Gmail is not configured yet. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET."
+        return
+      end
       redirect_to "/auth/google_oauth2", allow_other_host: true
-    when "intercom"
-      redirect_to intercom_auth_url, allow_other_host: true
     when "jira"
+      if ENV["JIRA_CLIENT_ID"].blank?
+        redirect_to sources_path, alert: "Jira is not configured yet. Please set JIRA_CLIENT_ID and JIRA_CLIENT_SECRET."
+        return
+      end
       redirect_to jira_auth_url, allow_other_host: true
     when "typeform"
+      if ENV["TYPEFORM_CLIENT_ID"].blank?
+        redirect_to sources_path, alert: "Typeform is not configured yet. Please set TYPEFORM_CLIENT_ID and TYPEFORM_CLIENT_SECRET."
+        return
+      end
       redirect_to typeform_auth_url, allow_other_host: true
     else
       redirect_to sources_path, alert: "Unknown provider: #{provider}"
@@ -30,7 +44,6 @@ class SourceConnectionsController < ApplicationController
       return
     end
 
-    # Guard: if user session expired during OAuth flow
     unless current_user
       redirect_to new_user_session_path, alert: "Your session expired. Please sign in and try connecting again."
       return
@@ -58,22 +71,6 @@ class SourceConnectionsController < ApplicationController
   # GET /auth/failure
   def omniauth_failure
     redirect_to sources_path, alert: "Authentication failed: #{params[:message]}"
-  end
-
-  # GET /sources/callback/intercom
-  def intercom_callback
-    token = exchange_code_for_token(
-      token_url: "https://api.intercom.io/auth/eagle/token",
-      client_id: ENV.fetch("INTERCOM_CLIENT_ID", ""),
-      client_secret: ENV.fetch("INTERCOM_CLIENT_SECRET", ""),
-      code: params[:code],
-      redirect_uri: intercom_callback_sources_url
-    )
-
-    save_source(:intercom, token)
-    redirect_to sources_path, notice: "Intercom connected successfully!"
-  rescue => e
-    redirect_to sources_path, alert: "Intercom connection failed: #{e.message}"
   end
 
   # GET /sources/callback/jira
@@ -163,15 +160,6 @@ class SourceConnectionsController < ApplicationController
     JSON.parse(response.body)
   end
 
-  def intercom_auth_url
-    params = {
-      client_id: ENV.fetch("INTERCOM_CLIENT_ID", ""),
-      redirect_uri: intercom_callback_sources_url,
-      state: form_authenticity_token
-    }
-    "https://app.intercom.com/oauth?#{params.to_query}"
-  end
-
   def jira_auth_url
     params = {
       audience: "api.atlassian.com",
@@ -193,11 +181,6 @@ class SourceConnectionsController < ApplicationController
       state: form_authenticity_token
     }
     "https://api.typeform.com/oauth/authorize?#{params.to_query}"
-  end
-
-  # Helper for route names
-  def intercom_callback_sources_url
-    url_for(controller: "source_connections", action: "intercom_callback", only_path: false)
   end
 
   def jira_callback_sources_url
