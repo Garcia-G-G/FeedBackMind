@@ -90,6 +90,14 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "source_connections#omniauth_callback"
   get "/auth/failure", to: "source_connections#omniauth_failure"
 
+  # Redirect unauthenticated users to sign-in for app routes
+  get "dashboard", to: redirect("/users/sign_in")
+  get "feedbacks", to: redirect("/users/sign_in")
+  get "syntheses", to: redirect("/users/sign_in")
+  get "sources", to: redirect("/users/sign_in")
+  get "pipeline", to: redirect("/users/sign_in")
+  get "settings", to: redirect("/users/sign_in")
+
   # === Marketing landing (non-logged-in users) ===
   root "pages#home"
 end
