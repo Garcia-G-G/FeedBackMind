@@ -22,10 +22,25 @@ RSpec.describe "Syntheses (Web)", type: :request do
   end
 
   describe "POST /syntheses" do
-    it "enqueues synthesis job and redirects" do
+    it "enqueues synthesis job when conditions are met" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("OPENAI_API_KEY").and_return("sk-test-key")
+      source = create(:source, account: account, source_type: :slack, active: true)
+      create(:feedback, account: account, source: source, processed_at: Time.current, received_at: 1.day.ago)
+
       post syntheses_path
       expect(response).to redirect_to(syntheses_path)
       expect(WeeklySynthesisJob.jobs.size).to eq(1)
+    end
+
+    it "rejects when OPENAI_API_KEY is missing" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("OPENAI_API_KEY").and_return(nil)
+
+      post syntheses_path
+      expect(response).to redirect_to(syntheses_path)
+      follow_redirect!
+      expect(response.body).to include("OpenAI API key")
     end
   end
 end

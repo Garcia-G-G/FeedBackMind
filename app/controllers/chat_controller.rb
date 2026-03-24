@@ -10,6 +10,12 @@ class ChatController < ApplicationController
     message_text = params[:message]
     return head :bad_request if message_text.blank?
 
+    unless ENV["OPENAI_API_KEY"].present?
+      return respond_to do |format|
+        format.json { render json: { error: "AI chat is not configured. Please set OPENAI_API_KEY." }, status: :service_unavailable }
+      end
+    end
+
     @user_message = ChatMessage.create!(
       account: current_account,
       user: current_user,
@@ -17,18 +23,30 @@ class ChatController < ApplicationController
       content: message_text
     )
 
-    result = Synthesis::RagChat.new.ask(
-      account: current_account,
-      question: message_text
-    )
+    begin
+      result = Synthesis::RagChat.new.ask(
+        account: current_account,
+        question: message_text
+      )
 
-    @assistant_message = ChatMessage.create!(
-      account: current_account,
-      user: current_user,
-      role: :assistant,
-      content: result[:answer],
-      source_feedback_ids: result[:source_feedback_ids]
-    )
+      @assistant_message = ChatMessage.create!(
+        account: current_account,
+        user: current_user,
+        role: :assistant,
+        content: result[:answer],
+        source_feedback_ids: result[:source_feedback_ids]
+      )
+    rescue => e
+      Rails.logger.error("[ChatController] RagChat error: #{e.message}")
+
+      @assistant_message = ChatMessage.create!(
+        account: current_account,
+        user: current_user,
+        role: :assistant,
+        content: "I'm sorry, I encountered an error processing your question. Please try again. (#{e.class.name})",
+        source_feedback_ids: []
+      )
+    end
 
     respond_to do |format|
       format.turbo_stream

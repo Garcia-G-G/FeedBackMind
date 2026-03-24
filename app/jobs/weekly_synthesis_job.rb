@@ -10,6 +10,11 @@ class WeeklySynthesisJob
   # groups by semantic similarity, sends to GPT-4.1 for synthesis,
   # saves the WeeklySynthesis record, and sends the email digest.
   def perform(account_id = nil)
+    unless ENV["OPENAI_API_KEY"].present?
+      Rails.logger.error("[WeeklySynthesisJob] OPENAI_API_KEY is not configured. Aborting.")
+      return
+    end
+
     week_start = Date.current.beginning_of_week(:monday)
 
     accounts = account_id ? Account.where(id: account_id) : Account.active
