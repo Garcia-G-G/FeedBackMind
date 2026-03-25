@@ -97,7 +97,10 @@ Rails.application.routes.draw do
   get "syntheses", to: redirect("/users/sign_in")
   get "sources", to: redirect("/users/sign_in")
   get "pipeline", to: redirect("/users/sign_in")
+  get "loop_tracker", to: redirect("/users/sign_in")
   get "settings", to: redirect("/users/sign_in")
+  get "sources/new", to: redirect("/users/sign_in")
+  get "onboarding", to: redirect("/users/sign_in")
 
   # === Marketing landing (non-logged-in users) ===
   root "pages#home"
