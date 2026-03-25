@@ -16,28 +16,37 @@ RSpec.describe "Onboarding", type: :request do
     it "shows step 1 on first visit" do
       get "/onboarding"
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Set up your workspace")
+      expect(response.body).to include("plan-selector")
     end
 
-    it "updates account info on step 1" do
-      patch "/onboarding", params: { account: { name: "New Team", subdomain: "new-team" } }
+    it "selects plan on step 1" do
+      patch "/onboarding", params: { account: { plan: "growth" } }
       expect(response).to redirect_to(onboarding_path)
-      expect(account.reload.name).to eq("New Team")
+      expect(account.reload.plan).to eq("growth")
       expect(user.reload.onboarding_step).to eq(2)
     end
 
-    it "allows skipping step 2" do
+    it "updates account info on step 2" do
       user.update!(onboarding_step: 2)
-      patch "/onboarding"
+      patch "/onboarding", params: { account: { name: "New Team", subdomain: "new-team" } }
       expect(response).to redirect_to(onboarding_path)
+      expect(account.reload.name).to eq("New Team")
       expect(user.reload.onboarding_step).to eq(3)
     end
 
     it "completes onboarding on step 3" do
       user.update!(onboarding_step: 3)
-      patch "/onboarding"
+      patch "/onboarding", params: { selected_sources: "slack,gmail" }
       expect(response).to redirect_to(dashboard_path)
       expect(user.reload.onboarding_completed_at).to be_present
+      expect(account.sources.count).to eq(2)
+    end
+
+    it "handles back navigation" do
+      user.update!(onboarding_step: 2)
+      patch "/onboarding", params: { back: "true" }
+      expect(response).to redirect_to(onboarding_path)
+      expect(user.reload.onboarding_step).to eq(1)
     end
   end
 

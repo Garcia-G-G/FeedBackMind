@@ -1,57 +1,52 @@
-<div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
-  <h1 class="text-2xl font-bold font-serif-display text-stone-900 mb-2">Connect your feedback sources</h1>
-  <p class="text-sm text-stone-500 mb-6">Connect the tools where your customers leave feedback. You can always add more from the Sources page later.</p>
-
-  <% already_connected = current_account.sources.where(active: true).pluck(:source_type) %>
-
-  <div class="grid grid-cols-2 gap-3 mb-6">
-    <%
-      sources = [
-        { provider: "slack", icon: "💬", name: "Slack", desc: "Channels & threads" },
-        { provider: "gmail", icon: "✉️", name: "Gmail", desc: "Customer emails" },
-        { provider: "jira", icon: "⚡", name: "Jira", desc: "Issues & comments" },
-        { provider: "typeform", icon: "📊", name: "Typeform", desc: "Survey responses" },
-      ]
-    %>
-    <% sources.each do |src| %>
-      <% connected = already_connected.include?(src[:provider]) %>
-      <% if connected %>
-        <div class="flex items-center gap-3 p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/50">
-          <div class="text-2xl"><%= src[:icon] %></div>
-          <div class="flex-1">
-            <p class="font-semibold text-sm text-stone-900"><%= src[:name] %></p>
-            <p class="text-xs text-emerald-600 font-medium">✓ Connected</p>
-          </div>
-        </div>
-      <% else %>
-        <%= button_to connect_source_path(provider: src[:provider]), method: :post, class: "flex items-center gap-3 p-4 rounded-xl border border-stone-200 hover:border-stone-900 hover:shadow-sm transition-all text-left w-full group" do %>
-          <div class="text-2xl"><%= src[:icon] %></div>
-          <div class="flex-1">
-            <p class="font-semibold text-sm text-stone-900"><%= src[:name] %></p>
-            <p class="text-xs text-stone-400"><%= src[:desc] %></p>
-          </div>
-          <span class="text-xs font-medium text-stone-400 group-hover:text-stone-900 transition-colors">Connect →</span>
+<div class="bg-white rounded-xl border border-stone-200 p-6 mb-6 shadow-sm">
+  <%= form_with url: onboarding_path, method: :patch, local: true, id: "workspace-form" do %>
+    <% if current_account.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800 mb-5">
+        <% current_account.errors.full_messages.each do |msg| %>
+          <p>&bull; <%= msg %></p>
         <% end %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <div class="bg-stone-50 rounded-lg p-4 mb-6">
-    <div class="flex items-center gap-3">
-      <span class="text-lg">📄</span>
-      <div class="flex-1">
-        <p class="text-sm font-medium text-stone-900">Have a CSV file?</p>
-        <p class="text-xs text-stone-500">You can import feedback from any CSV file in the Sources page.</p>
       </div>
-    </div>
-  </div>
+    <% end %>
 
-  <div class="flex items-center justify-between pt-4 border-t border-stone-200">
-    <p class="text-xs text-stone-400">You can connect sources anytime from Settings</p>
-    <%= form_with url: onboarding_path, method: :patch, local: true do %>
-      <button type="submit" class="px-5 py-2.5 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors">
+    <div class="mb-5">
+      <label class="block text-sm font-medium text-stone-700 mb-2">Workspace Name</label>
+      <input
+        type="text"
+        name="account[name]"
+        value="<%= current_account.name %>"
+        placeholder="Acme Product Team"
+        autofocus
+        class="w-full px-4 py-3 rounded-xl border border-stone-300 text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500"
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-stone-700 mb-2">Workspace URL</label>
+      <div class="flex items-center rounded-xl border border-stone-300 overflow-hidden focus-within:ring-2 focus-within:ring-stone-900/10">
+        <span class="px-3 py-3 bg-stone-50 text-stone-400 text-sm border-r border-stone-300">https://</span>
+        <input
+          type="text"
+          name="account[subdomain]"
+          value="<%= current_account.subdomain %>"
+          placeholder="acme"
+          class="flex-1 px-3 py-3 text-stone-900 placeholder-stone-400 focus:outline-none"
+        >
+        <span class="px-3 py-3 bg-stone-50 text-stone-400 text-sm border-l border-stone-300">.feedbackmind.io</span>
+      </div>
+      <p class="text-xs text-stone-400 mt-1.5">Lowercase letters, numbers, and hyphens only</p>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <%= form_with url: onboarding_path, method: :patch, local: true, class: "inline" do %>
+        <input type="hidden" name="back" value="true">
+        <button type="submit" class="px-5 py-3 rounded-xl border border-stone-300 text-stone-600 hover:bg-stone-100 font-medium">←</button>
+      <% end %>
+      <button
+        type="submit"
+        class="flex-1 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium transition-all shadow-lg shadow-stone-900/20"
+      >
         Continue →
       </button>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </div>

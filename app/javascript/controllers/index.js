@@ -30,3 +30,9 @@ application.register("clipboard", ClipboardController)
 
 import PasswordVisibilityController from "./password_visibility_controller"
 application.register("password-visibility", PasswordVisibilityController)
+
+import PlanSelectorController from "./plan_selector_controller"
+application.register("plan-selector", PlanSelectorController)
+
+import SourceSelectorController from "./source_selector_controller"
+application.register("source-selector", SourceSelectorController)
