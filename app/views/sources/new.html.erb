@@ -36,8 +36,19 @@
                     <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Connected
                   </span>
                 <% else %>
-                  <%= button_to "Connect #{src[:name]}", connect_source_path(provider: src[:provider]), method: :post,
-                      class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" %>
+                  <%# Slack/Gmail: POST directly to OmniAuth path (OmniAuth only accepts POST).
+                      Jira/Typeform: POST to our controller which redirects to their auth URL.
+                      data-turbo="false" is CRITICAL — Turbo fetch cannot follow cross-origin redirects. %>
+                  <% if %w[slack gmail].include?(src[:provider]) %>
+                    <% omniauth_path = src[:provider] == "slack" ? "/auth/slack_openid" : "/auth/google_oauth2" %>
+                    <%= button_to "Connect #{src[:name]}", omniauth_path, method: :post,
+                        data: { turbo: false },
+                        class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" %>
+                  <% else %>
+                    <%= button_to "Connect #{src[:name]}", connect_source_path(provider: src[:provider]), method: :post,
+                        data: { turbo: false },
+                        class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" %>
+                  <% end %>
                 <% end %>
               </div>
             </div>
