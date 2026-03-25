@@ -7,6 +7,8 @@ class SourceConnectionsController < ApplicationController
     provider = params[:provider]
     session[:return_to_onboarding] = true if params[:return_to] == "onboarding"
 
+    Rails.logger.info "[OAuth] Connect request for provider=#{provider}"
+
     case provider
     when "slack"
       if ENV["SLACK_CLIENT_ID"].blank?
@@ -25,13 +27,19 @@ class SourceConnectionsController < ApplicationController
         redirect_to sources_path, alert: "Jira is not configured yet. Please set JIRA_CLIENT_ID and JIRA_CLIENT_SECRET."
         return
       end
-      redirect_to jira_auth_url, allow_other_host: true
+      auth_url = jira_auth_url
+      Rails.logger.info "[OAuth] Jira auth URL: #{auth_url}"
+      Rails.logger.info "[OAuth] Jira callback URL: #{jira_callback_url}"
+      redirect_to auth_url, allow_other_host: true
     when "typeform"
       if ENV["TYPEFORM_CLIENT_ID"].blank?
         redirect_to sources_path, alert: "Typeform is not configured yet. Please set TYPEFORM_CLIENT_ID and TYPEFORM_CLIENT_SECRET."
         return
       end
-      redirect_to typeform_auth_url, allow_other_host: true
+      auth_url = typeform_auth_url
+      Rails.logger.info "[OAuth] Typeform auth URL: #{auth_url}"
+      Rails.logger.info "[OAuth] Typeform callback URL: #{typeform_callback_url}"
+      redirect_to auth_url, allow_other_host: true
     else
       redirect_to sources_path, alert: "Unknown provider: #{provider}"
     end
@@ -95,12 +103,13 @@ class SourceConnectionsController < ApplicationController
 
   # GET /sources/callback/jira
   def jira_callback
+    Rails.logger.info "[OAuth] Jira callback received with code=#{params[:code].present?}"
     token = exchange_code_for_token(
       token_url: "https://auth.atlassian.com/oauth/token",
       client_id: ENV.fetch("JIRA_CLIENT_ID", ""),
       client_secret: ENV.fetch("JIRA_CLIENT_SECRET", ""),
       code: params[:code],
-      redirect_uri: jira_callback_sources_url
+      redirect_uri: jira_callback_url
     )
 
     save_source(:jira, token)
@@ -119,12 +128,13 @@ class SourceConnectionsController < ApplicationController
 
   # GET /sources/callback/typeform
   def typeform_callback
+    Rails.logger.info "[OAuth] Typeform callback received with code=#{params[:code].present?}"
     token = exchange_code_for_token(
       token_url: "https://api.typeform.com/oauth/token",
       client_id: ENV.fetch("TYPEFORM_CLIENT_ID", ""),
       client_secret: ENV.fetch("TYPEFORM_CLIENT_SECRET", ""),
       code: params[:code],
-      redirect_uri: typeform_callback_sources_url
+      redirect_uri: typeform_callback_url
     )
 
     save_source(:typeform, token)
@@ -192,12 +202,26 @@ class SourceConnectionsController < ApplicationController
     JSON.parse(response.body)
   end
 
+  def production_base_url
+    host = ENV.fetch("APP_HOST", "5.161.238.195.sslip.io")
+    protocol = ENV.fetch("APP_PROTOCOL", "https")
+    "#{protocol}://#{host}"
+  end
+
+  def jira_callback_url
+    "#{production_base_url}/sources/callback/jira"
+  end
+
+  def typeform_callback_url
+    "#{production_base_url}/sources/callback/typeform"
+  end
+
   def jira_auth_url
     params = {
       audience: "api.atlassian.com",
       client_id: ENV.fetch("JIRA_CLIENT_ID", ""),
       scope: "read:jira-work write:jira-work read:jira-user",
-      redirect_uri: jira_callback_sources_url,
+      redirect_uri: jira_callback_url,
       state: form_authenticity_token,
       response_type: "code",
       prompt: "consent"
@@ -208,18 +232,10 @@ class SourceConnectionsController < ApplicationController
   def typeform_auth_url
     params = {
       client_id: ENV.fetch("TYPEFORM_CLIENT_ID", ""),
-      redirect_uri: typeform_callback_sources_url,
+      redirect_uri: typeform_callback_url,
       scope: "responses:read forms:read webhooks:read webhooks:write",
       state: form_authenticity_token
     }
     "https://api.typeform.com/oauth/authorize?#{params.to_query}"
-  end
-
-  def jira_callback_sources_url
-    url_for(controller: "source_connections", action: "jira_callback", only_path: false)
-  end
-
-  def typeform_callback_sources_url
-    url_for(controller: "source_connections", action: "typeform_callback", only_path: false)
   end
 end

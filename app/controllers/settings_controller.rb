@@ -97,6 +97,8 @@ class SettingsController < ApplicationController
 
   def change_plan
     plan = params[:plan]
+    Rails.logger.info "[Stripe] change_plan called with plan=#{plan}"
+
     unless %w[starter growth scale].include?(plan)
       redirect_to settings_path, alert: "Invalid plan."
       return
@@ -109,30 +111,43 @@ class SettingsController < ApplicationController
 
     # If Stripe is configured, create a checkout session
     if ENV["STRIPE_SECRET_KEY"].present?
+      Rails.logger.info "[Stripe] STRIPE_SECRET_KEY is present, creating checkout session"
       price_id = case plan
                  when "starter" then ENV["STRIPE_STARTER_PRICE_ID"]
                  when "growth" then ENV["STRIPE_GROWTH_PRICE_ID"]
                  when "scale" then ENV["STRIPE_SCALE_PRICE_ID"]
                  end
 
+      Rails.logger.info "[Stripe] Price ID for #{plan}: #{price_id.present? ? price_id : 'MISSING'}"
+
       if price_id.present?
         begin
+          base_url = "https://#{ENV.fetch('APP_HOST', '5.161.238.195.sslip.io')}"
           session = Stripe::Checkout::Session.create(
             mode: "subscription",
             customer_email: current_user.email,
             line_items: [{ price: price_id, quantity: 1 }],
-            success_url: "#{request.base_url}/settings?checkout=success&plan=#{plan}",
-            cancel_url: "#{request.base_url}/settings?checkout=cancelled",
+            success_url: "#{base_url}/settings?checkout=success&plan=#{plan}",
+            cancel_url: "#{base_url}/settings?checkout=cancelled",
             metadata: { account_id: current_account.id, plan: plan }
           )
+          Rails.logger.info "[Stripe] Checkout session created, redirecting to: #{session.url}"
           redirect_to session.url, allow_other_host: true
           return
         rescue Stripe::StripeError => e
           Rails.logger.error("[Stripe] Checkout error: #{e.message}")
           redirect_to settings_path, alert: "Payment setup failed: #{e.message}"
           return
+        rescue => e
+          Rails.logger.error("[Stripe] Unexpected error: #{e.class} - #{e.message}")
+          redirect_to settings_path, alert: "Payment error: #{e.message}"
+          return
         end
+      else
+        Rails.logger.warn "[Stripe] No price ID found for plan=#{plan}, falling back to direct change"
       end
+    else
+      Rails.logger.warn "[Stripe] STRIPE_SECRET_KEY not set, falling back to direct change"
     end
 
     # Fallback: direct plan change (for development/demo without Stripe)

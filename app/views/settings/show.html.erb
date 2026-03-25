@@ -136,7 +136,7 @@
             <%= button_to plan[:key] == "starter" ? "Downgrade" : "Upgrade",
                 change_plan_settings_path(plan: plan[:key]),
                 method: :post,
-                data: { turbo: false, turbo_confirm: "Change your plan to #{plan[:key].titleize}?" },
+                form: { data: { turbo: "false" } },
                 class: "w-full text-center py-2 rounded-lg text-xs font-semibold #{plan[:key] == 'starter' ? 'border border-stone-300 text-stone-700 hover:bg-stone-50' : 'bg-stone-900 text-white hover:bg-stone-800'} transition-colors" %>
           <% end %>
         </div>
