@@ -39,7 +39,7 @@
   <% end %>
 </div>
 
-<%= form_with url: onboarding_path, method: :patch, local: true, id: "plan-form" do %>
+<%= form_with url: onboarding_path, method: :patch, data: { turbo: false }, id: "plan-form" do %>
   <input type="hidden" name="account[plan]" id="selected-plan" value="">
   <button
     type="submit"

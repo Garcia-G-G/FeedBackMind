@@ -37,27 +37,20 @@
     </p>
   </div>
 
-  <%= form_with url: onboarding_path, method: :patch, local: true, id: "sources-form" do %>
+  <%= form_with url: onboarding_path, method: :patch, data: { turbo: false }, id: "sources-form" do %>
     <input type="hidden" name="selected_sources" id="selected-sources" value="">
     <div class="flex gap-3">
-      <%= form_with url: onboarding_path, method: :patch, local: true, class: "inline" do %>
-        <input type="hidden" name="back" value="true">
-        <button type="submit" class="px-5 py-3 rounded-xl border border-stone-300 text-stone-600 hover:bg-stone-100 font-medium">←</button>
-      <% end %>
-      <button
-        type="submit"
-        class="flex-1 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium transition-all shadow-lg shadow-stone-900/20"
-      >
-        Launch workspace →
+      <button type="submit" name="back" value="true"
+        class="px-5 py-3 rounded-xl border border-stone-300 text-stone-600 hover:bg-stone-100 font-medium">&larr;</button>
+      <button type="submit"
+        class="flex-1 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium transition-all shadow-lg shadow-stone-900/20">
+        Launch workspace &rarr;
       </button>
     </div>
   <% end %>
 
-  <button
-    type="button"
-    data-action="click->source-selector#skip"
-    class="w-full text-center text-sm text-stone-400 mt-4 hover:text-stone-600 transition-colors"
-  >
-    Skip — I'll add sources later
+  <button type="button" data-action="click->source-selector#skip"
+    class="w-full text-center text-sm text-stone-400 mt-4 hover:text-stone-600 transition-colors">
+    Skip &mdash; I'll add sources later
   </button>
 </div>
