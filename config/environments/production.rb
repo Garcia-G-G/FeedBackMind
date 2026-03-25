@@ -55,10 +55,14 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = false
 
-  # Set host to be used by links generated in mailer templates.
+  # Set host for mailer and route URL generation
   config.action_mailer.default_url_options = {
     host: ENV.fetch("APP_HOST", "5.161.238.195.sslip.io"),
     protocol: ENV.fetch("APP_PROTOCOL", "https")
+  }
+  Rails.application.routes.default_url_options = {
+    host: ENV.fetch("APP_HOST", "5.161.238.195.sslip.io"),
+    protocol: "https"
   }
 
   # ActionCable allowed origins

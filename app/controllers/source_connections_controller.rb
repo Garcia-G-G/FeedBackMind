@@ -77,7 +77,20 @@ class SourceConnectionsController < ApplicationController
 
   # GET /auth/failure
   def omniauth_failure
-    redirect_to sources_path, alert: "Authentication failed: #{params[:message]}"
+    message = params[:message]
+    detail = case message
+             when /redirect_uri_mismatch/
+               "Redirect URI mismatch. The callback URL configured in the provider dashboard must match: #{request.base_url}/auth/*/callback"
+             when /invalid_client/
+               "Invalid OAuth client. Please verify the client ID and secret are correct in your provider's developer console."
+             when /access_denied/
+               "Access denied. If using Google, ensure the OAuth consent screen is published (not in Testing mode) or add your email as a test user."
+             else
+               message
+             end
+
+    return_path = session.delete(:return_to_onboarding) ? onboarding_path : sources_path
+    redirect_to return_path, alert: "Authentication failed: #{detail}"
   end
 
   # GET /sources/callback/jira
