@@ -5,6 +5,7 @@ class SourceConnectionsController < ApplicationController
   # POST /sources/connect/:provider — redirect to OAuth provider
   def create
     provider = params[:provider]
+    session[:return_to_onboarding] = true if params[:return_to] == "onboarding"
 
     case provider
     when "slack"
@@ -65,7 +66,13 @@ class SourceConnectionsController < ApplicationController
     )
     source.save!
 
-    redirect_to sources_path, notice: "#{source_type.to_s.titleize} connected successfully!"
+    # Return to onboarding if that's where the user came from
+    origin = request.env["omniauth.origin"]
+    if origin&.include?("/onboarding") || session.delete(:return_to_onboarding)
+      redirect_to onboarding_path, notice: "#{source_type.to_s.titleize} connected!"
+    else
+      redirect_to sources_path, notice: "#{source_type.to_s.titleize} connected successfully!"
+    end
   end
 
   # GET /auth/failure
@@ -84,9 +91,17 @@ class SourceConnectionsController < ApplicationController
     )
 
     save_source(:jira, token)
-    redirect_to sources_path, notice: "Jira connected successfully!"
+    if session.delete(:return_to_onboarding)
+      redirect_to onboarding_path, notice: "Jira connected!"
+    else
+      redirect_to sources_path, notice: "Jira connected successfully!"
+    end
   rescue => e
-    redirect_to sources_path, alert: "Jira connection failed: #{e.message}"
+    if session.delete(:return_to_onboarding)
+      redirect_to onboarding_path, alert: "Jira connection failed: #{e.message}"
+    else
+      redirect_to sources_path, alert: "Jira connection failed: #{e.message}"
+    end
   end
 
   # GET /sources/callback/typeform
@@ -100,7 +115,11 @@ class SourceConnectionsController < ApplicationController
     )
 
     save_source(:typeform, token)
-    redirect_to sources_path, notice: "Typeform connected successfully!"
+    if session.delete(:return_to_onboarding)
+      redirect_to onboarding_path, notice: "Typeform connected!"
+    else
+      redirect_to sources_path, notice: "Typeform connected successfully!"
+    end
   rescue => e
     redirect_to sources_path, alert: "Typeform connection failed: #{e.message}"
   end

@@ -62,15 +62,6 @@ class OnboardingController < ApplicationController
   end
 
   def complete_onboarding
-    if params[:selected_sources].present?
-      params[:selected_sources].split(",").each do |source_type|
-        next unless %w[slack gmail jira typeform appstore csv].include?(source_type)
-        current_account.sources.find_or_create_by(source_type: source_type) do |src|
-          src.active = false
-          src.config = {}
-        end
-      end
-    end
 
     current_user.update!(
       onboarding_completed_at: Time.current,

@@ -36,10 +36,9 @@ RSpec.describe "Onboarding", type: :request do
 
     it "completes onboarding on step 3" do
       user.update!(onboarding_step: 3)
-      patch "/onboarding", params: { selected_sources: "slack,gmail" }
+      patch "/onboarding"
       expect(response).to redirect_to(dashboard_path)
       expect(user.reload.onboarding_completed_at).to be_present
-      expect(account.sources.count).to eq(2)
     end
 
     it "handles back navigation" do

@@ -27,7 +27,7 @@
           step_data = {
             1 => { title: "Choose your plan", subtitle: "Start with a 14-day free trial", description: "Every plan includes feedback collection, sentiment analysis, and weekly AI syntheses. Upgrade or downgrade anytime." },
             2 => { title: "Create workspace", subtitle: "Your team's feedback hub", description: "Choose a name and URL for your workspace. This is where your team will access FeedbackMind." },
-            3 => { title: "Pick sources", subtitle: "Where does feedback come from?", description: "Select the tools your team uses. You'll authenticate and connect each one securely from your Sources dashboard after setup." }
+            3 => { title: "Connect sources", subtitle: "Where does feedback come from?", description: "Connect the tools your team uses to collect feedback. You can always add more from the Sources dashboard." }
           }
           info = step_data[step]
         %>
@@ -59,7 +59,20 @@
               <div class="h-2 bg-white/5 rounded w-1/2"></div>
             </div>
           <% elsif step == 3 %>
-            <div class="text-stone-500 text-sm italic">Select your tools on the right</div>
+            <% connected_count = current_account.sources.where(active: true).count %>
+            <% if connected_count > 0 %>
+              <div class="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/20">
+                <div class="flex items-center gap-2 text-emerald-400 text-sm font-medium mb-2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <%= connected_count %> source<%= connected_count > 1 ? "s" : "" %> connected
+                </div>
+                <% current_account.sources.where(active: true).each do |s| %>
+                  <div class="text-stone-400 text-xs"><%= s.source_type.titleize %></div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="text-stone-500 text-sm italic">Connect your tools on the right</div>
+            <% end %>
           <% end %>
         </div>
       </div>

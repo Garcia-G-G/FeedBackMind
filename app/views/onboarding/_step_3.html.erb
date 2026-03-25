@@ -1,56 +1,59 @@
 <%
   sources = [
-    { id: "slack", name: "Slack", icon: "💬", color: "#E8D5B7" },
-    { id: "gmail", name: "Gmail", icon: "📧", color: "#D5E8D4" },
-    { id: "jira", name: "Jira", icon: "🔧", color: "#D4D5E8" },
-    { id: "typeform", name: "Typeform", icon: "📋", color: "#E8D4D4" },
-    { id: "appstore", name: "App Store", icon: "🍎", color: "#D4E8E8" },
-    { id: "csv", name: "CSV Upload", icon: "📄", color: "#E8E8D4" }
+    { id: "slack", name: "Slack", icon: "💬", desc: "Feedback from channels & threads", oauth: true, omniauth_path: "/auth/slack_openid" },
+    { id: "gmail", name: "Gmail", icon: "📧", desc: "Feedback from email conversations", oauth: true, omniauth_path: "/auth/google_oauth2" },
+    { id: "jira", name: "Jira", icon: "🔧", desc: "Issues and comments as feedback", oauth: true, connect_path: true },
+    { id: "typeform", name: "Typeform", icon: "📋", desc: "Survey responses automatically", oauth: true, connect_path: true },
+    { id: "appstore", name: "App Store", icon: "🍎", desc: "iOS app reviews", oauth: false },
+    { id: "csv", name: "CSV Upload", icon: "📄", desc: "Import from spreadsheet", oauth: false }
   ]
+  connected_sources = current_account.sources.where(active: true).pluck(:source_type)
 %>
 
-<div data-controller="source-selector">
-  <div class="grid grid-cols-2 gap-3 mb-6">
-    <% sources.each do |source| %>
-      <button
-        type="button"
-        data-source="<%= source[:id] %>"
-        data-action="click->source-selector#toggle"
-        class="source-card flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left border-stone-200 bg-white hover:border-stone-300"
-      >
-        <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0" style="background-color: <%= source[:color] %>">
-          <%= source[:icon] %>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="font-medium text-stone-900 text-sm"><%= source[:name] %></div>
-          <div class="source-selected-label hidden text-emerald-600 text-xs font-medium mt-0.5">Selected</div>
-        </div>
-        <div class="source-check w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 border-stone-300">
-        </div>
-      </button>
-    <% end %>
-  </div>
-
-  <div class="bg-stone-100 rounded-xl p-3 mb-6 text-center">
-    <p class="text-stone-500 text-xs">
-      Connections are made securely from your <strong>Sources</strong> dashboard. No popups during setup.
-    </p>
-  </div>
-
-  <%= form_with url: onboarding_path, method: :patch, data: { turbo: false }, id: "sources-form" do %>
-    <input type="hidden" name="selected_sources" id="selected-sources" value="">
-    <div class="flex gap-3">
-      <button type="submit" name="back" value="true"
-        class="px-5 py-3 rounded-xl border border-stone-300 text-stone-600 hover:bg-stone-100 font-medium">&larr;</button>
-      <button type="submit"
-        class="flex-1 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium transition-all shadow-lg shadow-stone-900/20">
-        Launch workspace &rarr;
-      </button>
+<div class="space-y-3 mb-6">
+  <% sources.each do |src| %>
+    <% is_connected = connected_sources.include?(src[:id]) %>
+    <div class="flex items-center gap-4 p-4 rounded-xl border bg-white <%= is_connected ? 'border-emerald-200 bg-emerald-50/30' : 'border-stone-200' %>">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 bg-stone-100">
+        <%= src[:icon] %>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-medium text-stone-900 text-sm"><%= src[:name] %></div>
+        <div class="text-xs text-stone-500"><%= src[:desc] %></div>
+      </div>
+      <div class="flex-shrink-0">
+        <% if is_connected %>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-full">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Connected
+          </span>
+        <% elsif src[:oauth] && src[:omniauth_path] %>
+          <%= button_to src[:omniauth_path], method: :post, data: { turbo: false }, params: { origin: "/onboarding" }, class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" do %>
+            Connect
+          <% end %>
+        <% elsif src[:oauth] && src[:connect_path] %>
+          <%= button_to connect_source_path(provider: src[:id]), method: :post, data: { turbo: false }, params: { return_to: "onboarding" }, class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" do %>
+            Connect
+          <% end %>
+        <% else %>
+          <span class="text-xs text-stone-400">Set up from dashboard</span>
+        <% end %>
+      </div>
     </div>
   <% end %>
-
-  <button type="button" data-action="click->source-selector#skip"
-    class="w-full text-center text-sm text-stone-400 mt-4 hover:text-stone-600 transition-colors">
-    Skip &mdash; I'll add sources later
-  </button>
 </div>
+
+<%= form_with url: onboarding_path, method: :patch, data: { turbo: false }, id: "sources-form" do %>
+  <div class="flex gap-3">
+    <button type="submit" name="back" value="true"
+      class="px-5 py-3 rounded-xl border border-stone-300 text-stone-600 hover:bg-stone-100 font-medium">&larr;</button>
+    <button type="submit"
+      class="flex-1 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium transition-all shadow-lg shadow-stone-900/20">
+      Launch workspace &rarr;
+    </button>
+  </div>
+<% end %>
+
+<button type="button" onclick="document.getElementById('sources-form').requestSubmit()"
+  class="w-full text-center text-sm text-stone-400 mt-4 hover:text-stone-600 transition-colors">
+  Skip &mdash; I'll add sources later
+</button>
