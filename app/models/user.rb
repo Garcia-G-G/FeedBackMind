@@ -2,6 +2,7 @@ class User < ApplicationRecord
   # === Devise ===
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
+  include EmailDomainValidatable
 
   # === Associations ===
   belongs_to :account

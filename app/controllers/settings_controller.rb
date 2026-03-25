@@ -1,6 +1,17 @@
 class SettingsController < ApplicationController
   def show
     @account = current_account
+
+    # Handle Stripe checkout return
+    if params[:checkout] == "success" && params[:plan].present?
+      plan = params[:plan]
+      if %w[starter growth scale].include?(plan) && plan != current_account.plan
+        current_account.update!(plan: plan)
+        flash.now[:notice] = "Successfully upgraded to #{plan.titleize} plan!"
+      end
+    elsif params[:checkout] == "cancelled"
+      flash.now[:alert] = "Plan change was cancelled."
+    end
   end
 
   def regenerate_token
@@ -35,6 +46,13 @@ class SettingsController < ApplicationController
     email = params[:email]&.strip&.downcase
     if email.blank? || !email.match?(Devise.email_regexp)
       redirect_to settings_path, alert: "Please enter a valid email address."
+      return
+    end
+
+    domain = email.split("@").last&.downcase
+    if EmailDomainValidatable::TYPO_CORRECTIONS.key?(domain)
+      corrected = email.sub(/@.*\z/, "@#{EmailDomainValidatable::TYPO_CORRECTIONS[domain]}")
+      redirect_to settings_path, alert: "That email looks like a typo. Did you mean #{corrected}?"
       return
     end
 
@@ -89,6 +107,35 @@ class SettingsController < ApplicationController
       return
     end
 
+    # If Stripe is configured, create a checkout session
+    if ENV["STRIPE_SECRET_KEY"].present?
+      price_id = case plan
+                 when "starter" then ENV["STRIPE_STARTER_PRICE_ID"]
+                 when "growth" then ENV["STRIPE_GROWTH_PRICE_ID"]
+                 when "scale" then ENV["STRIPE_SCALE_PRICE_ID"]
+                 end
+
+      if price_id.present?
+        begin
+          session = Stripe::Checkout::Session.create(
+            mode: "subscription",
+            customer_email: current_user.email,
+            line_items: [{ price: price_id, quantity: 1 }],
+            success_url: "#{request.base_url}/settings?checkout=success&plan=#{plan}",
+            cancel_url: "#{request.base_url}/settings?checkout=cancelled",
+            metadata: { account_id: current_account.id, plan: plan }
+          )
+          redirect_to session.url, allow_other_host: true
+          return
+        rescue Stripe::StripeError => e
+          Rails.logger.error("[Stripe] Checkout error: #{e.message}")
+          redirect_to settings_path, alert: "Payment setup failed: #{e.message}"
+          return
+        end
+      end
+    end
+
+    # Fallback: direct plan change (for development/demo without Stripe)
     current_account.update!(plan: plan)
     redirect_to settings_path, notice: "Plan changed to #{plan.titleize}."
   end
