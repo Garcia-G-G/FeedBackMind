@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
   def check_onboarding
     return unless user_signed_in?
     return if controller_name == "onboarding"
+    return if controller_name == "source_connections"
     return if devise_controller?
     return if controller_name == "pages"
     return if current_user.onboarding_completed_at.present?
