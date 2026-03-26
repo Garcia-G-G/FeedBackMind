@@ -19,10 +19,10 @@ RSpec.describe "Onboarding", type: :request do
       expect(response.body).to include("plan-selector")
     end
 
-    it "selects plan on step 1" do
-      patch "/onboarding", params: { account: { plan: "growth" } }
+    it "selects free plan on step 1" do
+      patch "/onboarding", params: { account: { plan: "starter" } }
       expect(response).to redirect_to(onboarding_path)
-      expect(account.reload.plan).to eq("growth")
+      expect(account.reload.plan).to eq("starter")
       expect(user.reload.onboarding_step).to eq(2)
     end
 

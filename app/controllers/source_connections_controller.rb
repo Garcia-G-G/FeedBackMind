@@ -119,11 +119,14 @@ class SourceConnectionsController < ApplicationController
       redirect_to sources_path, notice: "Jira connected successfully!"
     end
   rescue => e
-    if session.delete(:return_to_onboarding)
-      redirect_to onboarding_path, alert: "Jira connection failed: #{e.message}"
+    Rails.logger.error "[OAuth] Jira callback error: #{e.message}"
+    error_msg = if e.message.include?("access_denied") || e.message.include?("forbidden")
+      "Jira access denied. Verify the callback URL https://5.161.238.195.sslip.io/sources/callback/jira is configured in your Atlassian developer console."
     else
-      redirect_to sources_path, alert: "Jira connection failed: #{e.message}"
+      "Jira connection failed: #{e.message}"
     end
+    redirect_path = session.delete(:return_to_onboarding) ? onboarding_path : sources_path
+    redirect_to redirect_path, alert: error_msg
   end
 
   # GET /sources/callback/typeform
@@ -144,7 +147,14 @@ class SourceConnectionsController < ApplicationController
       redirect_to sources_path, notice: "Typeform connected successfully!"
     end
   rescue => e
-    redirect_to sources_path, alert: "Typeform connection failed: #{e.message}"
+    Rails.logger.error "[OAuth] Typeform callback error: #{e.message}"
+    error_msg = if e.message.include?("forbidden") || e.message.include?("403")
+      "Typeform access denied. Verify the callback URL https://5.161.238.195.sslip.io/sources/callback/typeform is configured in your Typeform admin panel."
+    else
+      "Typeform connection failed: #{e.message}"
+    end
+    redirect_path = session.delete(:return_to_onboarding) ? onboarding_path : sources_path
+    redirect_to redirect_path, alert: error_msg
   end
 
   # POST /sources/import_csv
