@@ -1,0 +1,31 @@
+content,author_name,author_email,received_at
+"The checkout process crashes when I try to apply a discount code. This has happened 3 times this week.",Maria Lopez,maria@acmecorp.com,2026-03-20
+"Love the new dashboard redesign! Much easier to find what I need now.",James Chen,james.chen@techstart.io,2026-03-21
+"Your mobile app is incredibly slow on Android. Takes 8+ seconds to load the home screen.",Roberto Sanchez,roberto@mobilefirst.co,2026-03-19
+"Can you add a dark mode option? I use the app late at night and the white background is blinding.",Sarah Kim,sarah.kim@designlab.com,2026-03-22
+"The export to PDF feature is broken - it only exports the first page of my report.",David Park,dpark@analyticspro.com,2026-03-18
+"Absolutely love the AI suggestions feature. It saved our team hours of manual categorization.",Emma Wilson,emma@productteam.io,2026-03-23
+"We need SSO integration. Our security team won't approve the tool without it.",Michael Torres,mtorres@enterprise.co,2026-03-17
+"The search function doesn't find results when I use Spanish characters like ñ or accents.",Ana García,ana.garcia@latamtech.com,2026-03-21
+"Notifications are overwhelming. I get 50+ emails a day from your platform. Need better controls.",Tom Baker,tbaker@startupzone.com,2026-03-20
+"The onboarding flow is confusing. I didn't understand what 'sources' meant until day 3.",Lisa Zhang,lzhang@newuser.com,2026-03-22
+"Pricing is too high for startups. The Growth plan at $109/mo is hard to justify with only 5 users.",Kevin Patel,kevin@bootstrapped.io,2026-03-19
+"API rate limits are too low. We hit the ceiling every day during peak hours.",Priya Sharma,priya@devtools.com,2026-03-18
+"The sentiment analysis is surprisingly accurate. Caught a negative trend we missed manually.",Carlos Ruiz,cruiz@supportteam.co,2026-03-23
+"Please add Intercom integration. We use it for all customer communication.",Rachel Green,rachel@saascompany.com,2026-03-20
+"The weekly synthesis email is the most useful feature. Our PM reads it every Monday morning.",Alex Johnson,ajohnson@productled.io,2026-03-21
+"I can't delete old feedbacks. There's no bulk delete option and one-by-one is painful.",Nina Popov,nina@cleandata.com,2026-03-19
+"The pipeline kanban board needs drag-and-drop. Currently I have to click through menus to move items.",Omar Hassan,omar@agileteam.co,2026-03-22
+"Great product but the mobile responsive design needs work. Sidebar overlaps content on tablets.",Jenny Lee,jlee@mobileqa.com,2026-03-17
+"Would love Zapier integration so we can connect with our CRM automatically.",Mark Williams,mark@salesops.io,2026-03-23
+"The CSV import failed silently on a 5000-row file. No error message, just nothing happened.",Diana Costa,diana@datateam.co,2026-03-20
+"Checkout page shows wrong currency for EU users. We see USD instead of EUR.",Hans Mueller,hans@euroclient.de,2026-03-21
+"The AI chat feature is amazing for quick insights. Replaced our weekly analysis meetings.",Sophie Martin,sophie@productops.fr,2026-03-22
+"Need better role permissions. Members can see billing info which should be owner-only.",Ryan O'Brien,ryan@securityfirst.com,2026-03-18
+"Loading times improved dramatically after last update. Dashboard loads in under 2 seconds now.",Yuki Tanaka,yuki@performance.jp,2026-03-23
+"The Slack integration missed several messages from our feedback channel last week.",Chris Anderson,chris@slackuser.com,2026-03-19
+"Can we get a public roadmap page? Our users keep asking what features are coming next.",Laura Martinez,laura@communityled.io,2026-03-20
+"Filter by date range is broken. Selecting 'last 30 days' shows data from 60 days ago.",Ben Thompson,ben@bugfinder.com,2026-03-21
+"We switched from Productboard to FeedbackMind and the migration was seamless. Great job!",Andrea Silva,andrea@switchteam.com,2026-03-22
+"The typeform survey sync takes too long. Responses from yesterday still haven't appeared.",Paul Wright,paul@surveyteam.co,2026-03-18
+"Please add keyboard shortcuts. Power users like me want to navigate without touching the mouse.",Derek Chang,derek@poweruser.io,2026-03-23

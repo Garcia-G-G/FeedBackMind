@@ -53,3 +53,10 @@ coverage/
 feedbackmind_hetzner*
 *.pub
 .kamal/secrets
+
+# Claude / AI assistant files
+CLAUDE.md
+.claude/
+PROMPT_*.md
+onboarding-option-*.jsx
+prototype_*.html
