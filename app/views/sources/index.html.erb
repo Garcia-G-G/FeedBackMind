@@ -51,9 +51,16 @@
               </div>
             </div>
 
-            <%= link_to source_path(source), class: "inline-flex items-center gap-1 text-sm text-stone-900 hover:text-stone-700 font-medium" do %>
-              View Details →
-            <% end %>
+            <div class="flex items-center justify-between">
+              <%= link_to source_path(source), class: "inline-flex items-center gap-1 text-sm text-stone-900 hover:text-stone-700 font-medium" do %>
+                View Details →
+              <% end %>
+              <% if source.active? && source.config&.dig("access_token").present? %>
+                <%= button_to sync_source_path(source), method: :post, data: { turbo: false }, class: "text-xs px-3 py-1.5 rounded-lg border border-stone-300 text-stone-600 hover:bg-stone-100 transition-colors" do %>
+                  Sync Now
+                <% end %>
+              <% end %>
+            </div>
           </div>
         </div>
       <% end %>

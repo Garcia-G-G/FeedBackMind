@@ -1,5 +1,5 @@
 class SourcesController < ApplicationController
-  before_action :set_source, only: [:show, :destroy]
+  before_action :set_source, only: [:show, :destroy, :sync]
 
   def index
     @sources = current_account.sources.order(:source_type)
@@ -26,6 +26,21 @@ class SourcesController < ApplicationController
     else
       redirect_to new_source_path, alert: @source.errors.full_messages.join(", ")
     end
+  end
+
+  def sync
+    unless @source.active?
+      redirect_to source_path(@source), alert: "Source is not active."
+      return
+    end
+
+    unless @source.config&.dig("access_token").present?
+      redirect_to source_path(@source), alert: "No access token. Please reconnect this source."
+      return
+    end
+
+    SourceSyncJob.perform_async(@source.id)
+    redirect_to source_path(@source), notice: "Sync started! Feedbacks will appear shortly as they're processed."
   end
 
   def destroy

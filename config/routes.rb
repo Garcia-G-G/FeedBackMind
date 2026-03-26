@@ -61,7 +61,11 @@ Rails.application.routes.draw do
 
     resources :feedbacks, only: [:index, :show]
     resources :syntheses, only: [:index, :show, :new, :create]
-    resources :sources, only: [:index, :show, :new, :create, :destroy]
+    resources :sources, only: [:index, :show, :new, :create, :destroy] do
+      member do
+        post :sync
+      end
+    end
 
     resource :pipeline, only: [:show], controller: "pipeline"
     resource :loop_tracker, only: [:show], controller: "loop_tracker"

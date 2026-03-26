@@ -34,6 +34,12 @@
             <%= @source.active? ? 'Active' : 'Inactive' %>
           </span>
         </div>
+        <% if @source.active? && @source.config&.dig("access_token").present? %>
+          <%= button_to sync_source_path(@source), method: :post, data: { turbo: false }, class: "mt-2 px-4 py-2 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors" do %>
+            Sync Now
+          <% end %>
+          <p class="text-xs text-stone-400 mt-1">Pulls latest 50 items</p>
+        <% end %>
       </div>
     </div>
 
