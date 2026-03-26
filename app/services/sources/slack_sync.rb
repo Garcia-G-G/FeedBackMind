@@ -35,9 +35,14 @@ module Sources
 
     def fetch_channels
       uri = URI("https://slack.com/api/conversations.list")
-      uri.query = URI.encode_www_form(token: @token, types: "public_channel,private_channel", limit: 20)
-      response = Net::HTTP.get(uri)
-      data = JSON.parse(response)
+      uri.query = URI.encode_www_form(types: "public_channel,private_channel", limit: 20)
+      req = Net::HTTP::Get.new(uri)
+      req["Authorization"] = "Bearer #{@token}"
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      response = http.request(req)
+      data = JSON.parse(response.body)
       data["ok"] ? data["channels"].select { |c| c["is_member"] } : []
     rescue => e
       Rails.logger.error("[SlackSync] Failed to fetch channels: #{e.message}")
@@ -46,9 +51,14 @@ module Sources
 
     def fetch_messages(channel_id)
       uri = URI("https://slack.com/api/conversations.history")
-      uri.query = URI.encode_www_form(token: @token, channel: channel_id, limit: LIMIT)
-      response = Net::HTTP.get(uri)
-      data = JSON.parse(response)
+      uri.query = URI.encode_www_form(channel: channel_id, limit: LIMIT)
+      req = Net::HTTP::Get.new(uri)
+      req["Authorization"] = "Bearer #{@token}"
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      response = http.request(req)
+      data = JSON.parse(response.body)
       data["ok"] ? data["messages"] : []
     rescue => e
       Rails.logger.error("[SlackSync] Failed to fetch messages for #{channel_id}: #{e.message}")
