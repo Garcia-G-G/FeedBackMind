@@ -145,7 +145,7 @@
       <% total = sentiments.values.sum %>
 
       <div class="space-y-3">
-        <% sentiments.each do |sentiment, count| %>
+        <% sentiments.reject { |k, _| k.nil? }.each do |sentiment, count| %>
           <% percentage = (count.to_f / total * 100).round(0) %>
           <div>
             <div class="flex items-center justify-between mb-1">
