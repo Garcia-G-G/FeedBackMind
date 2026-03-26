@@ -30,15 +30,24 @@
 
     <!-- Suggestions -->
     <div class="px-[18px] pt-3 flex gap-1.5 flex-wrap">
-      <button data-action="click->chat-panel#useSuggestion" class="text-[11px] px-2.5 py-1 border border-stone-200 rounded-full bg-white text-stone-500 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-100 transition-all cursor-pointer">What's the biggest risk?</button>
-      <button data-action="click->chat-panel#useSuggestion" class="text-[11px] px-2.5 py-1 border border-stone-200 rounded-full bg-white text-stone-500 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-100 transition-all cursor-pointer">Summarize checkout issues</button>
-      <button data-action="click->chat-panel#useSuggestion" class="text-[11px] px-2.5 py-1 border border-stone-200 rounded-full bg-white text-stone-500 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-100 transition-all cursor-pointer">Compare vs last week</button>
+      <% suggestions = if current_account.feedbacks.count > 0
+        ["What's the biggest risk?", "Summarize top themes", "Compare vs last week"]
+      else
+        ["How do I add feedback?", "What can FeedbackMind do?", "How do I connect Slack?"]
+      end %>
+      <% suggestions.each do |s| %>
+        <button data-action="click->chat-panel#useSuggestion" class="text-[11px] px-2.5 py-1 border border-stone-200 rounded-full bg-white text-stone-500 hover:border-stone-400 hover:text-stone-900 hover:bg-stone-100 transition-all cursor-pointer"><%= s %></button>
+      <% end %>
     </div>
 
     <!-- Messages -->
     <div data-chat-panel-target="messages" class="flex-1 overflow-y-auto px-[18px] py-3 flex flex-col gap-2.5">
       <div class="max-w-[85%] text-[13px] leading-relaxed px-3.5 py-2.5 rounded-xl rounded-bl bg-stone-50 self-start">
-        I have access to your feedback data across all connected sources. Ask me anything about patterns, sentiment trends, or revenue impact.
+        <% if current_account.feedbacks.count > 0 %>
+          I have access to your feedback data across all connected sources. Ask me about patterns, sentiment, risks, or how to use FeedbackMind.
+        <% else %>
+          Welcome! I can help you get started with FeedbackMind. Ask me how to add feedback, connect sources, or use any feature.
+        <% end %>
       </div>
     </div>
 
