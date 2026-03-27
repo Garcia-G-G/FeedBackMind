@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_155902) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_160415) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -93,6 +93,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_155902) do
     t.datetime "created_at", null: false
     t.text "description"
     t.bigint "merged_into_id"
+    t.string "priority_label"
+    t.integer "priority_score"
     t.datetime "published_at"
     t.datetime "shipped_at"
     t.string "slug", null: false
@@ -102,6 +104,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_155902) do
     t.bigint "user_id"
     t.integer "votes_count", default: 0, null: false
     t.index ["account_id", "category"], name: "index_feature_requests_on_account_id_and_category"
+    t.index ["account_id", "priority_score"], name: "index_feature_requests_on_account_id_and_priority_score"
     t.index ["account_id", "slug"], name: "index_feature_requests_on_account_id_and_slug", unique: true
     t.index ["account_id", "status"], name: "index_feature_requests_on_account_id_and_status"
     t.index ["account_id", "votes_count"], name: "index_feature_requests_on_account_id_and_votes_count"
@@ -120,12 +123,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_155902) do
     t.vector "embedding", limit: 1536
     t.string "external_id"
     t.jsonb "metadata", default: {}
+    t.string "priority_label"
+    t.text "priority_reasoning"
+    t.integer "priority_score"
     t.datetime "processed_at"
     t.datetime "received_at"
     t.integer "sentiment"
     t.bigint "source_id", null: false
     t.string "topics", default: [], array: true
     t.datetime "updated_at", null: false
+    t.index ["account_id", "priority_score"], name: "index_feedbacks_on_account_id_and_priority_score"
     t.index ["account_id", "received_at"], name: "index_feedbacks_on_account_id_and_received_at"
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
     t.index ["embedding"], name: "index_feedbacks_on_embedding_hnsw", opclass: :vector_cosine_ops, using: :hnsw

@@ -77,6 +77,9 @@ class FeedbackEmbedJob
 
     Rails.logger.info("[FeedbackEmbedJob] Processed feedback ##{feedback_id}: sentiment=#{classification['sentiment']}, topics=#{classification['topics']}")
 
+    # Enqueue priority scoring
+    FeedbackPriorityJob.perform_async(feedback_id)
+
   rescue JSON::ParserError => e
     Rails.logger.error("[FeedbackEmbedJob] JSON parse error for feedback ##{feedback_id}: #{e.message}")
     raise # Retry via Sidekiq

@@ -30,6 +30,11 @@ class DashboardController < ApplicationController
     @weekly_synthesis = current_account.weekly_syntheses.order(week_start: :desc).first
     @themes = @weekly_synthesis&.themes || []
 
+    # Priority queue
+    @priority_feedbacks = current_account.feedbacks.with_priority
+                               .where(priority_label: %w[critical high])
+                               .by_priority.includes(:source).limit(5)
+
     # Sources for grid
     @sources = current_account.sources.order(:source_type)
 

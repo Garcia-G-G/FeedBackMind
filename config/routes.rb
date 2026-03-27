@@ -92,6 +92,7 @@ Rails.application.routes.draw do
       post :regenerate_token
       post :invite_member
       post :change_plan
+      post :bulk_priority
       delete :remove_member
     end
 

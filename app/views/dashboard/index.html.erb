@@ -252,6 +252,33 @@
     </div>
   <% end %>
 
+  <!-- Priority Queue -->
+  <% if @priority_feedbacks.any? %>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <h2 class="text-sm font-bold text-stone-900">Priority Queue</h2>
+          <span class="bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">AI</span>
+        </div>
+        <%= link_to "View all", feedbacks_path(sort: "priority"), class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-xs font-medium" %>
+      </div>
+      <div class="space-y-2">
+        <% @priority_feedbacks.each do |fb| %>
+          <%= link_to feedback_path(fb), class: "block p-3 rounded-lg bg-stone-50 border border-stone-200 hover:bg-stone-100 transition-colors" do %>
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold <%= fb.priority_color_class %>"><%= fb.priority_emoji %> <%= fb.priority_score %></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-stone-900 line-clamp-1"><%= fb.content.truncate(100) %></p>
+                <p class="text-[10px] text-stone-400 mt-1"><%= fb.priority_reasoning&.truncate(80) %></p>
+              </div>
+              <span class="text-[10px] text-stone-400 shrink-0"><%= fb.source&.source_type&.titleize %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Recent Feedbacks -->
   <div class="bg-white border border-stone-200 rounded-xl p-5">
     <h2 class="text-sm font-bold text-stone-900 mb-4">Recent Feedbacks</h2>

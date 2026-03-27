@@ -11,6 +11,11 @@ class FeedbacksController < ApplicationController
     @feedbacks = @feedbacks.unprocessed if params[:status] == "unprocessed"
     @feedbacks = @feedbacks.processed if params[:status] == "processed"
 
+    # Sort
+    if params[:sort] == "priority"
+      @feedbacks = @feedbacks.reorder(Arel.sql("priority_score DESC NULLS LAST"))
+    end
+
     # Pagination
     @page = [params[:page].to_i, 1].max
     @per_page = 20

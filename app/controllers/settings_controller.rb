@@ -95,6 +95,11 @@ class SettingsController < ApplicationController
     redirect_to settings_path, notice: "Team member removed."
   end
 
+  def bulk_priority
+    BulkPriorityScoringJob.perform_async(current_account.id)
+    redirect_to settings_path, notice: "Priority scoring started! Feedbacks will be scored in the background."
+  end
+
   def change_plan
     plan = params[:plan]
     Rails.logger.info "[Stripe] change_plan called with plan=#{plan}"

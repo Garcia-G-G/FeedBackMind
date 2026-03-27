@@ -35,6 +35,11 @@
         <input type="text" name="search" value="<%= params[:search] %>" placeholder="Search content..." class="w-full border border-stone-300 rounded-lg text-[13px] px-3 py-2 text-stone-700 placeholder-stone-400 focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500">
       </div>
 
+      <select name="sort" class="border border-stone-300 rounded-lg text-[13px] px-3 py-2 text-stone-700 bg-white focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500">
+        <option value="">Sort: Recent</option>
+        <option value="priority" <%= "selected" if params[:sort] == "priority" %>>Sort: Priority</option>
+      </select>
+
       <button type="submit" class="px-4 py-2 bg-stone-900 text-white text-[13px] font-medium rounded-lg hover:bg-stone-800 transition-colors">Filter</button>
       <%= link_to "Clear", feedbacks_path, class: "text-stone-700 hover:text-stone-900 underline text-[13px] font-medium" %>
     <% end %>
@@ -67,6 +72,9 @@
                     <span class="text-emerald-600 font-medium">Processed</span>
                   <% else %>
                     <span class="text-amber-600 font-medium">Pending</span>
+                  <% end %>
+                  <% if feedback.priority_score.present? %>
+                    <span class="<%= feedback.priority_color_class %> px-1.5 py-0.5 rounded-full font-semibold" title="<%= feedback.priority_reasoning %>"><%= feedback.priority_emoji %> P:<%= feedback.priority_score %></span>
                   <% end %>
                 </div>
               </div>

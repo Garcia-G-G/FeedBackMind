@@ -29,6 +29,10 @@ class Feedback < ApplicationRecord
   scope :by_sentiment, ->(sentiment) { where(sentiment: sentiment) }
   scope :by_topic, ->(topic) { where("? = ANY(topics)", topic) }
   scope :from_source_type, ->(type) { joins(:source).where(sources: { source_type: type }) }
+  scope :with_priority, -> { where.not(priority_score: nil) }
+  scope :by_priority, -> { order(priority_score: :desc) }
+  scope :critical_priority, -> { where(priority_label: "critical") }
+  scope :high_priority, -> { where(priority_label: "high") }
 
   # === Callbacks ===
   after_create :increment_account_feedback_count
@@ -48,6 +52,24 @@ class Feedback < ApplicationRecord
 
   def has_embedding?
     embedding.present?
+  end
+
+  def priority_color_class
+    case priority_label
+    when "critical" then "bg-red-100 text-red-700"
+    when "high" then "bg-amber-100 text-amber-700"
+    when "medium" then "bg-blue-100 text-blue-700"
+    when "low" then "bg-stone-100 text-stone-500"
+    end
+  end
+
+  def priority_emoji
+    case priority_label
+    when "critical" then "🔴"
+    when "high" then "🟠"
+    when "medium" then "🔵"
+    when "low" then "⚪"
+    end
   end
 
   def mark_processed!
