@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <title><%= content_for?(:title) ? "#{yield(:title)} — #{@account.name}" : "#{@account.name} — Feature Requests" %></title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+</head>
+<body class="h-full bg-stone-50 font-sans text-stone-900 antialiased">
+  <!-- Header -->
+  <header class="bg-white border-b border-stone-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-stone-900 text-white flex items-center justify-center font-bold text-sm">
+          <%= @account.name.first(2).upcase %>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-stone-900"><%= @account.name %></h1>
+          <p class="text-xs text-stone-500">Feature Requests</p>
+        </div>
+      </div>
+      <%= link_to portal_new_request_path(subdomain: @account.subdomain),
+          class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-medium text-sm" do %>
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Submit Request
+      <% end %>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <% if notice.present? %>
+      <div class="mt-4 rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-800" data-controller="dismissible" data-action="click->dismissible#dismiss">
+        <%= notice %>
+      </div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800" data-controller="dismissible" data-action="click->dismissible#dismiss">
+        <%= alert %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+    <%= yield %>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 mt-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 text-center">
+      <p class="text-xs text-stone-400">Powered by <span class="font-semibold text-stone-500">FeedbackMind</span></p>
+    </div>
+  </footer>
+</body>
+</html>

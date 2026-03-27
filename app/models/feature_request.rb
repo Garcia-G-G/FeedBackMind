@@ -11,6 +11,9 @@ class FeatureRequest < ApplicationRecord
   # === Multi-tenancy ===
   acts_as_tenant(:account)
 
+  # === Constants ===
+  CATEGORIES = %w[Integration UI/UX Performance API Analytics Security Billing Other].freeze
+
   # === Enums ===
   enum :status, {
     open: 0,

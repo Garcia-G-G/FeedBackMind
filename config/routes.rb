@@ -106,6 +106,15 @@ Rails.application.routes.draw do
   get "sources/new", to: redirect("/users/sign_in")
   get "onboarding", to: redirect("/users/sign_in")
 
+  # === Public Feature Request Portal ===
+  scope "portal/:subdomain", controller: "portal" do
+    get "/", action: :show, as: :portal
+    get "/new", action: :new_request, as: :portal_new_request
+    post "/", action: :create_request, as: :portal_create_request
+    post "/:slug/vote", action: :vote, as: :portal_vote
+    get "/:slug", action: :show_request, as: :portal_request
+  end
+
   # === Marketing landing (non-logged-in users) ===
   root "pages#home"
 end

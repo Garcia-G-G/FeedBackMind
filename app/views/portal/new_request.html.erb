@@ -1,0 +1,81 @@
+<% content_for(:title) { "Submit Request" } %>
+
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to portal_path(subdomain: @account.subdomain), class: "text-sm text-stone-900 hover:text-stone-700 font-medium" do %>
+      &larr; Back to requests
+    <% end %>
+  </div>
+
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <h2 class="text-xl font-bold text-stone-900 font-serif-display mb-6">Submit a Feature Request</h2>
+
+    <%= form_with model: @feature_request,
+        url: portal_create_request_path(subdomain: @account.subdomain),
+        method: :post,
+        data: { turbo: false } do |f| %>
+
+      <% if @feature_request.errors.any? %>
+        <div class="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">
+          <ul class="list-disc list-inside">
+            <% @feature_request.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-5">
+        <!-- Title -->
+        <div>
+          <label for="feature_request_title" class="block text-sm font-semibold text-stone-700 mb-1">Title <span class="text-red-500">*</span></label>
+          <%= f.text_field :title, placeholder: "A short, descriptive title for your idea",
+              class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent",
+              required: true, maxlength: 200 %>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="feature_request_description" class="block text-sm font-semibold text-stone-700 mb-1">Description</label>
+          <%= f.text_area :description, placeholder: "Describe what you need and why it would be helpful...",
+              rows: 5,
+              class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent resize-y",
+              maxlength: 5000 %>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label for="feature_request_category" class="block text-sm font-semibold text-stone-700 mb-1">Category</label>
+          <%= f.select :category,
+              options_for_select(FeatureRequest::CATEGORIES.map { |c| [c, c] }, @feature_request.category),
+              { include_blank: "Select a category..." },
+              class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent" %>
+        </div>
+
+        <!-- Name & Email -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="feature_request_author_name" class="block text-sm font-semibold text-stone-700 mb-1">Your Name</label>
+            <%= f.text_field :author_name, placeholder: "John Doe",
+                class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent" %>
+          </div>
+          <div>
+            <label for="feature_request_author_email" class="block text-sm font-semibold text-stone-700 mb-1">Your Email <span class="text-red-500">*</span></label>
+            <%= f.email_field :author_email, placeholder: "you@example.com",
+                value: @feature_request.author_email.presence || @voter_email,
+                class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent",
+                required: true %>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <%= link_to "Cancel", portal_path(subdomain: @account.subdomain),
+              class: "px-4 py-2.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors" %>
+          <%= f.submit "Submit Request",
+              class: "px-5 py-2.5 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
