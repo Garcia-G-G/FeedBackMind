@@ -25,6 +25,11 @@ class FeedbacksController < ApplicationController
   end
 
   def show
+    if @feedback.has_embedding?
+      @related_feedbacks = current_account.feedbacks
+                               .where.not(id: @feedback.id)
+                               .nearest_to(@feedback.embedding, limit: 3)
+    end
   end
 
   private
