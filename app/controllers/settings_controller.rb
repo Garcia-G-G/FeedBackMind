@@ -95,6 +95,11 @@ class SettingsController < ApplicationController
     redirect_to settings_path, notice: "Team member removed."
   end
 
+  def dismiss_checklist
+    current_user.update!(checklist_dismissed_at: Time.current)
+    redirect_back fallback_location: dashboard_path
+  end
+
   def bulk_priority
     BulkPriorityScoringJob.perform_async(current_account.id)
     redirect_to settings_path, notice: "Priority scoring started! Feedbacks will be scored in the background."

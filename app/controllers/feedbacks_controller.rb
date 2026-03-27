@@ -18,6 +18,9 @@ class FeedbacksController < ApplicationController
       @feedbacks = @feedbacks.reorder(Arel.sql("priority_score DESC NULLS LAST"))
     end
 
+    # Saved views
+    @saved_views = current_account.saved_views.where(user: current_user).ordered
+
     # Pagination
     @page = [params[:page].to_i, 1].max
     @per_page = 20

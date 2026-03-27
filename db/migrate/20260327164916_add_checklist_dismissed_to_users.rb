@@ -1,0 +1,5 @@
+class AddChecklistDismissedToUsers < ActiveRecord::Migration[7.2]
+  def change
+    add_column :users, :checklist_dismissed_at, :datetime
+  end
+end

@@ -70,6 +70,7 @@ Rails.application.routes.draw do
         delete :remove_tag
       end
     end
+    resources :saved_views, only: [:create, :destroy]
     resources :syntheses, only: [:index, :show, :new, :create]
     resources :sources, only: [:index, :show, :new, :create, :destroy] do
       member do
@@ -115,6 +116,7 @@ Rails.application.routes.draw do
       post :invite_member
       post :change_plan
       post :bulk_priority
+      post :dismiss_checklist
       delete :remove_member
     end
 

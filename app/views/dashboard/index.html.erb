@@ -20,6 +20,38 @@
 %>
 
 <div class="mx-auto max-w-7xl">
+  <!-- Onboarding Checklist -->
+  <% if @checklist.present? && @checklist_progress[:percentage] < 100 %>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <h2 class="text-sm font-bold text-stone-900">Getting Started</h2>
+          <span class="text-xs text-stone-400"><%= @checklist_progress[:completed] %>/<%= @checklist_progress[:total] %></span>
+        </div>
+        <%= button_to "Dismiss", dismiss_checklist_settings_path, method: :post, data: { turbo: false },
+            class: "text-xs text-stone-400 hover:text-stone-600" %>
+      </div>
+      <div class="w-full bg-stone-100 rounded-full h-2 mb-4">
+        <div class="bg-emerald-500 h-2 rounded-full transition-all" style="width: <%= @checklist_progress[:percentage] %>%"></div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+        <% @checklist.each do |item| %>
+          <% if item[:done] %>
+            <div class="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 border border-emerald-200">
+              <svg class="h-4 w-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <span class="text-xs text-emerald-700 font-medium line-through"><%= item[:label] %></span>
+            </div>
+          <% else %>
+            <%= link_to item[:path], class: "flex items-center gap-2 p-2 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors" do %>
+              <div class="h-4 w-4 rounded-full border-2 border-stone-300 shrink-0"></div>
+              <span class="text-xs text-stone-700 font-medium"><%= item[:label] %></span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <!-- 4 Metric Cards -->
   <div class="grid grid-cols-4 gap-3.5 mb-6">
     <div class="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm transition-shadow">

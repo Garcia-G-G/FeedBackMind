@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_164402) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_164916) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -208,6 +208,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_164402) do
     t.index ["survey_token"], name: "index_nps_surveys_on_survey_token", unique: true
   end
 
+  create_table "saved_views", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "filters", default: {}, null: false
+    t.string "icon"
+    t.string "name", null: false
+    t.integer "position", default: 0
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["account_id", "user_id"], name: "index_saved_views_on_account_id_and_user_id"
+    t.index ["account_id"], name: "index_saved_views_on_account_id"
+    t.index ["user_id"], name: "index_saved_views_on_user_id"
+  end
+
   create_table "sources", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.boolean "active", default: false, null: false
@@ -223,6 +237,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_164402) do
 
   create_table "users", force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.datetime "checklist_dismissed_at"
     t.datetime "created_at", null: false
     t.datetime "current_sign_in_at"
     t.string "current_sign_in_ip"
@@ -295,6 +310,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_164402) do
   add_foreign_key "nps_responses", "feedbacks"
   add_foreign_key "nps_responses", "nps_surveys"
   add_foreign_key "nps_surveys", "accounts"
+  add_foreign_key "saved_views", "accounts"
+  add_foreign_key "saved_views", "users"
   add_foreign_key "sources", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "votes", "accounts"

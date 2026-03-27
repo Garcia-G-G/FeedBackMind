@@ -35,6 +35,12 @@ class DashboardController < ApplicationController
                                .where(priority_label: %w[critical high])
                                .by_priority.includes(:source).limit(5)
 
+    # Onboarding checklist
+    if current_user.checklist_dismissed_at.nil?
+      @checklist = current_account.onboarding_checklist
+      @checklist_progress = current_account.checklist_progress
+    end
+
     # Sources for grid
     @sources = current_account.sources.order(:source_type)
 

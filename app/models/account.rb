@@ -11,6 +11,7 @@ class Account < ApplicationRecord
   has_many :nps_surveys, dependent: :destroy
   has_many :nps_responses, dependent: :destroy
   has_many :companies, dependent: :destroy
+  has_many :saved_views, dependent: :destroy
 
   # === Enums ===
   enum :plan, { starter: 0, growth: 1, scale: 2 }, prefix: true
@@ -64,6 +65,22 @@ class Account < ApplicationRecord
 
   def max_users
     plan_limits[:users]
+  end
+
+  def onboarding_checklist
+    [
+      { key: :connect_source, label: "Connect a feedback source", done: sources.active.any?, path: "sources/new" },
+      { key: :first_feedback, label: "Receive your first feedback", done: feedbacks.any?, path: "feedbacks" },
+      { key: :first_synthesis, label: "Generate an AI synthesis", done: weekly_syntheses.any?, path: "syntheses/new" },
+      { key: :invite_member, label: "Invite a team member", done: users.count > 1, path: "settings" },
+      { key: :create_nps, label: "Create an NPS survey", done: nps_surveys.any?, path: "nps/new" }
+    ]
+  end
+
+  def checklist_progress
+    items = onboarding_checklist
+    completed = items.count { |i| i[:done] }
+    { completed: completed, total: items.size, percentage: (completed.to_f / items.size * 100).round }
   end
 
   def max_sources
