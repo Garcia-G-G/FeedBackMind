@@ -40,7 +40,7 @@
     <%= sidebar_link "Requests", feature_requests_path, "requests", controller_name == "feature_requests", badge: current_account&.feature_requests&.not_merged&.count %>
     <%= sidebar_link "Companies", companies_path, "companies", controller_name == "companies", badge: current_account&.companies&.count %>
     <%= sidebar_link "NPS", nps_surveys_path, "nps", controller_name == "nps_surveys" %>
-    <%= sidebar_link "Changelog", changelog_entries_path, "changelog", controller_name == "changelog" %>
+    <%= sidebar_link "Changelog", changelog_entries_path, "changelog", controller_name == "changelog_entries" %>
     <%= sidebar_link "Sources", sources_path, "sources", controller_name == "sources" %>
     <%= sidebar_link "Loop Tracker", loop_tracker_path, "loop_tracker", controller_name == "loop_tracker" %>
     <%= sidebar_link "Settings", settings_path, "settings", controller_name == "settings" %>

@@ -51,7 +51,7 @@ Rails.application.routes.draw do
         post "portal",   to: "portal#create"
       end
 
-      namespace :nps do
+      scope :nps do
         get "config", to: "nps#config"
         post "respond", to: "nps#respond_survey"
       end

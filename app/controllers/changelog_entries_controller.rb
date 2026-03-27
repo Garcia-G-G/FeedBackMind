@@ -1,4 +1,4 @@
-class ChangelogController < ApplicationController
+class ChangelogEntriesController < ApplicationController
   before_action :set_entry, only: [:show, :edit, :update, :destroy, :publish, :unpublish, :link_feature_request, :unlink_feature_request]
 
   def index
