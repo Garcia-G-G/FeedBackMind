@@ -145,6 +145,28 @@
         <% end %>
       </div>
 
+      <!-- Tags -->
+      <div class="bg-white border border-stone-200 rounded-xl p-5">
+        <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Tags</p>
+        <% if @feedback.tags.present? %>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <% @feedback.tags.each do |tag| %>
+              <span class="inline-flex items-center gap-1 text-[11px] bg-indigo-50 text-indigo-700 font-medium px-2.5 py-1 rounded-full">
+                <%= tag %>
+                <%= button_to remove_tag_feedback_path(@feedback, tag: tag), method: :delete, data: { turbo: false }, class: "text-indigo-400 hover:text-indigo-600" do %>
+                  <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                <% end %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+        <%= form_with url: add_tag_feedback_path(@feedback), method: :post, data: { turbo: false }, class: "flex gap-2" do %>
+          <input type="text" name="tag" placeholder="Add tag..." required
+            class="flex-1 px-3 py-1.5 rounded-lg border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent">
+          <button type="submit" class="px-3 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-medium hover:bg-stone-800 transition-colors">Add</button>
+        <% end %>
+      </div>
+
       <!-- Activity -->
       <div class="bg-white border border-stone-200 rounded-xl p-5">
         <p class="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-3">Activity</p>

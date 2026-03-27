@@ -64,7 +64,12 @@ Rails.application.routes.draw do
 
     get "dashboard", to: "dashboard#index", as: :dashboard
 
-    resources :feedbacks, only: [:index, :show]
+    resources :feedbacks, only: [:index, :show] do
+      member do
+        post :add_tag
+        delete :remove_tag
+      end
+    end
     resources :syntheses, only: [:index, :show, :new, :create]
     resources :sources, only: [:index, :show, :new, :create, :destroy] do
       member do

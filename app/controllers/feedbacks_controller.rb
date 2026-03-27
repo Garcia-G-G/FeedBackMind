@@ -1,8 +1,8 @@
 class FeedbacksController < ApplicationController
-  before_action :set_feedback, only: [:show]
+  before_action :set_feedback, only: [:show, :add_tag, :remove_tag]
 
   def index
-    @feedbacks = current_account.feedbacks.includes(:source).order(received_at: :desc)
+    @feedbacks = current_account.feedbacks.includes(:source, :company).order(received_at: :desc)
 
     # Filters
     @feedbacks = @feedbacks.where(sentiment: params[:sentiment]) if params[:sentiment].present?
@@ -11,6 +11,7 @@ class FeedbacksController < ApplicationController
     @feedbacks = @feedbacks.unprocessed if params[:status] == "unprocessed"
     @feedbacks = @feedbacks.processed if params[:status] == "processed"
     @feedbacks = @feedbacks.where(company_id: params[:company_id]) if params[:company_id].present?
+    @feedbacks = @feedbacks.by_tag(params[:tag]) if params[:tag].present?
 
     # Sort
     if params[:sort] == "priority"
@@ -30,6 +31,20 @@ class FeedbacksController < ApplicationController
                                .where.not(id: @feedback.id)
                                .nearest_to(@feedback.embedding, limit: 3)
     end
+  end
+
+  def add_tag
+    tag = params[:tag]&.strip&.downcase
+    if tag.present? && !@feedback.tags.include?(tag)
+      @feedback.update!(tags: @feedback.tags + [tag])
+    end
+    redirect_to feedback_path(@feedback)
+  end
+
+  def remove_tag
+    tag = params[:tag]
+    @feedback.update!(tags: @feedback.tags - [tag])
+    redirect_to feedback_path(@feedback)
   end
 
   private

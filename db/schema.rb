@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_161929) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_164402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -150,6 +150,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_161929) do
     t.datetime "received_at"
     t.integer "sentiment"
     t.bigint "source_id", null: false
+    t.string "tags", default: [], array: true
     t.string "topics", default: [], array: true
     t.datetime "updated_at", null: false
     t.index ["account_id", "priority_score"], name: "index_feedbacks_on_account_id_and_priority_score"
@@ -162,6 +163,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_161929) do
     t.index ["sentiment"], name: "index_feedbacks_on_sentiment"
     t.index ["source_id", "external_id"], name: "index_feedbacks_on_source_id_and_external_id", unique: true, where: "(external_id IS NOT NULL)"
     t.index ["source_id"], name: "index_feedbacks_on_source_id"
+    t.index ["tags"], name: "index_feedbacks_on_tags", using: :gin
     t.index ["topics"], name: "index_feedbacks_on_topics", using: :gin
   end
 

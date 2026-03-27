@@ -30,6 +30,7 @@ class Feedback < ApplicationRecord
   scope :by_sentiment, ->(sentiment) { where(sentiment: sentiment) }
   scope :by_topic, ->(topic) { where("? = ANY(topics)", topic) }
   scope :from_source_type, ->(type) { joins(:source).where(sources: { source_type: type }) }
+  scope :by_tag, ->(tag) { where("? = ANY(tags)", tag) }
   scope :with_priority, -> { where.not(priority_score: nil) }
   scope :by_priority, -> { order(priority_score: :desc) }
   scope :critical_priority, -> { where(priority_label: "critical") }
