@@ -1,0 +1,131 @@
+<% content_for(:page_title) { "Feature Requests" } %>
+<% content_for(:topbar_actions) do %>
+  <div class="flex items-center gap-2">
+    <% if current_account.portal_enabled? %>
+      <%= link_to portal_path(portal_subdomain: current_account.subdomain), target: "_blank",
+          class: "inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors text-sm font-medium" do %>
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        View Portal
+      <% end %>
+    <% end %>
+    <%= link_to new_feature_request_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-medium text-sm" do %>
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      New Request
+    <% end %>
+  </div>
+<% end %>
+
+<div class="space-y-6">
+  <!-- Stats Bar -->
+  <div class="grid grid-cols-5 gap-3">
+    <div class="bg-white border border-stone-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
+      <p class="text-xs text-stone-400 font-medium mb-1">Total</p>
+      <p class="text-2xl font-extrabold text-stone-900"><%= @total_count %></p>
+    </div>
+    <% %w[open planned in_progress shipped].each do |status| %>
+      <div class="bg-white border border-stone-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
+        <p class="text-xs text-stone-400 font-medium mb-1"><%= status.titleize %></p>
+        <p class="text-2xl font-extrabold text-stone-900"><%= @status_counts[status] || 0 %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-col sm:flex-row gap-3">
+    <form action="<%= feature_requests_path %>" method="get" class="flex-1" data-turbo="false">
+      <% %w[status category visibility sort].each do |key| %>
+        <% if params[key].present? %>
+          <input type="hidden" name="<%= key %>" value="<%= params[key] %>">
+        <% end %>
+      <% end %>
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        <input type="text" name="q" value="<%= params[:q] %>" placeholder="Search requests..."
+          class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-300 bg-white text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent">
+      </div>
+    </form>
+    <div class="flex gap-2">
+      <% { nil => "Votes", "recent" => "Newest", "oldest" => "Oldest" }.each do |sort_val, label| %>
+        <%= link_to feature_requests_path(params.permit(:q, :status, :category, :visibility).merge(sort: sort_val)),
+            class: "px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors #{params[:sort] == sort_val ? 'bg-stone-900 text-white border-stone-900' : 'bg-white text-stone-600 border-stone-300 hover:bg-stone-50'}" do %>
+          <%= label %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Status + Visibility Tabs -->
+  <div class="flex flex-wrap gap-2">
+    <%= link_to feature_requests_path(params.permit(:q, :sort, :category, :visibility)),
+        class: "px-3 py-1.5 rounded-full text-sm font-medium transition-colors #{params[:status].blank? ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'}" do %>
+      All
+    <% end %>
+    <% FeatureRequest.statuses.keys.each do |status| %>
+      <%= link_to feature_requests_path(params.permit(:q, :sort, :category, :visibility).merge(status: status)),
+          class: "px-3 py-1.5 rounded-full text-sm font-medium transition-colors #{params[:status] == status ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'}" do %>
+        <%= status.titleize %> <span class="ml-1 opacity-70"><%= @status_counts[status] || 0 %></span>
+      <% end %>
+    <% end %>
+
+    <span class="text-stone-300 mx-1">|</span>
+
+    <% { nil => "All", "published" => "Published", "draft" => "Drafts" }.each do |vis, label| %>
+      <%= link_to feature_requests_path(params.permit(:q, :sort, :status, :category).merge(visibility: vis)),
+          class: "px-3 py-1.5 rounded-full text-sm font-medium transition-colors #{params[:visibility] == vis ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'}" do %>
+        <%= label %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- List -->
+  <% if @feature_requests.any? %>
+    <div class="space-y-2">
+      <% @feature_requests.each do |fr| %>
+        <div class="bg-white rounded-xl border border-stone-200 p-4 hover:shadow-sm transition-shadow">
+          <div class="flex items-center gap-4">
+            <!-- Vote Count -->
+            <div class="w-12 text-center shrink-0">
+              <p class="text-lg font-bold text-stone-900"><%= fr.votes_count %></p>
+              <p class="text-[10px] text-stone-400">votes</p>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <%= link_to fr.title, feature_request_path(fr), class: "text-sm font-semibold text-stone-900 hover:text-stone-700 truncate" %>
+                <% unless fr.published? %>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium shrink-0">Draft</span>
+                <% end %>
+              </div>
+              <div class="flex items-center gap-3 text-xs text-stone-400">
+                <span><%= fr.author_name.presence || fr.author_email %></span>
+                <span><%= format_time_ago(fr.created_at) %></span>
+                <% if fr.category.present? %>
+                  <span class="px-1.5 py-0.5 rounded bg-stone-100 text-stone-500"><%= fr.category %></span>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Status Badge -->
+            <span class="shrink-0 text-xs px-2.5 py-1 rounded-full font-medium <%= fr.status_color_class %>">
+              <%= fr.status.titleize %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl border border-stone-200 p-12 text-center">
+      <svg class="mx-auto h-12 w-12 text-stone-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+      <h3 class="text-lg font-semibold text-stone-900 mb-2">No feature requests yet</h3>
+      <p class="text-sm text-stone-500 mb-6">Create one or share your portal link to collect requests from users.</p>
+      <div class="flex items-center justify-center gap-3">
+        <%= link_to "New Request", new_feature_request_path, class: "px-4 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-medium text-sm" %>
+        <% if current_account.portal_enabled? %>
+          <%= link_to "View Portal", portal_path(portal_subdomain: current_account.subdomain), target: "_blank",
+              class: "px-4 py-2 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors font-medium text-sm" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -221,6 +221,37 @@
     </div>
   </div>
 
+  <!-- Feature Requests -->
+  <% if current_account.portal_enabled? && current_account.subdomain.present? %>
+    <div class="bg-white border border-stone-200 rounded-xl p-5 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-bold text-stone-900">Feature Requests</h2>
+        <div class="flex items-center gap-3">
+          <%= link_to "Manage", feature_requests_path, class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-xs font-medium" %>
+          <%= link_to "View Portal", portal_path(portal_subdomain: current_account.subdomain), target: "_blank", class: "text-stone-900 hover:text-stone-700 underline decoration-stone-300 text-xs font-medium" %>
+        </div>
+      </div>
+      <div class="grid grid-cols-4 gap-3 mb-4">
+        <% [["Open", "open", "bg-blue-100 text-blue-700"], ["Planned", "planned", "bg-purple-100 text-purple-700"], ["Building", "in_progress", "bg-amber-100 text-amber-700"], ["Shipped", "shipped", "bg-emerald-100 text-emerald-700"]].each do |label, key, color| %>
+          <div class="rounded-lg p-3 <%= color %>">
+            <p class="text-xs font-semibold opacity-80"><%= label %></p>
+            <p class="text-xl font-extrabold"><%= @fr_counts&.dig(key) || 0 %></p>
+          </div>
+        <% end %>
+      </div>
+      <% if @top_request %>
+        <div class="bg-stone-50 rounded-lg border border-stone-200 p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-stone-900 text-white flex items-center justify-center text-sm font-bold shrink-0"><%= @top_request.votes_count %></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-stone-900 truncate"><%= @top_request.title %></p>
+            <p class="text-xs text-stone-500">Top requested &middot; <%= @top_request.votes_count %> votes</p>
+          </div>
+          <%= link_to "View", feature_request_path(@top_request), class: "text-xs font-medium text-stone-900 hover:text-stone-700 underline decoration-stone-300 shrink-0" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
   <!-- Recent Feedbacks -->
   <div class="bg-white border border-stone-200 rounded-xl p-5">
     <h2 class="text-sm font-bold text-stone-900 mb-4">Recent Feedbacks</h2>

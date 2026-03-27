@@ -32,6 +32,13 @@ class DashboardController < ApplicationController
 
     # Sources for grid
     @sources = current_account.sources.order(:source_type)
+
+    # Feature requests
+    if current_account.portal_enabled?
+      fr_scope = current_account.feature_requests.not_merged
+      @fr_counts = fr_scope.group(:status).count
+      @top_request = fr_scope.published.by_votes.first
+    end
   end
 
   private

@@ -27,7 +27,7 @@
           <p class="text-xs text-stone-500">Feature Requests</p>
         </div>
       </div>
-      <%= link_to portal_new_request_path(subdomain: @account.subdomain),
+      <%= link_to portal_new_request_path(portal_subdomain: @account.subdomain),
           class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-medium text-sm" do %>
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

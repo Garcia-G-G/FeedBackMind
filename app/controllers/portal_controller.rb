@@ -52,7 +52,7 @@ class PortalController < ApplicationController
         expires: 1.year.from_now
       }
 
-      redirect_to portal_path(subdomain: @account.subdomain), notice: "Your feature request has been submitted!"
+      redirect_to portal_path(portal_subdomain: @account.subdomain), notice: "Your feature request has been submitted!"
     else
       @voter_email = cookies.encrypted[:portal_voter_email]
       render :new_request, status: :unprocessable_entity
@@ -97,7 +97,7 @@ class PortalController < ApplicationController
           locals: { feature_request: @feature_request, voter_email: @voter_email, account: @account }
         )
       end
-      format.html { redirect_to portal_path(subdomain: @account.subdomain) }
+      format.html { redirect_to portal_path(portal_subdomain: @account.subdomain) }
     end
   end
 
@@ -109,7 +109,7 @@ class PortalController < ApplicationController
   private
 
   def find_account
-    @account = Account.find_by!(subdomain: params[:subdomain])
+    @account = Account.find_by!(subdomain: params[:portal_subdomain])
     ActsAsTenant.current_tenant = @account
   rescue ActiveRecord::RecordNotFound
     render plain: "Portal not found", status: :not_found

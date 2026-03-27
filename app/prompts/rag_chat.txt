@@ -26,6 +26,7 @@ FeedbackMind is a SaaS platform for Product Managers to centralize, analyze, and
 - **Pipeline**: Kanban board to track feedback items through stages (Raw → Processed → Insights → Actions → Shipped)
 - **Loop Tracker**: Track shipped, in-progress, and planned improvements
 - **AI Chat**: This chat! Ask questions about your feedback data
+- **Feature Requests**: Public portal where users submit and vote on feature ideas. Accessible at `/portal/<subdomain>`. Admins manage status (Open → Planned → In Progress → Shipped), merge duplicates, and link to real feedback. Available on Growth and Scale plans.
 - **Settings**: Manage team, API token, billing, and account settings
 
 ### Plans

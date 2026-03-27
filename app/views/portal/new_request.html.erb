@@ -2,7 +2,7 @@
 
 <div class="max-w-2xl mx-auto">
   <div class="mb-6">
-    <%= link_to portal_path(subdomain: @account.subdomain), class: "text-sm text-stone-900 hover:text-stone-700 font-medium" do %>
+    <%= link_to portal_path(portal_subdomain: @account.subdomain), class: "text-sm text-stone-900 hover:text-stone-700 font-medium" do %>
       &larr; Back to requests
     <% end %>
   </div>
@@ -11,7 +11,7 @@
     <h2 class="text-xl font-bold text-stone-900 font-serif-display mb-6">Submit a Feature Request</h2>
 
     <%= form_with model: @feature_request,
-        url: portal_create_request_path(subdomain: @account.subdomain),
+        url: portal_create_request_path(portal_subdomain: @account.subdomain),
         method: :post,
         data: { turbo: false } do |f| %>
 
@@ -70,7 +70,7 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end gap-3 pt-2">
-          <%= link_to "Cancel", portal_path(subdomain: @account.subdomain),
+          <%= link_to "Cancel", portal_path(portal_subdomain: @account.subdomain),
               class: "px-4 py-2.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors" %>
           <%= f.submit "Submit Request",
               class: "px-5 py-2.5 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>

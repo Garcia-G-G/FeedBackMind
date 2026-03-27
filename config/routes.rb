@@ -67,6 +67,16 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :feature_requests do
+      member do
+        post :publish
+        post :unpublish
+        post :merge
+        post :link_feedback
+        delete :unlink_feedback
+      end
+    end
+
     resource :pipeline, only: [:show], controller: "pipeline"
     resource :loop_tracker, only: [:show], controller: "loop_tracker"
     resource :settings, only: [:show, :update], controller: "settings" do
@@ -107,7 +117,7 @@ Rails.application.routes.draw do
   get "onboarding", to: redirect("/users/sign_in")
 
   # === Public Feature Request Portal ===
-  scope "portal/:subdomain", controller: "portal" do
+  scope "portal/:portal_subdomain", controller: "portal" do
     get "/", action: :show, as: :portal
     get "/new", action: :new_request, as: :portal_new_request
     post "/", action: :create_request, as: :portal_create_request
