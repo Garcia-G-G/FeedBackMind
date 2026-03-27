@@ -24,6 +24,11 @@ module Api
           return
         end
 
+        unless params[:score].present? && params[:score].to_i.between?(0, 10)
+          render json: { error: "Score must be between 0 and 10" }, status: :unprocessable_entity
+          return
+        end
+
         ActsAsTenant.current_tenant = survey.account
 
         nps_response = survey.nps_responses.create!(

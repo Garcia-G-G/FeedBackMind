@@ -1,5 +1,5 @@
 class FeedbacksController < ApplicationController
-  before_action :set_feedback, only: [:show, :add_tag, :remove_tag]
+  before_action :set_feedback, only: [:show, :add_tag, :remove_tag, :suggest_reply]
 
   def index
     @feedbacks = current_account.feedbacks.includes(:source, :company).order(received_at: :desc)
@@ -33,6 +33,15 @@ class FeedbacksController < ApplicationController
       @related_feedbacks = current_account.feedbacks
                                .where.not(id: @feedback.id)
                                .nearest_to(@feedback.embedding, limit: 3)
+    end
+  end
+
+  def suggest_reply
+    suggestion = Ai::ReplySuggester.suggest(@feedback)
+    if suggestion.present?
+      render json: { reply: suggestion }
+    else
+      render json: { error: "Could not generate a suggestion" }, status: :unprocessable_entity
     end
   end
 

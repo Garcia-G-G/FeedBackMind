@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     resources :feedbacks, only: [:index, :show] do
       member do
         post :add_tag
+        post :suggest_reply
         delete :remove_tag
       end
       collection do
