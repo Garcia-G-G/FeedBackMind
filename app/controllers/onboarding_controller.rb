@@ -74,7 +74,7 @@ class OnboardingController < ApplicationController
 
       if price_id.present?
         begin
-          base_url = "https://#{ENV.fetch('APP_HOST', '5.161.238.195.sslip.io')}"
+          base_url = request.base_url
           checkout_session = Stripe::Checkout::Session.create(
             mode: "subscription",
             customer_email: current_user.email,
