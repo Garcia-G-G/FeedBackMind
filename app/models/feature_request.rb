@@ -7,6 +7,8 @@ class FeatureRequest < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :feature_request_feedbacks, dependent: :destroy
   has_many :feedbacks, through: :feature_request_feedbacks
+  has_many :changelog_entry_feature_requests, dependent: :destroy
+  has_many :changelog_entries, through: :changelog_entry_feature_requests
 
   # === Multi-tenancy ===
   acts_as_tenant(:account)

@@ -77,6 +77,15 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :changelog_entries, path: "changelog" do
+      member do
+        post :publish
+        post :unpublish
+        post :link_feature_request
+        delete :unlink_feature_request
+      end
+    end
+
     resource :pipeline, only: [:show], controller: "pipeline"
     resource :loop_tracker, only: [:show], controller: "loop_tracker"
     resource :settings, only: [:show, :update], controller: "settings" do
@@ -122,6 +131,7 @@ Rails.application.routes.draw do
     get "/new", action: :new_request, as: :portal_new_request
     post "/", action: :create_request, as: :portal_create_request
     post "/:slug/vote", action: :vote, as: :portal_vote
+    get "/changelog", action: :changelog, as: :portal_changelog
     get "/:slug", action: :show_request, as: :portal_request
   end
 

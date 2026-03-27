@@ -101,6 +101,12 @@ class PortalController < ApplicationController
     end
   end
 
+  def changelog
+    scope = @account.changelog_entries.published
+    scope = scope.by_category(params[:category]) if params[:category].present?
+    @entries = scope.includes(:feature_requests)
+  end
+
   def show_request
     @feature_request = @account.feature_requests.active.find_by!(slug: params[:slug])
     @voter_email = cookies.encrypted[:portal_voter_email]

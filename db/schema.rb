@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_153304) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_155902) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -29,6 +29,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_153304) do
     t.index ["plan"], name: "index_accounts_on_plan"
     t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true, where: "(stripe_customer_id IS NOT NULL)"
     t.index ["subdomain"], name: "index_accounts_on_subdomain", unique: true
+  end
+
+  create_table "changelog_entries", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.text "body", null: false
+    t.integer "category", default: 0, null: false
+    t.string "cover_image_url"
+    t.datetime "created_at", null: false
+    t.datetime "published_at"
+    t.string "slug", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "version"
+    t.index ["account_id", "category"], name: "index_changelog_entries_on_account_id_and_category"
+    t.index ["account_id", "published_at"], name: "index_changelog_entries_on_account_id_and_published_at"
+    t.index ["account_id", "slug"], name: "index_changelog_entries_on_account_id_and_slug", unique: true
+    t.index ["account_id"], name: "index_changelog_entries_on_account_id"
+    t.index ["user_id"], name: "index_changelog_entries_on_user_id"
+  end
+
+  create_table "changelog_entry_feature_requests", force: :cascade do |t|
+    t.bigint "changelog_entry_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "feature_request_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["changelog_entry_id", "feature_request_id"], name: "idx_changelog_feature_request_unique", unique: true
+    t.index ["changelog_entry_id"], name: "index_changelog_entry_feature_requests_on_changelog_entry_id"
+    t.index ["feature_request_id"], name: "index_changelog_entry_feature_requests_on_feature_request_id"
   end
 
   create_table "chat_messages", force: :cascade do |t|
@@ -175,6 +204,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_153304) do
     t.index ["week_start"], name: "index_weekly_syntheses_on_week_start"
   end
 
+  add_foreign_key "changelog_entries", "accounts"
+  add_foreign_key "changelog_entries", "users"
+  add_foreign_key "changelog_entry_feature_requests", "changelog_entries"
+  add_foreign_key "changelog_entry_feature_requests", "feature_requests"
   add_foreign_key "chat_messages", "accounts"
   add_foreign_key "chat_messages", "users"
   add_foreign_key "feature_request_feedbacks", "feature_requests"

@@ -1,0 +1,67 @@
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to changelog_entries_path, class: "text-sm text-stone-900 hover:text-stone-700 font-medium" do %>
+      &larr; Changelog
+    <% end %>
+  </div>
+
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <h2 class="text-xl font-bold text-stone-900 font-serif-display mb-6"><%= entry.new_record? ? "New Changelog Entry" : "Edit Changelog Entry" %></h2>
+
+    <%= form_with model: entry, url: entry.new_record? ? changelog_entries_path : changelog_entry_path(entry), data: { turbo: false } do |f| %>
+      <% if entry.errors.any? %>
+        <div class="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">
+          <ul class="list-disc list-inside">
+            <% entry.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="space-y-5">
+        <div>
+          <label for="changelog_entry_title" class="block text-sm font-semibold text-stone-700 mb-1">Title <span class="text-red-500">*</span></label>
+          <%= f.text_field :title, placeholder: "What shipped?",
+              class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent",
+              required: true, maxlength: 200 %>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="changelog_entry_category" class="block text-sm font-semibold text-stone-700 mb-1">Category</label>
+            <%= f.select :category,
+                ChangelogEntry.categories.keys.map { |c|
+                  label = case c
+                          when "new_feature" then "🚀 New Feature"
+                          when "improvement" then "✨ Improvement"
+                          when "fix" then "🐛 Fix"
+                          when "announcement" then "📢 Announcement"
+                          end
+                  [label, c]
+                },
+                {}, class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent" %>
+          </div>
+          <div>
+            <label for="changelog_entry_version" class="block text-sm font-semibold text-stone-700 mb-1">Version</label>
+            <%= f.text_field :version, placeholder: "e.g., v2.4.0",
+                class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent" %>
+          </div>
+        </div>
+
+        <div>
+          <label for="changelog_entry_body" class="block text-sm font-semibold text-stone-700 mb-1">Body <span class="text-red-500">*</span></label>
+          <%= f.text_area :body, placeholder: "Describe what changed and why...", rows: 12,
+              class: "w-full px-4 py-2.5 rounded-lg border border-stone-300 text-sm text-stone-900 font-mono placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent resize-y" %>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <%= link_to "Cancel", changelog_entries_path,
+              class: "px-4 py-2.5 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors" %>
+          <%= f.submit entry.new_record? ? "Create Entry" : "Update Entry",
+              class: "px-5 py-2.5 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
