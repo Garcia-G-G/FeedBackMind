@@ -5,6 +5,7 @@ class Feedback < ApplicationRecord
   # === Associations ===
   belongs_to :account
   belongs_to :source
+  belongs_to :company, optional: true, counter_cache: :feedback_count
   has_many :feature_request_feedbacks, dependent: :destroy
   has_many :feature_requests, through: :feature_request_feedbacks
 
@@ -87,6 +88,7 @@ class Feedback < ApplicationRecord
     parts << "[Date: #{received_at&.strftime('%Y-%m-%d')}]"
     parts << "[Author: #{author_name || author_email || 'Anonymous'}]"
     parts << "[Sentiment: #{sentiment}]"
+    parts << "[Company: #{company.name}]" if company.present?
     parts << content
     parts.join(" ")
   end

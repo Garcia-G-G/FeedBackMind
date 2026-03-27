@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_160955) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_161929) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -74,6 +74,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_160955) do
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
   end
 
+  create_table "companies", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "domain"
+    t.integer "feedback_count", default: 0, null: false
+    t.jsonb "metadata", default: {}
+    t.decimal "mrr", precision: 10, scale: 2
+    t.string "name", null: false
+    t.text "notes"
+    t.integer "plan_tier"
+    t.string "segment"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "domain"], name: "index_companies_on_account_id_and_domain", unique: true, where: "(domain IS NOT NULL)"
+    t.index ["account_id", "feedback_count"], name: "index_companies_on_account_id_and_feedback_count"
+    t.index ["account_id", "mrr"], name: "index_companies_on_account_id_and_mrr"
+    t.index ["account_id", "segment"], name: "index_companies_on_account_id_and_segment"
+    t.index ["account_id"], name: "index_companies_on_account_id"
+  end
+
   create_table "feature_request_feedbacks", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "feature_request_id", null: false
@@ -118,6 +137,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_160955) do
     t.bigint "account_id", null: false
     t.string "author_email"
     t.string "author_name"
+    t.bigint "company_id"
     t.text "content", null: false
     t.datetime "created_at", null: false
     t.vector "embedding", limit: 1536
@@ -135,6 +155,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_160955) do
     t.index ["account_id", "priority_score"], name: "index_feedbacks_on_account_id_and_priority_score"
     t.index ["account_id", "received_at"], name: "index_feedbacks_on_account_id_and_received_at"
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
+    t.index ["company_id", "received_at"], name: "index_feedbacks_on_company_id_and_received_at"
+    t.index ["company_id"], name: "index_feedbacks_on_company_id"
     t.index ["embedding"], name: "index_feedbacks_on_embedding_hnsw", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["processed_at"], name: "index_feedbacks_unprocessed", where: "(processed_at IS NULL)"
     t.index ["sentiment"], name: "index_feedbacks_on_sentiment"
@@ -258,12 +280,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_160955) do
   add_foreign_key "changelog_entry_feature_requests", "feature_requests"
   add_foreign_key "chat_messages", "accounts"
   add_foreign_key "chat_messages", "users"
+  add_foreign_key "companies", "accounts"
   add_foreign_key "feature_request_feedbacks", "feature_requests"
   add_foreign_key "feature_request_feedbacks", "feedbacks"
   add_foreign_key "feature_requests", "accounts"
   add_foreign_key "feature_requests", "feature_requests", column: "merged_into_id"
   add_foreign_key "feature_requests", "users"
   add_foreign_key "feedbacks", "accounts"
+  add_foreign_key "feedbacks", "companies"
   add_foreign_key "feedbacks", "sources"
   add_foreign_key "nps_responses", "accounts"
   add_foreign_key "nps_responses", "feedbacks"

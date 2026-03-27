@@ -51,6 +51,9 @@ class FeedbackIngestJob
 
     Rails.logger.info("[FeedbackIngestJob] Created feedback ##{feedback.id} for account #{account_id}")
 
+    # Auto-match company from email domain
+    Companies::AutoMatcher.new(account).match(feedback)
+
     # Broadcast to dashboard via Turbo Streams
     Turbo::StreamsChannel.broadcast_prepend_to(
       account,

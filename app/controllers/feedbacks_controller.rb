@@ -10,6 +10,7 @@ class FeedbacksController < ApplicationController
     @feedbacks = @feedbacks.where("feedbacks.content ILIKE ?", "%#{params[:search]}%") if params[:search].present?
     @feedbacks = @feedbacks.unprocessed if params[:status] == "unprocessed"
     @feedbacks = @feedbacks.processed if params[:status] == "processed"
+    @feedbacks = @feedbacks.where(company_id: params[:company_id]) if params[:company_id].present?
 
     # Sort
     if params[:sort] == "priority"

@@ -97,6 +97,12 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :companies, only: [:index, :show, :edit, :update, :destroy] do
+      collection do
+        post :auto_match
+      end
+    end
+
     resource :pipeline, only: [:show], controller: "pipeline"
     resource :loop_tracker, only: [:show], controller: "loop_tracker"
     resource :settings, only: [:show, :update], controller: "settings" do

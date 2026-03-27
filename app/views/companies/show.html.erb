@@ -1,0 +1,121 @@
+<% content_for(:page_title) { @company.name } %>
+
+<div class="space-y-6">
+  <div class="flex items-center gap-2 text-sm">
+    <%= link_to companies_path, class: "text-stone-900 hover:text-stone-700 font-medium" do %>
+      &larr; Companies
+    <% end %>
+  </div>
+
+  <!-- Header -->
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-stone-100 flex items-center justify-center text-lg font-bold text-stone-600">
+          <%= @company.name.first(2).upcase %>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <h1 class="text-xl font-bold text-stone-900 font-serif-display"><%= @company.name %></h1>
+            <% if @company.segment.present? %>
+              <span class="text-xs px-2.5 py-1 rounded-full font-medium <%= @company.segment_color_class %>"><%= @company.segment %></span>
+            <% end %>
+          </div>
+          <div class="flex items-center gap-3 text-sm text-stone-500">
+            <% if @company.domain.present? %>
+              <span><%= @company.domain %></span>
+            <% end %>
+            <% if @company.mrr.present? && @company.mrr > 0 %>
+              <span class="font-medium text-stone-700">$<%= number_with_delimiter(@company.mrr.to_i) %>/mo MRR</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <%= link_to "Edit", edit_company_path(@company),
+          class: "px-3 py-2 rounded-lg border border-stone-300 text-stone-600 hover:bg-stone-50 text-sm font-medium transition-colors" %>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-4 gap-4 border-t border-stone-200 pt-4">
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Feedbacks</p>
+        <p class="text-2xl font-extrabold text-stone-900"><%= @company.feedback_count %></p>
+      </div>
+      <% total = @sentiment_breakdown.values.sum %>
+      <% pos = @sentiment_breakdown.fetch("positive", 0) %>
+      <% neg = @sentiment_breakdown.fetch("negative", 0) %>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Positive</p>
+        <p class="text-2xl font-extrabold text-emerald-600"><%= total > 0 ? "#{(pos.to_f / total * 100).round}%" : "—" %></p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Negative</p>
+        <p class="text-2xl font-extrabold text-red-600"><%= total > 0 ? "#{(neg.to_f / total * 100).round}%" : "—" %></p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Avg Priority</p>
+        <p class="text-2xl font-extrabold text-stone-900"><%= @company.average_priority_score || "—" %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+    <!-- Left: Recent Feedbacks -->
+    <div class="bg-white rounded-xl border border-stone-200 p-5">
+      <h2 class="text-sm font-bold text-stone-900 mb-3">Recent Feedbacks</h2>
+      <% if @recent_feedbacks.any? %>
+        <div class="space-y-2">
+          <% @recent_feedbacks.each do |fb| %>
+            <%= link_to feedback_path(fb), class: "block p-3 rounded-lg bg-stone-50 border border-stone-200 hover:bg-stone-100 transition-colors" do %>
+              <p class="text-sm text-stone-700 line-clamp-2"><%= fb.content.truncate(150) %></p>
+              <div class="flex items-center gap-2 mt-2 text-[10px] text-stone-400">
+                <span><%= fb.source&.source_type&.titleize %></span>
+                <span><%= format_time_ago(fb.received_at) %></span>
+                <% if fb.sentiment.present? %>
+                  <span class="<%= sentiment_color(fb.sentiment) %> font-medium"><%= fb.sentiment.titleize %></span>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-stone-400 text-center py-4">No feedbacks from this company yet.</p>
+      <% end %>
+    </div>
+
+    <!-- Right Column -->
+    <div class="space-y-6">
+      <!-- Top Topics -->
+      <div class="bg-white rounded-xl border border-stone-200 p-5">
+        <h2 class="text-sm font-bold text-stone-900 mb-3">Top Topics</h2>
+        <% if @top_topics.any? %>
+          <div class="flex flex-wrap gap-2">
+            <% @top_topics.each do |topic, count| %>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"><%= topic %> <span class="text-stone-400">(<%= count %>)</span></span>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-stone-400">No topics yet.</p>
+        <% end %>
+      </div>
+
+      <!-- Notes -->
+      <div class="bg-white rounded-xl border border-stone-200 p-5">
+        <h2 class="text-sm font-bold text-stone-900 mb-3">Notes</h2>
+        <% if @company.notes.present? %>
+          <p class="text-sm text-stone-700 whitespace-pre-wrap"><%= @company.notes %></p>
+        <% else %>
+          <p class="text-sm text-stone-400">No notes. <%= link_to "Add notes", edit_company_path(@company), class: "text-stone-900 underline decoration-stone-300" %></p>
+        <% end %>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="bg-white rounded-xl border border-red-200 p-5">
+        <h2 class="text-sm font-bold text-red-600 mb-3">Danger Zone</h2>
+        <%= button_to "Delete Company", company_path(@company), method: :delete,
+            data: { turbo: false, turbo_confirm: "Delete #{@company.name}? Feedbacks will be unlinked, not deleted." },
+            class: "w-full px-4 py-2 rounded-lg border border-red-300 text-red-600 hover:bg-red-50 text-sm font-medium transition-colors" %>
+      </div>
+    </div>
+  </div>
+</div>

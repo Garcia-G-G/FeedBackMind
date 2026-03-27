@@ -1,0 +1,113 @@
+<% content_for(:page_title) { "Companies" } %>
+<% content_for(:topbar_actions) do %>
+  <div class="flex items-center gap-2">
+    <%= button_to "Auto-Match Feedbacks", auto_match_companies_path, method: :post,
+        data: { turbo: false },
+        class: "inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors text-sm font-medium" %>
+  </div>
+<% end %>
+
+<div class="space-y-6">
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-white border border-stone-200 rounded-xl p-4">
+      <p class="text-xs text-stone-400 font-medium mb-1">Companies</p>
+      <p class="text-2xl font-extrabold text-stone-900"><%= @total_count %></p>
+    </div>
+    <div class="bg-white border border-stone-200 rounded-xl p-4">
+      <p class="text-xs text-stone-400 font-medium mb-1">Total Feedbacks</p>
+      <p class="text-2xl font-extrabold text-stone-900"><%= @total_feedback %></p>
+    </div>
+    <div class="bg-white border border-stone-200 rounded-xl p-4">
+      <p class="text-xs text-stone-400 font-medium mb-1">Segments</p>
+      <p class="text-2xl font-extrabold text-stone-900"><%= @segment_counts.size %></p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-col sm:flex-row gap-3">
+    <form action="<%= companies_path %>" method="get" class="flex-1" data-turbo="false">
+      <% if params[:segment].present? %>
+        <input type="hidden" name="segment" value="<%= params[:segment] %>">
+      <% end %>
+      <% if params[:sort].present? %>
+        <input type="hidden" name="sort" value="<%= params[:sort] %>">
+      <% end %>
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        <input type="text" name="q" value="<%= params[:q] %>" placeholder="Search companies..."
+          class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-300 bg-white text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent">
+      </div>
+    </form>
+    <div class="flex gap-2">
+      <% { nil => "Feedbacks", "mrr" => "MRR", "name" => "Name", "recent" => "Recent" }.each do |sort_val, label| %>
+        <%= link_to companies_path(params.permit(:q, :segment).merge(sort: sort_val)),
+            class: "px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors #{params[:sort] == sort_val ? 'bg-stone-900 text-white border-stone-900' : 'bg-white text-stone-600 border-stone-300 hover:bg-stone-50'}" do %>
+          <%= label %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Segment Filters -->
+  <div class="flex flex-wrap gap-2">
+    <%= link_to companies_path(params.permit(:q, :sort)),
+        class: "px-3 py-1.5 rounded-full text-sm font-medium transition-colors #{params[:segment].blank? ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'}" do %>
+      All
+    <% end %>
+    <% Company::SEGMENTS.each do |seg| %>
+      <% count = @segment_counts[seg] || 0 %>
+      <%= link_to companies_path(params.permit(:q, :sort).merge(segment: seg)),
+          class: "px-3 py-1.5 rounded-full text-sm font-medium transition-colors #{params[:segment] == seg ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'}" do %>
+        <%= seg %> <span class="ml-1 opacity-70"><%= count %></span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- List -->
+  <% if @companies.any? %>
+    <div class="space-y-2">
+      <% @companies.each do |company| %>
+        <%= link_to company_path(company), class: "block bg-white rounded-xl border border-stone-200 p-4 hover:shadow-sm transition-shadow" do %>
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center text-sm font-bold text-stone-600 shrink-0">
+              <%= company.name.first(2).upcase %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-sm font-semibold text-stone-900 truncate"><%= company.name %></span>
+                <% if company.segment.present? %>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full font-medium <%= company.segment_color_class %>"><%= company.segment %></span>
+                <% end %>
+              </div>
+              <div class="flex items-center gap-3 text-xs text-stone-400">
+                <% if company.domain.present? %>
+                  <span><%= company.domain %></span>
+                <% end %>
+                <span><%= company.feedback_count %> feedbacks</span>
+                <% if company.mrr.present? && company.mrr > 0 %>
+                  <span class="font-medium text-stone-600">$<%= number_with_delimiter(company.mrr.to_i) %>/mo</span>
+                <% end %>
+              </div>
+            </div>
+            <% sentiment = company.feedback_sentiment_breakdown %>
+            <% total = sentiment.values.sum %>
+            <% if total > 0 %>
+              <div class="w-20 h-2 rounded-full overflow-hidden flex shrink-0">
+                <div class="bg-emerald-500 h-full" style="width: <%= (sentiment.fetch("positive", 0).to_f / total * 100).round %>%"></div>
+                <div class="bg-stone-300 h-full" style="width: <%= (sentiment.fetch("neutral", 0).to_f / total * 100).round %>%"></div>
+                <div class="bg-red-400 h-full" style="width: <%= (sentiment.fetch("negative", 0).to_f / total * 100).round %>%"></div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl border border-stone-200 p-12 text-center">
+      <svg class="mx-auto h-12 w-12 text-stone-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+      <h3 class="text-lg font-semibold text-stone-900 mb-2">No companies yet</h3>
+      <p class="text-sm text-stone-500 mb-6">Companies are auto-created from feedback email domains. Click "Auto-Match Feedbacks" to start.</p>
+    </div>
+  <% end %>
+</div>
