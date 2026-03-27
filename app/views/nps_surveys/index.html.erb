@@ -1,0 +1,39 @@
+<% content_for(:page_title) { "NPS Surveys" } %>
+<% content_for(:topbar_actions) do %>
+  <%= link_to new_nps_survey_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-medium text-sm" do %>
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+    New Survey
+  <% end %>
+<% end %>
+
+<div class="space-y-6">
+  <% if @surveys.any? %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% @surveys.each do |survey| %>
+        <%= link_to nps_survey_path(survey), class: "block bg-white rounded-xl border border-stone-200 p-5 hover:shadow-sm transition-shadow" do %>
+          <div class="flex items-start justify-between mb-4">
+            <h3 class="text-base font-semibold text-stone-900"><%= survey.name %></h3>
+            <span class="<%= survey.active? ? 'bg-emerald-500' : 'bg-stone-300' %> h-2.5 w-2.5 rounded-full shrink-0 mt-1.5"></span>
+          </div>
+
+          <% score = survey.nps_score %>
+          <div class="mb-4">
+            <p class="text-4xl font-extrabold <%= score > 50 ? 'text-emerald-600' : score > 0 ? 'text-amber-600' : 'text-red-600' %>"><%= score > 0 ? "+#{score}" : score %></p>
+            <p class="text-xs text-stone-400">NPS Score</p>
+          </div>
+
+          <div class="border-t border-stone-200 pt-3">
+            <p class="text-sm font-medium text-stone-700"><%= survey.responses_count %> responses</p>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-xl border border-stone-200 p-12 text-center">
+      <svg class="mx-auto h-12 w-12 text-stone-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+      <h3 class="text-lg font-semibold text-stone-900 mb-2">No NPS surveys yet</h3>
+      <p class="text-sm text-stone-500 mb-6">Create your first NPS survey and embed it in your product.</p>
+      <%= link_to "New Survey", new_nps_survey_path, class: "px-4 py-2 rounded-lg bg-stone-900 text-white hover:bg-stone-800 transition-colors font-medium text-sm" %>
+    </div>
+  <% end %>
+</div>

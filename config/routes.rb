@@ -50,6 +50,11 @@ Rails.application.routes.draw do
         post "checkout", to: "checkout#create"
         post "portal",   to: "portal#create"
       end
+
+      namespace :nps do
+        get "config", to: "nps#config"
+        post "respond", to: "nps#respond_survey"
+      end
     end
   end
 
@@ -83,6 +88,12 @@ Rails.application.routes.draw do
         post :unpublish
         post :link_feature_request
         delete :unlink_feature_request
+      end
+    end
+
+    resources :nps_surveys, path: "nps" do
+      member do
+        post :toggle_active
       end
     end
 

@@ -15,7 +15,8 @@ class Source < ApplicationRecord
     typeform: 4,
     jira: 5,
     slack: 6,
-    csv: 7
+    csv: 7,
+    nps: 8
   }, prefix: true
 
   # === Validations ===

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_160415) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_160955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -143,6 +143,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_160415) do
     t.index ["topics"], name: "index_feedbacks_on_topics", using: :gin
   end
 
+  create_table "nps_responses", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "category"
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.bigint "feedback_id"
+    t.jsonb "metadata", default: {}
+    t.bigint "nps_survey_id", null: false
+    t.string "page_url"
+    t.string "respondent_email"
+    t.string "respondent_id"
+    t.string "respondent_name"
+    t.integer "score", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "category"], name: "index_nps_responses_on_account_id_and_category"
+    t.index ["account_id"], name: "index_nps_responses_on_account_id"
+    t.index ["feedback_id"], name: "index_nps_responses_on_feedback_id"
+    t.index ["nps_survey_id", "created_at"], name: "index_nps_responses_on_nps_survey_id_and_created_at"
+    t.index ["nps_survey_id", "respondent_email"], name: "index_nps_responses_on_nps_survey_id_and_respondent_email"
+    t.index ["nps_survey_id"], name: "index_nps_responses_on_nps_survey_id"
+  end
+
+  create_table "nps_surveys", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.boolean "active", default: true
+    t.string "brand_color", default: "#1c1917"
+    t.datetime "created_at", null: false
+    t.string "followup_question", default: "What's the main reason for your score?"
+    t.string "name", null: false
+    t.string "position", default: "bottom-right"
+    t.string "question", default: "How likely are you to recommend us to a friend or colleague?", null: false
+    t.integer "responses_count", default: 0, null: false
+    t.jsonb "settings", default: {}
+    t.string "survey_token", null: false
+    t.string "thank_you_message", default: "Thanks for your feedback!"
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "active"], name: "index_nps_surveys_on_account_id_and_active"
+    t.index ["account_id"], name: "index_nps_surveys_on_account_id"
+    t.index ["survey_token"], name: "index_nps_surveys_on_survey_token", unique: true
+  end
+
   create_table "sources", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.boolean "active", default: false, null: false
@@ -224,6 +265,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_160415) do
   add_foreign_key "feature_requests", "users"
   add_foreign_key "feedbacks", "accounts"
   add_foreign_key "feedbacks", "sources"
+  add_foreign_key "nps_responses", "accounts"
+  add_foreign_key "nps_responses", "feedbacks"
+  add_foreign_key "nps_responses", "nps_surveys"
+  add_foreign_key "nps_surveys", "accounts"
   add_foreign_key "sources", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "votes", "accounts"

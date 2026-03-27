@@ -8,6 +8,8 @@ class Account < ApplicationRecord
   has_many :feature_requests, dependent: :destroy
   has_many :votes, dependent: :destroy
   has_many :changelog_entries, dependent: :destroy
+  has_many :nps_surveys, dependent: :destroy
+  has_many :nps_responses, dependent: :destroy
 
   # === Enums ===
   enum :plan, { starter: 0, growth: 1, scale: 2 }, prefix: true

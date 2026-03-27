@@ -38,6 +38,7 @@
   <div class="px-2.5 py-3">
     <p class="text-[11px] font-semibold uppercase tracking-wider text-stone-400 px-1.5 pb-2">Manage</p>
     <%= sidebar_link "Requests", feature_requests_path, "requests", controller_name == "feature_requests", badge: current_account&.feature_requests&.not_merged&.count %>
+    <%= sidebar_link "NPS", nps_surveys_path, "nps", controller_name == "nps_surveys" %>
     <%= sidebar_link "Changelog", changelog_entries_path, "changelog", controller_name == "changelog" %>
     <%= sidebar_link "Sources", sources_path, "sources", controller_name == "sources" %>
     <%= sidebar_link "Loop Tracker", loop_tracker_path, "loop_tracker", controller_name == "loop_tracker" %>

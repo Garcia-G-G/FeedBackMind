@@ -1,0 +1,140 @@
+<% content_for(:page_title) { @survey.name } %>
+
+<div class="space-y-6">
+  <div class="flex items-center gap-2 text-sm">
+    <%= link_to nps_surveys_path, class: "text-stone-900 hover:text-stone-700 font-medium" do %>
+      &larr; NPS Surveys
+    <% end %>
+  </div>
+
+  <!-- Header -->
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <h1 class="text-xl font-bold text-stone-900 font-serif-display"><%= @survey.name %></h1>
+          <span class="<%= @survey.active? ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-500' %> text-xs px-2.5 py-1 rounded-full font-medium"><%= @survey.active? ? 'Active' : 'Paused' %></span>
+        </div>
+        <p class="text-sm text-stone-500"><%= @survey.question %></p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <%= button_to @survey.active? ? "Pause" : "Activate", toggle_active_nps_survey_path(@survey), method: :post,
+            data: { turbo: false },
+            class: "px-3 py-2 rounded-lg border border-stone-300 text-stone-600 hover:bg-stone-50 text-sm font-medium transition-colors" %>
+        <%= link_to "Edit", edit_nps_survey_path(@survey),
+            class: "px-3 py-2 rounded-lg border border-stone-300 text-stone-600 hover:bg-stone-50 text-sm font-medium transition-colors" %>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-4 gap-4 border-t border-stone-200 pt-4">
+      <% score = @survey.nps_score %>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">NPS Score</p>
+        <p class="text-3xl font-extrabold <%= score > 50 ? 'text-emerald-600' : score > 0 ? 'text-amber-600' : 'text-red-600' %>"><%= score > 0 ? "+#{score}" : score %></p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Promoters (9-10)</p>
+        <p class="text-3xl font-extrabold text-emerald-600"><%= @breakdown[:promoters] %></p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Passives (7-8)</p>
+        <p class="text-3xl font-extrabold text-amber-600"><%= @breakdown[:passives] %></p>
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">Detractors (0-6)</p>
+        <p class="text-3xl font-extrabold text-red-600"><%= @breakdown[:detractors] %></p>
+      </div>
+    </div>
+
+    <!-- Distribution Bar -->
+    <% if @breakdown[:total] > 0 %>
+      <div class="mt-4 w-full h-4 rounded-full overflow-hidden flex">
+        <% p_pct = (@breakdown[:promoters].to_f / @breakdown[:total] * 100).round %>
+        <% pa_pct = (@breakdown[:passives].to_f / @breakdown[:total] * 100).round %>
+        <% d_pct = 100 - p_pct - pa_pct %>
+        <div class="bg-emerald-500 h-full" style="width: <%= p_pct %>%"></div>
+        <div class="bg-amber-400 h-full" style="width: <%= pa_pct %>%"></div>
+        <div class="bg-red-400 h-full" style="width: <%= d_pct %>%"></div>
+      </div>
+      <div class="flex justify-between mt-1 text-[10px] text-stone-400">
+        <span>Promoters <%= p_pct %>%</span>
+        <span>Passives <%= pa_pct %>%</span>
+        <span>Detractors <%= d_pct %>%</span>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Embed Snippet -->
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <h2 class="text-lg font-bold text-stone-900 mb-4">Embed Code</h2>
+    <p class="text-sm text-stone-600 mb-3">Add this script tag to your website to show the NPS survey widget.</p>
+    <div class="flex items-center gap-2" data-controller="clipboard">
+      <code class="flex-1 px-4 py-3 bg-stone-900 text-emerald-400 rounded-lg text-sm font-mono break-all"
+            data-clipboard-target="source"><%= @survey.embed_snippet %></code>
+      <button type="button" data-action="click->clipboard#copy"
+        class="px-4 py-2 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors font-medium text-sm shrink-0">
+        Copy
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+    <!-- Recent Comments -->
+    <div class="bg-white rounded-xl border border-stone-200 p-5">
+      <h2 class="text-sm font-bold text-stone-900 mb-3">Recent Responses</h2>
+      <% if @recent_responses.any? %>
+        <div class="space-y-3">
+          <% @recent_responses.each do |resp| %>
+            <div class="p-3 bg-stone-50 rounded-lg border border-stone-200">
+              <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-bold <%= resp.score >= 9 ? 'text-emerald-600' : resp.score >= 7 ? 'text-amber-600' : 'text-red-600' %>"><%= resp.score %>/10</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full font-medium <%= case resp.category when 'promoter' then 'bg-emerald-100 text-emerald-700' when 'passive' then 'bg-amber-100 text-amber-700' else 'bg-red-100 text-red-700' end %>"><%= resp.category&.titleize %></span>
+                </div>
+                <span class="text-[10px] text-stone-400"><%= format_time_ago(resp.created_at) %></span>
+              </div>
+              <% if resp.comment.present? %>
+                <p class="text-sm text-stone-700 mt-1"><%= resp.comment %></p>
+              <% end %>
+              <% if resp.respondent_email.present? %>
+                <p class="text-[10px] text-stone-400 mt-1"><%= resp.respondent_email %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-stone-400 text-center py-4">No responses yet.</p>
+      <% end %>
+    </div>
+
+    <!-- Score Distribution -->
+    <div class="space-y-6">
+      <div class="bg-white rounded-xl border border-stone-200 p-5">
+        <h2 class="text-sm font-bold text-stone-900 mb-3">Score Distribution</h2>
+        <div class="space-y-2">
+          <% max_count = @score_distribution.values.max || 1 %>
+          <% (0..10).reverse_each do |s| %>
+            <% count = @score_distribution[s] || 0 %>
+            <% bar_color = s >= 9 ? 'bg-emerald-500' : s >= 7 ? 'bg-amber-400' : 'bg-red-400' %>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono text-stone-500 w-5 text-right"><%= s %></span>
+              <div class="flex-1 bg-stone-100 rounded-full h-3 overflow-hidden">
+                <div class="<%= bar_color %> h-full rounded-full" style="width: <%= count > 0 ? (count.to_f / max_count * 100).round : 0 %>%"></div>
+              </div>
+              <span class="text-xs text-stone-500 w-6 text-right"><%= count %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="bg-white rounded-xl border border-red-200 p-5">
+        <h2 class="text-sm font-bold text-red-600 mb-3">Danger Zone</h2>
+        <%= button_to "Delete Survey", nps_survey_path(@survey), method: :delete,
+            data: { turbo: false, turbo_confirm: "Permanently delete this NPS survey and all responses?" },
+            class: "w-full px-4 py-2 rounded-lg border border-red-300 text-red-600 hover:bg-red-50 text-sm font-medium transition-colors" %>
+      </div>
+    </div>
+  </div>
+</div>
