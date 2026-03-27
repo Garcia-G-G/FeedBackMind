@@ -62,6 +62,9 @@ class FeedbackIngestJob
       locals: { feedback: feedback }
     )
 
+    # Slack notification
+    Notifications::SlackNotifier.new(account).new_feedback(feedback)
+
     # FeedbackEmbedJob is enqueued automatically via Feedback after_create_commit callback
   end
 end

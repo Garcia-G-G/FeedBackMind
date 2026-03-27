@@ -168,6 +168,6 @@ class SettingsController < ApplicationController
   private
 
   def account_params
-    params.require(:account).permit(:name, :subdomain, :plan)
+    params.require(:account).permit(:name, :subdomain, :plan, :slack_webhook_url)
   end
 end

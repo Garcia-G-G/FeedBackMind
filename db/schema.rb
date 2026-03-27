@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_164916) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_165103) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_164916) do
     t.integer "feedback_count_this_month", default: 0
     t.string "name", null: false
     t.integer "plan", default: 0, null: false
+    t.string "slack_webhook_url"
     t.string "stripe_customer_id"
     t.string "stripe_subscription_id"
     t.string "subdomain", null: false

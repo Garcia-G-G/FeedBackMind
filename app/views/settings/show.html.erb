@@ -86,6 +86,22 @@
     </div>
   </div>
 
+  <!-- Slack Notifications -->
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <h2 class="text-lg font-bold text-stone-900 mb-6">Slack Notifications</h2>
+    <p class="text-sm text-stone-600 mb-4">Receive real-time alerts in Slack when new feedback arrives or critical issues are detected.</p>
+    <%= form_with model: current_account, url: settings_path, method: :patch, data: { turbo: false } do |f| %>
+      <div class="flex items-center gap-2">
+        <%= f.text_field :slack_webhook_url, placeholder: "https://hooks.slack.com/services/...",
+            class: "flex-1 px-4 py-2 border border-stone-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none" %>
+        <%= f.submit "Save", class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-sm font-medium hover:bg-stone-800 transition-colors cursor-pointer" %>
+      </div>
+      <p class="text-xs text-stone-500 mt-2">
+        Create an <a href="https://api.slack.com/messaging/webhooks" target="_blank" class="text-stone-900 underline decoration-stone-300">Incoming Webhook</a> in your Slack workspace settings.
+      </p>
+    <% end %>
+  </div>
+
   <!-- Billing Section (outside form — button_to creates its own forms) -->
   <div class="bg-white rounded-xl border border-stone-200 p-6">
     <h2 class="text-lg font-bold text-stone-900 mb-6">Billing</h2>

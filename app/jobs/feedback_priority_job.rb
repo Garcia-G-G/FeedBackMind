@@ -9,6 +9,9 @@ class FeedbackPriorityJob
     return if feedback.priority_score.present?
 
     Ai::PriorityScorer.score_feedback(feedback)
+
+    feedback.reload
+    Notifications::SlackNotifier.new(feedback.account).high_priority_feedback(feedback)
   rescue => e
     Rails.logger.error("[FeedbackPriorityJob] Failed for feedback #{feedback_id}: #{e.message}")
     raise
