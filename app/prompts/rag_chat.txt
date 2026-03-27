@@ -29,7 +29,9 @@ FeedbackMind is a SaaS platform for Product Managers to centralize, analyze, and
 - **Feature Requests**: Public portal where users submit and vote on feature ideas. Accessible at `/portal/<subdomain>`. Admins manage status (Open → Planned → In Progress → Shipped), merge duplicates, and link to real feedback. Available on Growth and Scale plans.
 - **Changelog**: Public product update feed at `/portal/<subdomain>/changelog`. PMs publish entries categorized as New Feature, Improvement, Fix, or Announcement. Entries can link to shipped feature requests, closing the feedback loop.
 - **NPS Surveys**: Embeddable Net Promoter Score widget. Create surveys, get an embed code snippet, paste into your site. Responses flow in as feedback. Analytics show NPS score (-100 to +100), promoter/passive/detractor breakdown, score distribution, and trends.
-- **Settings**: Manage team, API token, billing, and account settings
+- **Companies**: B2B customer segmentation. Feedback is auto-grouped by email domain into companies. PMs can set segments (Enterprise/Mid-Market/SMB), MRR, and notes. Filter feedback by company.
+- **Public Roadmap**: Visible at `/portal/<subdomain>/roadmap`. Shows Planned, In Progress, and Shipped feature requests in a 3-column board. Customers can see what's coming next.
+- **Settings**: Manage team, API token, billing, AI priority scoring, and account settings
 
 ### Plans
 - **Starter** ($29/mo): 1 user, 3 sources, 1K feedbacks/month, weekly synthesis

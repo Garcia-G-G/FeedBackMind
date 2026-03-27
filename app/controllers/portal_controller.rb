@@ -107,6 +107,13 @@ class PortalController < ApplicationController
     @entries = scope.includes(:feature_requests)
   end
 
+  def roadmap
+    scope = @account.feature_requests.published.not_merged
+    @planned = scope.where(status: :planned).by_votes
+    @in_progress = scope.where(status: :in_progress).by_votes
+    @shipped = scope.where(status: :shipped).by_votes.limit(10)
+  end
+
   def show_request
     @feature_request = @account.feature_requests.active.find_by!(slug: params[:slug])
     @voter_email = cookies.encrypted[:portal_voter_email]

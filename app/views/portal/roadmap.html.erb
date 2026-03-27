@@ -1,0 +1,100 @@
+<% content_for(:title) { "Roadmap" } %>
+
+<div class="space-y-6">
+  <div class="text-center mb-8">
+    <h1 class="text-2xl font-bold text-stone-900 font-serif-display mb-2">Product Roadmap</h1>
+    <p class="text-sm text-stone-500">See what we're working on and what's coming next</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Planned -->
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+        <h2 class="text-sm font-bold text-stone-900">Planned</h2>
+        <span class="text-xs text-stone-400">(<%= @planned.size %>)</span>
+      </div>
+      <div class="space-y-3">
+        <% @planned.each do |fr| %>
+          <%= link_to portal_request_path(portal_subdomain: @account.subdomain, slug: fr.slug),
+              class: "block bg-white rounded-xl border border-stone-200 p-4 hover:shadow-sm transition-shadow" do %>
+            <div class="flex items-start gap-3">
+              <div class="shrink-0 w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-sm font-bold text-purple-600">
+                <%= fr.votes_count %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-stone-900 line-clamp-2"><%= fr.title %></p>
+                <% if fr.category.present? %>
+                  <span class="text-[10px] text-stone-400 mt-1 inline-block"><%= fr.category %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <% if @planned.empty? %>
+          <p class="text-sm text-stone-400 text-center py-6">Nothing planned yet</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- In Progress -->
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+        <h2 class="text-sm font-bold text-stone-900">In Progress</h2>
+        <span class="text-xs text-stone-400">(<%= @in_progress.size %>)</span>
+      </div>
+      <div class="space-y-3">
+        <% @in_progress.each do |fr| %>
+          <%= link_to portal_request_path(portal_subdomain: @account.subdomain, slug: fr.slug),
+              class: "block bg-white rounded-xl border border-stone-200 p-4 hover:shadow-sm transition-shadow" do %>
+            <div class="flex items-start gap-3">
+              <div class="shrink-0 w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-sm font-bold text-amber-600">
+                <%= fr.votes_count %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-stone-900 line-clamp-2"><%= fr.title %></p>
+                <% if fr.category.present? %>
+                  <span class="text-[10px] text-stone-400 mt-1 inline-block"><%= fr.category %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <% if @in_progress.empty? %>
+          <p class="text-sm text-stone-400 text-center py-6">Nothing in progress</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Shipped -->
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+        <h2 class="text-sm font-bold text-stone-900">Shipped</h2>
+        <span class="text-xs text-stone-400">(<%= @shipped.size %>)</span>
+      </div>
+      <div class="space-y-3">
+        <% @shipped.each do |fr| %>
+          <%= link_to portal_request_path(portal_subdomain: @account.subdomain, slug: fr.slug),
+              class: "block bg-white rounded-xl border border-stone-200 p-4 hover:shadow-sm transition-shadow" do %>
+            <div class="flex items-start gap-3">
+              <div class="shrink-0 w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-sm font-bold text-emerald-600">
+                <%= fr.votes_count %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-stone-900 line-clamp-2"><%= fr.title %></p>
+                <% if fr.shipped_at.present? %>
+                  <span class="text-[10px] text-stone-400 mt-1 inline-block">Shipped <%= fr.shipped_at.strftime("%b %d") %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <% if @shipped.empty? %>
+          <p class="text-sm text-stone-400 text-center py-6">Nothing shipped yet</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

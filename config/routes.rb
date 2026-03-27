@@ -149,6 +149,7 @@ Rails.application.routes.draw do
     get "/new", action: :new_request, as: :portal_new_request
     post "/", action: :create_request, as: :portal_create_request
     post "/:slug/vote", action: :vote, as: :portal_vote
+    get "/roadmap", action: :roadmap, as: :portal_roadmap
     get "/changelog", action: :changelog, as: :portal_changelog
     get "/:slug", action: :show_request, as: :portal_request
   end

@@ -34,6 +34,7 @@ class FeatureRequest < ApplicationRecord
   # === Callbacks ===
   before_validation :generate_slug, on: :create
   before_save :set_shipped_at
+  after_update_commit :notify_voters_of_status_change
 
   # === Scopes ===
   scope :published, -> { where.not(published_at: nil) }
@@ -119,5 +120,13 @@ class FeatureRequest < ApplicationRecord
     elsif status_changed? && !status_shipped?
       self.shipped_at = nil
     end
+  end
+
+  def notify_voters_of_status_change
+    return unless saved_change_to_status?
+    return unless published?
+    return unless votes.any?
+
+    StatusNotificationJob.perform_async(id)
   end
 end

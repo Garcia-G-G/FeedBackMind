@@ -1,0 +1,42 @@
+<div style="max-width: 560px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1c1917;">
+  <div style="padding: 32px 24px; border-bottom: 1px solid #e7e5e4;">
+    <p style="font-size: 13px; color: #78716c; margin: 0 0 16px;">
+      <%= @account.name %> &middot; Feature Requests
+    </p>
+    <h1 style="font-size: 20px; font-weight: 700; margin: 0 0 12px; line-height: 1.3;">
+      "<%= @feature_request.title %>" is now <strong><%= @status_label %></strong>
+    </h1>
+    <p style="font-size: 14px; color: #57534e; margin: 0 0 24px; line-height: 1.5;">
+      A feature request you voted on has been updated.
+    </p>
+
+    <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 24px;">
+      <tr>
+        <td style="padding: 8px 16px; background-color: <%= status_bg_color(@feature_request.status) %>; border-radius: 8px; font-size: 14px; font-weight: 600; color: <%= status_text_color(@feature_request.status) %>;">
+          <%= @status_label %>
+        </td>
+      </tr>
+    </table>
+
+    <% if @feature_request.description.present? %>
+      <p style="font-size: 14px; color: #57534e; line-height: 1.6; margin: 0 0 24px;">
+        <%= @feature_request.description.truncate(300) %>
+      </p>
+    <% end %>
+
+    <% if @account.portal_enabled? && @account.subdomain.present? %>
+      <p style="margin: 0;">
+        <a href="<%= portal_request_url(portal_subdomain: @account.subdomain, slug: @feature_request.slug) %>"
+           style="display: inline-block; padding: 10px 20px; background-color: #1c1917; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
+          View Request
+        </a>
+      </p>
+    <% end %>
+  </div>
+
+  <div style="padding: 24px; text-align: center;">
+    <p style="font-size: 12px; color: #a8a29e; margin: 0;">
+      You're receiving this because you voted on this feature request.
+    </p>
+  </div>
+</div>
