@@ -36,6 +36,34 @@ class FeedbacksController < ApplicationController
     end
   end
 
+  def export
+    feedbacks = current_account.feedbacks.includes(:source, :company).order(received_at: :desc)
+    feedbacks = feedbacks.where(sentiment: params[:sentiment]) if params[:sentiment].present?
+    feedbacks = feedbacks.where(company_id: params[:company_id]) if params[:company_id].present?
+
+    csv_data = CSV.generate(headers: true) do |csv|
+      csv << ["ID", "Content", "Sentiment", "Priority Score", "Priority Label", "Source", "Author Name", "Author Email", "Company", "Topics", "Tags", "Received At"]
+      feedbacks.find_each do |fb|
+        csv << [
+          fb.id,
+          fb.content,
+          fb.sentiment,
+          fb.priority_score,
+          fb.priority_label,
+          fb.source&.source_type,
+          fb.author_name,
+          fb.author_email,
+          fb.company&.name,
+          fb.topics&.join(", "),
+          fb.tags&.join(", "),
+          fb.received_at&.iso8601
+        ]
+      end
+    end
+
+    send_data csv_data, filename: "feedbacks-#{Date.current}.csv", type: "text/csv"
+  end
+
   def add_tag
     tag = params[:tag]&.strip&.downcase
     if tag.present? && !@feedback.tags.include?(tag)

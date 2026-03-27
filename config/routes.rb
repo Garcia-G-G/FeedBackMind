@@ -69,6 +69,9 @@ Rails.application.routes.draw do
         post :add_tag
         delete :remove_tag
       end
+      collection do
+        get :export
+      end
     end
     resources :saved_views, only: [:create, :destroy]
     resources :syntheses, only: [:index, :show, :new, :create]
