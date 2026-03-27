@@ -10,21 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_19_222024) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_153304) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
 
   create_table "accounts", force: :cascade do |t|
+    t.string "api_token"
+    t.datetime "created_at", null: false
+    t.integer "feedback_count_this_month", default: 0
     t.string "name", null: false
-    t.string "subdomain", null: false
+    t.integer "plan", default: 0, null: false
     t.string "stripe_customer_id"
     t.string "stripe_subscription_id"
-    t.integer "plan", default: 0, null: false
-    t.integer "feedback_count_this_month", default: 0
-    t.datetime "created_at", null: false
+    t.string "subdomain", null: false
     t.datetime "updated_at", null: false
-    t.string "api_token"
     t.index ["api_token"], name: "index_accounts_on_api_token", unique: true
     t.index ["plan"], name: "index_accounts_on_plan"
     t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true, where: "(stripe_customer_id IS NOT NULL)"
@@ -33,33 +33,70 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_19_222024) do
 
   create_table "chat_messages", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "user_id", null: false
-    t.integer "role", default: 0, null: false
     t.text "content", null: false
-    t.integer "source_feedback_ids", default: [], array: true
     t.datetime "created_at", null: false
+    t.integer "role", default: 0, null: false
+    t.integer "source_feedback_ids", default: [], array: true
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["account_id", "created_at"], name: "index_chat_messages_on_account_id_and_created_at"
     t.index ["account_id"], name: "index_chat_messages_on_account_id"
     t.index ["user_id", "created_at"], name: "index_chat_messages_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
   end
 
-  create_table "feedbacks", force: :cascade do |t|
+  create_table "feature_request_feedbacks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "feature_request_id", null: false
+    t.bigint "feedback_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_request_id", "feedback_id"], name: "idx_fr_feedback_unique", unique: true
+    t.index ["feature_request_id"], name: "index_feature_request_feedbacks_on_feature_request_id"
+    t.index ["feedback_id"], name: "index_feature_request_feedbacks_on_feedback_id"
+  end
+
+  create_table "feature_requests", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "source_id", null: false
-    t.string "external_id"
-    t.text "content", null: false
+    t.text "admin_notes"
     t.string "author_email"
     t.string "author_name"
-    t.integer "sentiment"
-    t.string "topics", default: [], array: true
-    t.jsonb "metadata", default: {}
-    t.datetime "received_at"
-    t.datetime "processed_at"
+    t.string "category"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "merged_into_id"
+    t.datetime "published_at"
+    t.datetime "shipped_at"
+    t.string "slug", null: false
+    t.integer "status", default: 0, null: false
+    t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.integer "votes_count", default: 0, null: false
+    t.index ["account_id", "category"], name: "index_feature_requests_on_account_id_and_category"
+    t.index ["account_id", "slug"], name: "index_feature_requests_on_account_id_and_slug", unique: true
+    t.index ["account_id", "status"], name: "index_feature_requests_on_account_id_and_status"
+    t.index ["account_id", "votes_count"], name: "index_feature_requests_on_account_id_and_votes_count"
+    t.index ["account_id"], name: "index_feature_requests_on_account_id"
+    t.index ["author_email"], name: "index_feature_requests_on_author_email"
+    t.index ["merged_into_id"], name: "index_feature_requests_on_merged_into_id"
+    t.index ["user_id"], name: "index_feature_requests_on_user_id"
+  end
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "author_email"
+    t.string "author_name"
+    t.text "content", null: false
+    t.datetime "created_at", null: false
     t.vector "embedding", limit: 1536
+    t.string "external_id"
+    t.jsonb "metadata", default: {}
+    t.datetime "processed_at"
+    t.datetime "received_at"
+    t.integer "sentiment"
+    t.bigint "source_id", null: false
+    t.string "topics", default: [], array: true
+    t.datetime "updated_at", null: false
     t.index ["account_id", "received_at"], name: "index_feedbacks_on_account_id_and_received_at"
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
     t.index ["embedding"], name: "index_feedbacks_on_embedding_hnsw", opclass: :vector_cosine_ops, using: :hnsw
@@ -72,11 +109,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_19_222024) do
 
   create_table "sources", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.integer "source_type", null: false
-    t.jsonb "config", default: {}
     t.boolean "active", default: false, null: false
-    t.datetime "last_synced_at"
+    t.jsonb "config", default: {}
     t.datetime "created_at", null: false
+    t.datetime "last_synced_at"
+    t.integer "source_type", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "active"], name: "index_sources_on_account_id_and_active"
     t.index ["account_id", "source_type"], name: "index_sources_on_account_id_and_source_type"
@@ -84,40 +121,55 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_19_222024) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "current_sign_in_at"
+    t.string "current_sign_in_ip"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.bigint "account_id", null: false
     t.string "name"
-    t.integer "role", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.datetime "onboarding_completed_at"
     t.integer "onboarding_step"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.integer "role", default: 0, null: false
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id", "role"], name: "index_users_on_account_id_and_role"
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "feature_request_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "voter_email", null: false
+    t.string "voter_name"
+    t.index ["account_id", "voter_email"], name: "index_votes_on_account_id_and_voter_email"
+    t.index ["account_id"], name: "index_votes_on_account_id"
+    t.index ["feature_request_id", "voter_email"], name: "idx_votes_unique_per_email", unique: true
+    t.index ["feature_request_id"], name: "index_votes_on_feature_request_id"
+    t.index ["user_id"], name: "index_votes_on_user_id"
+  end
+
   create_table "weekly_syntheses", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.date "week_start", null: false
-    t.integer "feedback_count", default: 0
-    t.jsonb "top_themes", default: []
-    t.text "executive_summary"
     t.jsonb "biggest_risk", default: {}
+    t.datetime "created_at", null: false
+    t.text "executive_summary"
+    t.integer "feedback_count", default: 0
     t.string "quick_wins", default: [], array: true
     t.datetime "sent_at"
-    t.datetime "created_at", null: false
+    t.jsonb "top_themes", default: []
     t.datetime "updated_at", null: false
+    t.date "week_start", null: false
     t.index ["account_id", "week_start"], name: "index_weekly_syntheses_on_account_id_and_week_start", unique: true
     t.index ["account_id"], name: "index_weekly_syntheses_on_account_id"
     t.index ["week_start"], name: "index_weekly_syntheses_on_week_start"
@@ -125,9 +177,17 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_19_222024) do
 
   add_foreign_key "chat_messages", "accounts"
   add_foreign_key "chat_messages", "users"
+  add_foreign_key "feature_request_feedbacks", "feature_requests"
+  add_foreign_key "feature_request_feedbacks", "feedbacks"
+  add_foreign_key "feature_requests", "accounts"
+  add_foreign_key "feature_requests", "feature_requests", column: "merged_into_id"
+  add_foreign_key "feature_requests", "users"
   add_foreign_key "feedbacks", "accounts"
   add_foreign_key "feedbacks", "sources"
   add_foreign_key "sources", "accounts"
   add_foreign_key "users", "accounts"
+  add_foreign_key "votes", "accounts"
+  add_foreign_key "votes", "feature_requests"
+  add_foreign_key "votes", "users"
   add_foreign_key "weekly_syntheses", "accounts"
 end

@@ -5,6 +5,8 @@ class Feedback < ApplicationRecord
   # === Associations ===
   belongs_to :account
   belongs_to :source
+  has_many :feature_request_feedbacks, dependent: :destroy
+  has_many :feature_requests, through: :feature_request_feedbacks
 
   # === Multi-tenancy ===
   acts_as_tenant(:account)

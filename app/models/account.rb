@@ -5,6 +5,8 @@ class Account < ApplicationRecord
   has_many :feedbacks, dependent: :destroy
   has_many :weekly_syntheses, dependent: :destroy
   has_many :chat_messages, dependent: :destroy
+  has_many :feature_requests, dependent: :destroy
+  has_many :votes, dependent: :destroy
 
   # === Enums ===
   enum :plan, { starter: 0, growth: 1, scale: 2 }, prefix: true
@@ -29,9 +31,9 @@ class Account < ApplicationRecord
 
   # === Plan Limits ===
   PLAN_LIMITS = {
-    "starter" => { users: 1, sources: 3, feedbacks_per_month: 1_000, chat_enabled: false, prd_enabled: false },
-    "growth"  => { users: 5, sources: 10, feedbacks_per_month: 10_000, chat_enabled: true, prd_enabled: false },
-    "scale"   => { users: Float::INFINITY, sources: Float::INFINITY, feedbacks_per_month: Float::INFINITY, chat_enabled: true, prd_enabled: true }
+    "starter" => { users: 1, sources: 3, feedbacks_per_month: 1_000, chat_enabled: false, prd_enabled: false, portal_enabled: false },
+    "growth"  => { users: 5, sources: 10, feedbacks_per_month: 10_000, chat_enabled: true, prd_enabled: false, portal_enabled: true },
+    "scale"   => { users: Float::INFINITY, sources: Float::INFINITY, feedbacks_per_month: Float::INFINITY, chat_enabled: true, prd_enabled: true, portal_enabled: true }
   }.freeze
 
   def plan_limits
@@ -50,6 +52,10 @@ class Account < ApplicationRecord
 
   def prd_enabled?
     plan_limits[:prd_enabled]
+  end
+
+  def portal_enabled?
+    plan_limits[:portal_enabled]
   end
 
   def max_users

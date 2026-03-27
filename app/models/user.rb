@@ -7,6 +7,8 @@ class User < ApplicationRecord
   # === Associations ===
   belongs_to :account
   has_many :chat_messages, dependent: :destroy
+  has_many :feature_requests, dependent: :nullify
+  has_many :votes, dependent: :nullify
 
   # === Multi-tenancy ===
   acts_as_tenant(:account)
