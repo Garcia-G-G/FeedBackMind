@@ -12,6 +12,7 @@ class Account < ApplicationRecord
   has_many :nps_responses, dependent: :destroy
   has_many :companies, dependent: :destroy
   has_many :saved_views, dependent: :destroy
+  has_many :invitations, dependent: :destroy
 
   # === Enums ===
   enum :plan, { starter: 0, growth: 1, scale: 2 }, prefix: true

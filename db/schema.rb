@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_133600) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_134253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -168,6 +168,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_133600) do
     t.index ["topics"], name: "index_feedbacks_on_topics", using: :gin
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "invited_by_id", null: false
+    t.integer "role", default: 0, null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "email"], name: "index_invitations_on_account_id_and_email", unique: true
+    t.index ["account_id"], name: "index_invitations_on_account_id"
+    t.index ["invited_by_id"], name: "index_invitations_on_invited_by_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
   create_table "nps_responses", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.string "category"
@@ -316,6 +332,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_133600) do
   add_foreign_key "feedbacks", "accounts"
   add_foreign_key "feedbacks", "companies"
   add_foreign_key "feedbacks", "sources"
+  add_foreign_key "invitations", "accounts"
+  add_foreign_key "invitations", "users", column: "invited_by_id"
   add_foreign_key "nps_responses", "accounts"
   add_foreign_key "nps_responses", "feedbacks"
   add_foreign_key "nps_responses", "nps_surveys"

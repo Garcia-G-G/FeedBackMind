@@ -116,6 +116,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :invitations, only: [:index, :create, :destroy]
+
     resource :pipeline, only: [:show], controller: "pipeline"
     resource :loop_tracker, only: [:show], controller: "loop_tracker"
     resource :settings, only: [:show, :update], controller: "settings" do
@@ -145,6 +147,10 @@ Rails.application.routes.draw do
   # OmniAuth callbacks (outside authenticated — middleware handles auth)
   get "/auth/:provider/callback", to: "source_connections#omniauth_callback"
   get "/auth/failure", to: "source_connections#omniauth_failure"
+
+  # Team invitations (public — invited user may not have an account yet)
+  get "invitations/:token/accept", to: "invitation_acceptances#show", as: :accept_invitation
+  post "invitations/:token/accept", to: "invitation_acceptances#update"
 
   # Redirect unauthenticated users to sign-in for app routes
   get "dashboard", to: redirect("/users/sign_in")

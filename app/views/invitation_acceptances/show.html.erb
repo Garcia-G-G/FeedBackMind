@@ -1,0 +1,61 @@
+<div class="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="flex justify-center mb-4">
+        <div class="h-12 w-12 bg-stone-900 rounded-lg flex items-center justify-center">
+          <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+      </div>
+      <h1 class="text-2xl font-bold font-serif-display text-stone-900">Join <%= @account.name %></h1>
+      <p class="text-sm text-stone-500 mt-2">You've been invited to join the team</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
+      <form action="<%= accept_invitation_path(token: @invitation.token) %>" method="post" novalidate>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+        <% if @user.errors.any? %>
+          <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <ul class="text-sm text-red-800 space-y-1">
+              <% @user.errors.full_messages.each do |msg| %>
+                <li>&bull; <%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-stone-900 mb-1.5">Email</label>
+            <input type="email" value="<%= @invitation.email %>" readonly
+              class="w-full px-4 py-2.5 border border-stone-200 rounded-lg bg-stone-50 text-sm text-stone-500">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-stone-900 mb-1.5">Your Name</label>
+            <input type="text" name="user[name]" autofocus placeholder="Jane Doe" required
+              class="w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-stone-900 mb-1.5">Password</label>
+            <input type="password" name="user[password]" placeholder="At least 6 characters" required
+              class="w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-stone-900 mb-1.5">Confirm Password</label>
+            <input type="password" name="user[password_confirmation]" placeholder="Repeat your password" required
+              class="w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition">
+          </div>
+
+          <button type="submit" class="w-full mt-4 px-4 py-2.5 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 transition-colors">
+            Join Team
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

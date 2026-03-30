@@ -1,0 +1,74 @@
+<% content_for(:page_title) { "Team" } %>
+
+<div class="max-w-4xl mx-auto space-y-6">
+  <!-- Team Members -->
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <h2 class="text-lg font-bold text-stone-900 mb-6">Team Members</h2>
+    <div class="space-y-3">
+      <% @users.each do |user| %>
+        <div class="flex items-center justify-between p-4 border border-stone-200 rounded-lg hover:bg-stone-50 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center text-xs font-bold text-stone-600 shrink-0">
+              <%= user.email.first(2).upcase %>
+            </div>
+            <div>
+              <p class="font-medium text-stone-900"><%= user.name.presence || user.email %></p>
+              <p class="text-xs text-stone-500"><%= user.email %> &middot; Joined <%= format_time_ago(user.created_at) %></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs px-3 py-1 rounded-full font-semibold capitalize
+              <%= case user.role when 'owner' then 'bg-stone-900 text-white' when 'admin' then 'bg-purple-100 text-purple-700' else 'bg-stone-100 text-stone-700' end %>">
+              <%= user.role %>
+            </span>
+            <% if current_user.owner? && user != current_user %>
+              <%= button_to "Remove", remove_member_settings_path(user_id: user.id), method: :delete,
+                  class: "text-xs text-red-600 hover:text-red-800 font-medium",
+                  data: { turbo_confirm: "Remove #{user.email} from the team?", turbo: false } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Invite Form -->
+  <div class="bg-white rounded-xl border border-stone-200 p-6">
+    <h2 class="text-lg font-bold text-stone-900 mb-4">Invite Team Member</h2>
+    <%= form_with url: invitations_path, method: :post, data: { turbo: false }, class: "flex flex-col sm:flex-row gap-3" do %>
+      <input type="email" name="invitation[email]" placeholder="colleague@company.com" required
+        class="flex-1 px-4 py-2.5 border border-stone-300 rounded-lg text-sm focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition">
+      <select name="invitation[role]"
+        class="px-4 py-2.5 border border-stone-300 rounded-lg text-sm focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none">
+        <option value="member">Member</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit" class="px-5 py-2.5 rounded-lg bg-stone-900 text-white text-sm font-semibold hover:bg-stone-800 transition-colors">
+        Send Invitation
+      </button>
+    <% end %>
+  </div>
+
+  <!-- Pending Invitations -->
+  <% if @pending_invitations.any? %>
+    <div class="bg-white rounded-xl border border-stone-200 p-6">
+      <h2 class="text-lg font-bold text-stone-900 mb-4">Pending Invitations</h2>
+      <div class="space-y-3">
+        <% @pending_invitations.each do |inv| %>
+          <div class="flex items-center justify-between p-4 border border-amber-200 bg-amber-50 rounded-lg">
+            <div>
+              <p class="font-medium text-stone-900"><%= inv.email %></p>
+              <p class="text-xs text-stone-500">
+                Invited as <strong><%= inv.role.titleize %></strong> by <%= inv.invited_by.display_name %> &middot;
+                Expires <%= format_time_ago(inv.expires_at) %>
+              </p>
+            </div>
+            <%= button_to "Revoke", invitation_path(inv), method: :delete,
+                data: { turbo: false, turbo_confirm: "Revoke invitation for #{inv.email}?" },
+                class: "text-xs text-red-600 hover:text-red-800 font-medium shrink-0" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
