@@ -37,7 +37,7 @@ gem "oauth2", "~> 2.0"
 gem "stripe", "~> 12.0"
 
 # Email
-gem "postmark-rails", "~> 0.22"
+gem "resend", "~> 0.17"
 
 # Deployment
 gem "kamal", "~> 2.0"

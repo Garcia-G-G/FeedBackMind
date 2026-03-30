@@ -2,7 +2,7 @@ class SourceConnectionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:omniauth_callback, :omniauth_failure]
   before_action :authenticate_user!, only: [:omniauth_callback], unless: -> { current_user.present? }
 
-  # POST /sources/connect/:provider — redirect to OAuth provider
+  # POST /sources/connect/:provider — initiate OAuth flow
   def create
     provider = params[:provider]
     session[:return_to_onboarding] = true if params[:return_to] == "onboarding"
@@ -15,13 +15,13 @@ class SourceConnectionsController < ApplicationController
         redirect_to sources_path, alert: "Slack is not configured yet. Please set SLACK_CLIENT_ID and SLACK_CLIENT_SECRET."
         return
       end
-      redirect_to "/auth/slack_openid", allow_other_host: true
+      render_omniauth_form("/auth/slack_openid")
     when "gmail"
       if ENV["GOOGLE_CLIENT_ID"].blank?
         redirect_to sources_path, alert: "Gmail is not configured yet. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET."
         return
       end
-      redirect_to "/auth/google_oauth2", allow_other_host: true
+      render_omniauth_form("/auth/google_gmail")
     when "jira"
       if ENV["JIRA_CLIENT_ID"].blank?
         redirect_to sources_path, alert: "Jira is not configured yet. Please set JIRA_CLIENT_ID and JIRA_CLIENT_SECRET."
@@ -60,7 +60,7 @@ class SourceConnectionsController < ApplicationController
 
     source_type = case auth.provider
                   when "slack_openid" then :slack
-                  when "google_oauth2" then :gmail
+                  when "google_gmail" then :gmail
                   else auth.provider.to_sym
                   end
 
@@ -121,7 +121,7 @@ class SourceConnectionsController < ApplicationController
   rescue => e
     Rails.logger.error "[OAuth] Jira callback error: #{e.message}"
     error_msg = if e.message.include?("access_denied") || e.message.include?("forbidden")
-      "Jira access denied. Verify the callback URL https://5.161.238.195.sslip.io/sources/callback/jira is configured in your Atlassian developer console."
+      "Jira access denied. Verify the callback URL #{jira_callback_url} is configured in your Atlassian developer console."
     else
       "Jira connection failed: #{e.message}"
     end
@@ -149,7 +149,7 @@ class SourceConnectionsController < ApplicationController
   rescue => e
     Rails.logger.error "[OAuth] Typeform callback error: #{e.message}"
     error_msg = if e.message.include?("forbidden") || e.message.include?("403")
-      "Typeform access denied. Verify the callback URL https://5.161.238.195.sslip.io/sources/callback/typeform is configured in your Typeform admin panel."
+      "Typeform access denied. Verify the callback URL #{typeform_callback_url} is configured in your Typeform admin panel."
     else
       "Typeform connection failed: #{e.message}"
     end
@@ -185,6 +185,27 @@ class SourceConnectionsController < ApplicationController
 
   private
 
+  # Renders a self-submitting POST form to initiate OmniAuth flow.
+  # OmniAuth requires POST for security (CSRF protection via omniauth-rails_csrf_protection).
+  # A simple redirect_to would send a GET request, which OmniAuth rejects.
+  def render_omniauth_form(path)
+    token = form_authenticity_token
+    render html: <<~HTML.html_safe, layout: false
+      <!DOCTYPE html>
+      <html>
+        <body>
+          <form id="omniauth-form" action="#{path}" method="post" style="display:none">
+            <input type="hidden" name="authenticity_token" value="#{token}" />
+          </form>
+          <p style="font-family: sans-serif; text-align: center; margin-top: 100px; color: #78716c;">
+            Redirecting to authentication provider...
+          </p>
+          <script>document.getElementById('omniauth-form').submit();</script>
+        </body>
+      </html>
+    HTML
+  end
+
   def save_source(source_type, token_data)
     source = current_account.sources.find_or_initialize_by(source_type: source_type)
     source.active = true
@@ -212,18 +233,18 @@ class SourceConnectionsController < ApplicationController
     JSON.parse(response.body)
   end
 
-  def production_base_url
-    host = ENV.fetch("APP_HOST", "5.161.238.195.sslip.io")
-    protocol = ENV.fetch("APP_PROTOCOL", "https")
-    "#{protocol}://#{host}"
+  # Dynamic base URL — uses the current request's host, so it works
+  # correctly in both development (localhost:3500) and production.
+  def dynamic_base_url
+    request.base_url
   end
 
   def jira_callback_url
-    "#{production_base_url}/sources/callback/jira"
+    "#{dynamic_base_url}/sources/callback/jira"
   end
 
   def typeform_callback_url
-    "#{production_base_url}/sources/callback/typeform"
+    "#{dynamic_base_url}/sources/callback/typeform"
   end
 
   def jira_auth_url

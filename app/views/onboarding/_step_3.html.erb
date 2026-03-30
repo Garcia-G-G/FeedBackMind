@@ -1,9 +1,9 @@
 <%
   sources = [
-    { id: "slack", name: "Slack", icon: "💬", desc: "Feedback from channels & threads", oauth: true, omniauth_path: "/auth/slack_openid" },
-    { id: "gmail", name: "Gmail", icon: "📧", desc: "Feedback from email conversations", oauth: true, omniauth_path: "/auth/google_oauth2" },
-    { id: "jira", name: "Jira", icon: "🔧", desc: "Issues and comments as feedback", oauth: true, connect_path: true },
-    { id: "typeform", name: "Typeform", icon: "📋", desc: "Survey responses automatically", oauth: true, connect_path: true },
+    { id: "slack", name: "Slack", icon: "💬", desc: "Feedback from channels & threads", oauth: true },
+    { id: "gmail", name: "Gmail", icon: "📧", desc: "Feedback from email conversations", oauth: true },
+    { id: "jira", name: "Jira", icon: "🔧", desc: "Issues and comments as feedback", oauth: true },
+    { id: "typeform", name: "Typeform", icon: "📋", desc: "Survey responses automatically", oauth: true },
     { id: "appstore", name: "App Store", icon: "🍎", desc: "iOS app reviews", oauth: false },
     { id: "csv", name: "CSV Upload", icon: "📄", desc: "Import from spreadsheet", oauth: false }
   ]
@@ -26,11 +26,8 @@
           <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-full">
             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Connected
           </span>
-        <% elsif src[:oauth] && src[:omniauth_path] %>
-          <%= button_to src[:omniauth_path], method: :post, data: { turbo: false }, params: { origin: "/onboarding" }, class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" do %>
-            Connect
-          <% end %>
-        <% elsif src[:oauth] && src[:connect_path] %>
+        <% elsif src[:oauth] %>
+          <%# ALL OAuth sources go through the controller — it handles OmniAuth POST vs redirect internally %>
           <%= button_to connect_source_path(provider: src[:id]), method: :post, data: { turbo: false }, params: { return_to: "onboarding" }, class: "px-4 py-2 rounded-lg bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors" do %>
             Connect
           <% end %>

@@ -47,10 +47,10 @@ Rails.application.configure do
   # Use Sidekiq as the Active Job queue adapter.
   config.active_job.queue_adapter = :sidekiq
 
-  # Email via Postmark
-  config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = {
-    api_token: ENV.fetch("POSTMARK_API_KEY", "")
+  # Email via Resend
+  config.action_mailer.delivery_method = :resend
+  config.action_mailer.resend_settings = {
+    api_key: ENV.fetch("RESEND_API_KEY", "")
   }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = false
