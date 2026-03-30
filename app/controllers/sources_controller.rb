@@ -1,5 +1,7 @@
 class SourcesController < ApplicationController
+  include Authorizable
   before_action :set_source, only: [:show, :destroy, :sync]
+  before_action :authorize_owner!, only: [:create, :destroy]
 
   def index
     @sources = current_account.sources.order(:source_type)

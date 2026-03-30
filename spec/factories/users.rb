@@ -8,6 +8,7 @@ FactoryBot.define do
     role { :owner }
     onboarding_completed_at { Time.current }
     onboarding_step { 3 }
+    confirmed_at { Time.current }
 
     trait :member do
       role { :member }

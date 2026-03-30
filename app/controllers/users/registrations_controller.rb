@@ -31,6 +31,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     onboarding_path
   end
 
+  def after_inactive_sign_up_path_for(resource)
+    new_user_session_path
+  end
+
   private
 
   def generate_subdomain(email)

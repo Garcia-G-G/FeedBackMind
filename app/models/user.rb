@@ -2,7 +2,7 @@ class User < ApplicationRecord
   # === Devise ===
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable,
-         :omniauthable, omniauth_providers: [:google_oauth2]
+         :confirmable, :omniauthable, omniauth_providers: [:google_oauth2]
   include EmailDomainValidatable
 
   # === Associations ===
@@ -55,7 +55,8 @@ class User < ApplicationRecord
       provider: auth.provider,
       uid: auth.uid,
       role: :owner,
-      password: Devise.friendly_token(32)
+      password: Devise.friendly_token(32),
+      confirmed_at: Time.current
     )
   end
 

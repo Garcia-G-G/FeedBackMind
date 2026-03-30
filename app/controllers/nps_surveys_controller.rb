@@ -54,6 +54,6 @@ class NpsSurveysController < ApplicationController
   end
 
   def survey_params
-    params.require(:nps_survey).permit(:name, :question, :followup_question, :thank_you_message, :brand_color, :position)
+    params.require(:nps_survey).permit(:name, :question, :followup_question, :thank_you_message, :brand_color, :position, :allowed_origins)
   end
 end

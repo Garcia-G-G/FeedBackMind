@@ -1,0 +1,35 @@
+<% content_for(:page_title) { "Resend Confirmation" } %>
+
+<div class="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="flex justify-center mb-4">
+        <div class="h-12 w-12 bg-stone-900 rounded-lg flex items-center justify-center">
+          <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+      </div>
+      <h1 class="text-2xl font-bold font-serif-display text-stone-900">Resend Confirmation</h1>
+      <p class="text-sm text-stone-500 mt-2">Enter your email to receive a new confirmation link</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-8">
+      <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, local: true) do |f| %>
+        <div class="space-y-4">
+          <div>
+            <%= f.label :email, "Email address", class: "block text-sm font-semibold text-stone-900 mb-1.5" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "you@example.com",
+                class: "w-full px-4 py-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-900/10 focus:border-stone-500 outline-none transition" %>
+          </div>
+
+          <%= f.submit "Resend confirmation", class: "w-full mt-4 px-4 py-2.5 rounded-lg bg-stone-900 text-white font-semibold hover:bg-stone-800 transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div class="text-center mt-6 text-sm text-stone-500">
+        <%= link_to "Back to sign in", new_session_path(resource_name), class: "text-stone-900 hover:text-stone-700 underline font-semibold" %>
+      </div>
+    </div>
+  </div>
+</div>

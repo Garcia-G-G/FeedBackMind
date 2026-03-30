@@ -1,4 +1,7 @@
 class SettingsController < ApplicationController
+  include Authorizable
+  before_action :authorize_owner!, only: [:change_plan, :remove_member, :invite_member, :regenerate_token]
+
   def show
     @account = current_account
 
