@@ -34,7 +34,7 @@ gem "omniauth-google-oauth2", "~> 1.1"
 gem "oauth2", "~> 2.0"
 
 # Billing
-gem "stripe", "~> 12.0"
+gem "stripe", "~> 19.0"
 
 # Email
 gem "resend", "~> 0.17"
