@@ -38,6 +38,7 @@ gem "stripe", "~> 12.0"
 
 # Email
 gem "resend", "~> 0.17"
+gem "postmark-rails", "~> 0.22"
 
 # Deployment
 gem "kamal", "~> 2.0"
