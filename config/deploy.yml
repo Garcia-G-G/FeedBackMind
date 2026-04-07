@@ -18,7 +18,7 @@ proxy:
   healthcheck:
     path: /up
     interval: 10
-    timeout: 30
+    timeout: 60
 
 registry:
   server: ghcr.io
@@ -63,6 +63,7 @@ env:
     - TYPEFORM_CLIENT_ID
     - TYPEFORM_CLIENT_SECRET
     - POSTMARK_API_KEY
+    - RESEND_API_KEY
 
 accessories:
   db:
