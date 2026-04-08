@@ -2,7 +2,7 @@ module NpsCors
   extend ActiveSupport::Concern
 
   included do
-    skip_forgery_protection
+    skip_forgery_protection if respond_to?(:skip_forgery_protection)
     before_action :set_cors_headers
   end
 
