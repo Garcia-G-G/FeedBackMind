@@ -21,7 +21,7 @@ gem "sidekiq", "~> 7.3"
 gem "sidekiq-cron", "~> 2.0"
 
 # AI & Vector Search
-gem "ruby-openai", "~> 7.3"
+gem "ruby-openai", "~> 8.3"
 gem "neighbor", "~> 0.4"
 
 # Authentication & Multi-tenancy
