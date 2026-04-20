@@ -17,7 +17,7 @@ gem "tailwindcss-rails", "~> 2.7"
 gem "sprockets-rails"
 
 # Background Jobs
-gem "sidekiq", "~> 7.3"
+gem "sidekiq", "~> 8.0"
 gem "sidekiq-cron", "~> 2.0"
 
 # AI & Vector Search
